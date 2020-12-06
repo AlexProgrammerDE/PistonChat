@@ -42,6 +42,18 @@ commands:
     permission: pistonchat.ignorelist
     permission-message: You have no permission to do that!
     usage: "Usage: /<command>"
+  togglewhispering:
+    description: Prevent getting whispered to!
+    permission: pistonchat.togglewhispering
+    permission-message: You have no permission to do that!
+    usage: "Usage: /<command>"
+    aliases:
+      - toggletells
+  togglechat:
+    description: Prevent getting chat messages!
+    permission: pistonchat.togglechat
+    permission-message: You have no permission to do that!
+    usage: "Usage: /<command>"
 permissions:
   pistonchat.last:
     description: Permission to /last!
@@ -51,6 +63,7 @@ permissions:
     description: Permission to /whisper!
     children:
       pistonchat.playernamereply: true
+      pistonchat.togglewhispering: true
   pistonchat.ignore:
     description: Permission to /ignore!
     children:
@@ -61,6 +74,10 @@ permissions:
     description: Allows players to use > to make their message green!
   pistonchat.ignorelist:
     description: Permission to /ignorelist!
+  pistonchat.togglewhispering:
+    description: Permission to /togglewhispering!
+  pistonchat.togglechat:
+    description: Permission to /togglechat!
   pistonchat.player:
     description: Default permissions for players!
     children:
@@ -69,4 +86,5 @@ permissions:
       pistonchat.whisper: true
       pistonchat.ignore: true
       pistonchat.greenprefix: true
+      pistonchat.togglechat: true
     default: true

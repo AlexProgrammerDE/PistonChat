@@ -1,11 +1,11 @@
 package me.alexprogrammerde.pistonchat.events;
 
 import me.alexprogrammerde.pistonchat.utils.ConfigTool;
+import me.alexprogrammerde.pistonchat.utils.TempDataTool;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,7 +23,7 @@ public class ChatEvent implements Listener {
             event.setCancelled(true);
 
             for (Player player : Bukkit.getOnlinePlayers()) {
-                if (!ConfigTool.isIgnored(chatter, player)) {
+                if (!ConfigTool.isIgnored(chatter, player) || TempDataTool.isChatEnabled(player)) {
                     ComponentBuilder builder = new ComponentBuilder("<" + chatter.getDisplayName() + ChatColor.RESET + "> ");
 
                     if (player.hasPermission("pistonchat.playernamereply")) {

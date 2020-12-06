@@ -14,7 +14,12 @@ public class CommonTool {
 
     public static void sendWhisperTo(Player sender, String message, Player receiver) {
         if (sender == receiver) {
-            sender.sendMessage("Please don't send a message yourself!");
+            sender.sendMessage("Please do not send a message to yourself!");
+            return;
+        }
+
+        if (!TempDataTool.isWhisperingEnabled(receiver)) {
+            sender.sendMessage("This person has whispering disabled!");
             return;
         }
 

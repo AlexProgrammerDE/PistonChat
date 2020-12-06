@@ -36,6 +36,8 @@ public final class PistonChat extends JavaPlugin {
         PluginCommand reply = server.getPluginCommand("reply");
         PluginCommand last = server.getPluginCommand("last");
         PluginCommand ignorelist = server.getPluginCommand("ignorelist");
+        PluginCommand togglewhispering = server.getPluginCommand("togglewhispering");
+        PluginCommand togglechat = server.getPluginCommand("togglechat");
 
         if (ignore != null) {
             ignore.setExecutor(new IgnoreCommand());
@@ -60,6 +62,16 @@ public final class PistonChat extends JavaPlugin {
         if (ignorelist != null) {
             ignorelist.setExecutor(new IgnoreListCommand());
             ignorelist.setTabCompleter(new IgnoreListCommand());
+        }
+
+        if (togglewhispering != null) {
+            togglewhispering.setExecutor(new ToggleWhisperingCommand());
+            togglewhispering.setTabCompleter(new ToggleWhisperingCommand());
+        }
+
+        if (togglechat != null) {
+            togglechat.setExecutor(new ToggleChatCommand());
+            togglechat.setTabCompleter(new ToggleChatCommand());
         }
 
         log.info(ChatColor.GOLD + "Registering listeners");
