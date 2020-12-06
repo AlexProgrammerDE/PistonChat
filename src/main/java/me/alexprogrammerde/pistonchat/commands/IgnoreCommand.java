@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class IgnoreCommand implements CommandExecutor, TabExecutor {
     @Override
@@ -18,12 +19,12 @@ public class IgnoreCommand implements CommandExecutor, TabExecutor {
             Player player = (Player) sender;
 
             if (args.length > 0) {
-                Player ignored = CommonTool.getPlayer(args[0]);
+                Optional<Player> ignored = CommonTool.getPlayer(args[0]);
 
-                if (ignored == null) {
-                    sender.sendMessage("This player doesn't exist!");
+                if (ignored.isPresent()) {
+                    ConfigTool.ignorePlayer(player, ignored.get());
                 } else {
-                    ConfigTool.ignorePlayer(player, ignored);
+                    sender.sendMessage("This player doesn't exist!");
                 }
             } else {
                 return false;

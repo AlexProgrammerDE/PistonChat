@@ -4,12 +4,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import javax.annotation.Nullable;
 import java.util.Arrays;
+import java.util.Optional;
 
 public class CommonTool {
-    public static @Nullable Player getPlayer(String name) {
-        return Bukkit.getPlayer(name);
+    public static Optional<Player> getPlayer(String name) {
+        return Optional.ofNullable(Bukkit.getPlayer(name));
     }
 
     public static void sendWhisperTo(Player sender, String message, Player receiver) {

@@ -2,6 +2,7 @@ package me.alexprogrammerde.pistonchat.commands;
 
 import me.alexprogrammerde.pistonchat.utils.CacheTool;
 import me.alexprogrammerde.pistonchat.utils.CommonTool;
+import me.alexprogrammerde.pistonchat.utils.ConfigTool;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -20,10 +21,14 @@ public class LastCommand implements CommandExecutor, TabExecutor {
             Optional<Player> lastSentTo = CacheTool.getLastSentTo(player);
 
             if (lastSentTo.isPresent()) {
-                if (args.length > 0) {
-                    CommonTool.sendWhisperTo(player, CommonTool.mergeArgs(args, 0), lastSentTo.get());
+                if (ConfigTool.isIgnored(player, lastSentTo.get())) {
+                    player.sendMessage("This person blocked you!");
                 } else {
-                    return false;
+                    if (args.length > 0) {
+                        CommonTool.sendWhisperTo(player, CommonTool.mergeArgs(args, 0), lastSentTo.get());
+                    } else {
+                        return false;
+                    }
                 }
             } else {
                 player.sendMessage("Player not found/online!");
