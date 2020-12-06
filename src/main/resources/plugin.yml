@@ -4,3 +4,51 @@ main: me.alexprogrammerde.pistonchat.PistonChat
 authors: [ AlexProgrammerDE ]
 description: My own chat plugin!
 website: https://pistonmaster.net/
+
+commands:
+  ignore:
+    description: Ignore a players chat messages!
+    permission: pistonchat.ignore
+    permission-message: You have no permission to do that!
+  whisper:
+    description: Whisper to a player!
+    permission: pistonchat.whisper
+    permission-message: You have no permission to do that!
+    aliases:
+      - tell
+      - w
+      - pm
+      - msg
+  reply:
+    description: Reply to the last message someone sent to you!
+    permission: pistonchat.reply
+    permission-message: You have no permission to do that!
+    aliases:
+      - r
+  last:
+    description: Message the last person you messaged!
+    permission: pistonchat.reply
+    permission-message: You have no permission to do that!
+    aliases:
+      - l
+permissions:
+  pistonchat.last:
+    description: Permission to /last!
+  pistonchat.reply:
+    description: Permission to /reply!
+  pistonchat.whisper:
+    description: Permission to /whisper!
+    children:
+      pistonchat.playernamereply: true
+  pistonchat.ignore:
+    description: Permission to /ignore!
+  pistonchat.playernamereply:
+    description: Make player names clickable!
+  pistonchat.player:
+    description: Default permissions for players!
+    children:
+      pistonchat.last: true
+      pistonchat.reply: true
+      pistonchat.whisper: true
+      pistonchat.ignore: true
+    default: true
