@@ -20,15 +20,19 @@ public class ReplyCommand implements CommandExecutor, TabExecutor {
             Optional<Player> lastMessagedOf = CacheTool.getLastMessagedOf(player);
 
             if (lastMessagedOf.isPresent()) {
-                CommonTool.sendWhisperTo(player, CommonTool.mergeArgs(args, 0), lastMessagedOf.get());
-                return true;
+                if (args.length > 0) {
+                    CommonTool.sendWhisperTo(player, CommonTool.mergeArgs(args, 0), lastMessagedOf.get());
+                } else {
+                    return false;
+                }
             } else {
-                return false;
+                player.sendMessage("Player not found/online!");
             }
         } else {
             sender.sendMessage("You need to be a player to do this!");
-            return false;
         }
+
+        return true;
     }
 
     @Override

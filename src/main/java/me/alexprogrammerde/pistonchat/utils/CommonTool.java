@@ -13,6 +13,11 @@ public class CommonTool {
     }
 
     public static void sendWhisperTo(Player sender, String message, Player receiver) {
+        if (sender == receiver) {
+            sender.sendMessage("Please don't send a message yourself!");
+            return;
+        }
+
         receiver.sendMessage(ChatColor.LIGHT_PURPLE + ChatColor.stripColor(sender.getDisplayName()) + " whispers: " + message);
 
         sender.sendMessage(ChatColor.LIGHT_PURPLE + "You whisper to " + ChatColor.stripColor(receiver.getDisplayName()) + ": " + message);

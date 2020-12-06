@@ -22,18 +22,17 @@ public class IgnoreCommand implements CommandExecutor, TabExecutor {
 
                 if (ignored == null) {
                     sender.sendMessage("This player doesn't exist!");
-                    return false;
                 } else {
                     ConfigTool.ignorePlayer(player, ignored);
-                    return true;
                 }
             } else {
                 return false;
             }
         } else {
             sender.sendMessage("You need to be a player to do that!");
-            return false;
         }
+
+        return true;
     }
 
     @Override

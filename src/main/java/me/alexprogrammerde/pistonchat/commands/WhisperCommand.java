@@ -21,18 +21,21 @@ public class WhisperCommand implements CommandExecutor, TabExecutor {
 
                 if (receiver == null) {
                     sender.sendMessage("This player doesn't exist!");
-                    return false;
                 } else {
-                    CommonTool.sendWhisperTo(player, CommonTool.mergeArgs(args, 1), receiver);
-                    return true;
+                    if (args.length > 1) {
+                        CommonTool.sendWhisperTo(player, CommonTool.mergeArgs(args, 0), receiver);
+                    } else {
+                        return false;
+                    }
                 }
             } else {
                 return false;
             }
         } else {
             sender.sendMessage("You need to be a player to do this!");
-            return false;
         }
+
+        return true;
     }
 
     @Override

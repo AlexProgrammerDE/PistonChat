@@ -20,15 +20,19 @@ public class LastCommand implements CommandExecutor, TabExecutor {
             Optional<Player> lastSentTo = CacheTool.getLastSentTo(player);
 
             if (lastSentTo.isPresent()) {
-                CommonTool.sendWhisperTo(player, CommonTool.mergeArgs(args, 0), lastSentTo.get());
-                return true;
+                if (args.length > 0) {
+                    CommonTool.sendWhisperTo(player, CommonTool.mergeArgs(args, 0), lastSentTo.get());
+                } else {
+                    return false;
+                }
             } else {
-                return false;
+                player.sendMessage("Player not found/online!");
             }
         } else {
             sender.sendMessage("You need to be a player to do this!");
-            return false;
         }
+
+        return true;
     }
 
     @Override
