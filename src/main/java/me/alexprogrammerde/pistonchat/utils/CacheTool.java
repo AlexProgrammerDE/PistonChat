@@ -1,20 +1,22 @@
 package me.alexprogrammerde.pistonchat.utils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.UUID;
 
 public class CacheTool {
-    private static final HashMap<Player, PlayerData> map = new HashMap<>();
+    private static final HashMap<UUID, PlayerData> map = new HashMap<>();
 
     public static void sendMessage(Player sender, Player receiver) {
         indexPlayer(sender);
         indexPlayer(receiver);
 
-        map.get(sender).sentTo = receiver;
-        map.get(receiver).messagedOf = sender;
+        map.get(sender.getUniqueId()).sentTo = receiver.getUniqueId();
+        map.get(receiver.getUniqueId()).messagedOf = sender.getUniqueId();
     }
 
     /**
@@ -25,7 +27,7 @@ public class CacheTool {
     public static Optional<Player> getLastSentTo(Player player) {
         indexPlayer(player);
 
-        return Optional.ofNullable(map.get(player).sentTo);
+        return Optional.ofNullable(Bukkit.getPlayer(map.get(player.getUniqueId()).sentTo));
     }
 
     /**
@@ -36,17 +38,17 @@ public class CacheTool {
     public static Optional<Player> getLastMessagedOf(Player player) {
         indexPlayer(player);
 
-        return Optional.ofNullable(map.get(player).messagedOf);
+        return Optional.ofNullable(Bukkit.getPlayer(map.get(player.getUniqueId()).messagedOf));
     }
 
     private static void indexPlayer(Player player) {
-        if (!map.containsKey(player)) {
-            map.put(player, new PlayerData());
+        if (!map.containsKey(player.getUniqueId())) {
+            map.put(player.getUniqueId(), new PlayerData());
         }
     }
 
     private static class PlayerData {
-        public @Nullable Player sentTo = null;
-        public @Nullable Player messagedOf = null;
+        public @Nullable UUID sentTo = null;
+        public @Nullable UUID messagedOf = null;
     }
 }
