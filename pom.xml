@@ -11,7 +11,7 @@
 
     <name>PistonChat</name>
 
-    <description>My own chat plugin!</description>
+    <description>All you will ever need for your chat!</description>
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

@@ -2,7 +2,7 @@ name: PistonChat
 version: ${project.version}
 main: me.alexprogrammerde.pistonchat.PistonChat
 authors: [ AlexProgrammerDE ]
-description: My own chat plugin!
+description: All you will ever need for your chat!
 website: https://pistonmaster.net/
 
 commands:
