@@ -1,8 +1,8 @@
 package me.alexprogrammerde.pistonchat.utils;
 
-import com.sun.istack.internal.Nullable;
 import org.bukkit.entity.Player;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Optional;
 

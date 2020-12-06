@@ -1,6 +1,5 @@
 package me.alexprogrammerde.pistonchat.commands;
 
-import me.alexprogrammerde.pistonchat.utils.CacheTool;
 import me.alexprogrammerde.pistonchat.utils.CommonTool;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -10,18 +9,23 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class WhisperCommand implements CommandExecutor, TabExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            Optional<Player> lastMessagedOf = CacheTool.getLastMessagedOf(player);
 
-            if (lastMessagedOf.isPresent()) {
-                CommonTool.sendWhisperTo(player, CommonTool.mergeArgs(args, 1), lastMessagedOf.get());
-                return true;
+            if (args.length > 0) {
+                Player receiver = CommonTool.getPlayer(args[0]);
+
+                if (receiver == null) {
+                    sender.sendMessage("This player doesn't exist!");
+                    return false;
+                } else {
+                    CommonTool.sendWhisperTo(player, CommonTool.mergeArgs(args, 1), receiver);
+                    return true;
+                }
             } else {
                 return false;
             }
@@ -30,8 +34,6 @@ public class WhisperCommand implements CommandExecutor, TabExecutor {
             return false;
         }
     }
-
-
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {

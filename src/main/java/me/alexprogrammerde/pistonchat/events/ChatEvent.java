@@ -24,13 +24,17 @@ public class ChatEvent implements Listener {
 
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (!ConfigTool.isIgnored(chatter, player)) {
-                    ComponentBuilder builder = new ComponentBuilder("");
-
-                    builder.append(event.getFormat());
+                    ComponentBuilder builder = new ComponentBuilder("<" + chatter.getDisplayName() + ChatColor.RESET + "> ");
 
                     if (player.hasPermission("pistonchat.playernamereply")) {
-                        builder.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + ChatColor.stripColor(chatter.getDisplayName())));
-                        builder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Message " + ChatColor.stripColor(chatter.getDisplayName()))));
+                        builder.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + ChatColor.stripColor(chatter.getDisplayName()) + " "));
+                        builder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                new ComponentBuilder("Message ")
+                                .color(ChatColor.DARK_AQUA)
+                                .append(ChatColor.stripColor(chatter.getDisplayName()))
+                                .color(ChatColor.GOLD)
+                                .create()
+                        ));
                     }
 
                     builder.append(event.getMessage());
