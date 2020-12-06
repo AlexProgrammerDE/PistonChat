@@ -24,6 +24,8 @@ public class WhisperCommand implements CommandExecutor, TabExecutor {
                 if (receiver.isPresent()) {
                     if (ConfigTool.isIgnored(player, receiver.get())) {
                         player.sendMessage("This person blocked you!");
+                    } else if (ConfigTool.isIgnored(receiver.get(), player)) {
+                        player.sendMessage("You block this person!");
                     } else {
                         if (args.length > 1) {
                             CommonTool.sendWhisperTo(player, CommonTool.mergeArgs(args, 0), receiver.get());

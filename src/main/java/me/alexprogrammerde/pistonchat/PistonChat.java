@@ -5,6 +5,7 @@ import me.alexprogrammerde.pistonchat.commands.LastCommand;
 import me.alexprogrammerde.pistonchat.commands.ReplyCommand;
 import me.alexprogrammerde.pistonchat.commands.WhisperCommand;
 import me.alexprogrammerde.pistonchat.events.ChatEvent;
+import me.alexprogrammerde.pistonchat.utils.ConfigTool;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.command.PluginCommand;
@@ -30,6 +31,7 @@ public final class PistonChat extends JavaPlugin {
         saveDefaultConfig();
         getConfig().options().copyDefaults(true);
         saveConfig();
+        new ConfigTool().setupTool(this);
 
         log.info(ChatColor.GOLD + "Registering commands");
         PluginCommand ignore = server.getPluginCommand("ignore");

@@ -23,6 +23,8 @@ public class LastCommand implements CommandExecutor, TabExecutor {
             if (lastSentTo.isPresent()) {
                 if (ConfigTool.isIgnored(player, lastSentTo.get())) {
                     player.sendMessage("This person blocked you!");
+                } else if (ConfigTool.isIgnored(lastSentTo.get(), player)) {
+                    player.sendMessage("You block this person!");
                 } else {
                     if (args.length > 0) {
                         CommonTool.sendWhisperTo(player, CommonTool.mergeArgs(args, 0), lastSentTo.get());

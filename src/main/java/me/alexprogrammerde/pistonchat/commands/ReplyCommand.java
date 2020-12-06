@@ -23,6 +23,8 @@ public class ReplyCommand implements CommandExecutor, TabExecutor {
             if (lastMessagedOf.isPresent()) {
                 if (ConfigTool.isIgnored(player, lastMessagedOf.get())) {
                     player.sendMessage("This person blocked you!");
+                } else if (ConfigTool.isIgnored(lastMessagedOf.get(), player)) {
+                    player.sendMessage("You block this person!");
                 } else {
                     if (args.length > 0) {
                         CommonTool.sendWhisperTo(player, CommonTool.mergeArgs(args, 0), lastMessagedOf.get());

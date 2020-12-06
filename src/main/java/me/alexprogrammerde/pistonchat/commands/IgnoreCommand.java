@@ -2,6 +2,7 @@ package me.alexprogrammerde.pistonchat.commands;
 
 import me.alexprogrammerde.pistonchat.utils.CommonTool;
 import me.alexprogrammerde.pistonchat.utils.ConfigTool;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -22,9 +23,15 @@ public class IgnoreCommand implements CommandExecutor, TabExecutor {
                 Optional<Player> ignored = CommonTool.getPlayer(args[0]);
 
                 if (ignored.isPresent()) {
-                    ConfigTool.ignorePlayer(player, ignored.get());
+                    ConfigTool.IgnoreType type = ConfigTool.ignorePlayer(player, ignored.get());
+
+                    if (type == ConfigTool.IgnoreType.IGNORE) {
+                        player.sendMessage("You ignore " + ChatColor.stripColor(ignored.get().getDisplayName()) + " now!");
+                    } else if (type == ConfigTool.IgnoreType.UNIGNORE) {
+                        player.sendMessage("You unignored " + ChatColor.stripColor(ignored.get().getDisplayName()) + "!");
+                    }
                 } else {
-                    sender.sendMessage("This player doesn't exist!");
+                    player.sendMessage("This player doesn't exist!");
                 }
             } else {
                 return false;

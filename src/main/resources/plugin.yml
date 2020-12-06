@@ -11,6 +11,8 @@ commands:
     permission: pistonchat.ignore
     permission-message: You have no permission to do that!
     usage: "Usage: /<command> [player]"
+    aliases:
+      - block
   whisper:
     description: Whisper to a player!
     permission: pistonchat.whisper
