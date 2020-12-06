@@ -1,9 +1,6 @@
 package me.alexprogrammerde.pistonchat;
 
-import me.alexprogrammerde.pistonchat.commands.IgnoreCommand;
-import me.alexprogrammerde.pistonchat.commands.LastCommand;
-import me.alexprogrammerde.pistonchat.commands.ReplyCommand;
-import me.alexprogrammerde.pistonchat.commands.WhisperCommand;
+import me.alexprogrammerde.pistonchat.commands.*;
 import me.alexprogrammerde.pistonchat.events.ChatEvent;
 import me.alexprogrammerde.pistonchat.utils.ConfigTool;
 import org.bukkit.ChatColor;
@@ -38,6 +35,7 @@ public final class PistonChat extends JavaPlugin {
         PluginCommand whisper = server.getPluginCommand("whisper");
         PluginCommand reply = server.getPluginCommand("reply");
         PluginCommand last = server.getPluginCommand("last");
+        PluginCommand ignorelist = server.getPluginCommand("ignorelist");
 
         if (ignore != null) {
             ignore.setExecutor(new IgnoreCommand());
@@ -57,6 +55,11 @@ public final class PistonChat extends JavaPlugin {
         if (last != null) {
             last.setExecutor(new LastCommand());
             last.setTabCompleter(new LastCommand());
+        }
+
+        if (ignorelist != null) {
+            ignorelist.setExecutor(new IgnoreListCommand());
+            ignorelist.setTabCompleter(new IgnoreListCommand());
         }
 
         log.info(ChatColor.GOLD + "Registering listeners");

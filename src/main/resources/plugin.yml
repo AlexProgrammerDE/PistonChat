@@ -37,6 +37,11 @@ commands:
     usage: "Usage: /<command> [message]"
     aliases:
       - l
+  ignorelist:
+    description: List all ignored players!
+    permission: pistonchat.ignorelist
+    permission-message: You have no permission to do that!
+    usage: "Usage: /<command>"
 permissions:
   pistonchat.last:
     description: Permission to /last!
@@ -48,10 +53,14 @@ permissions:
       pistonchat.playernamereply: true
   pistonchat.ignore:
     description: Permission to /ignore!
+    children:
+      pistonchat.ignorelist: true
   pistonchat.playernamereply:
     description: Make player names clickable!
   pistonchat.greenprefix:
     description: Allows players to use > to make their message green!
+  pistonchat.ignorelist:
+    description: Permission to /ignorelist!
   pistonchat.player:
     description: Default permissions for players!
     children:

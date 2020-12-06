@@ -1,13 +1,16 @@
 package me.alexprogrammerde.pistonchat.utils;
 
 import me.alexprogrammerde.pistonchat.PistonChat;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ConfigTool {
     public static PistonChat plugin;
@@ -38,6 +41,18 @@ public class ConfigTool {
 
     public static boolean isIgnored(Player chatter, Player receiver) {
         return dataConfig.getStringList(receiver.getUniqueId().toString()).contains(chatter.getUniqueId().toString());
+    }
+
+    public static List<String> getIgnoredPlayers(Player player) {
+        List<String> listUUID = dataConfig.getStringList(player.getUniqueId().toString());
+
+        List<String> returnedNames = new ArrayList<>();
+
+        for (String str : listUUID) {
+            returnedNames.add(Bukkit.getOfflinePlayer(UUID.fromString(str)).getName());
+        }
+
+        return returnedNames;
     }
 
     private static void loadData() {
