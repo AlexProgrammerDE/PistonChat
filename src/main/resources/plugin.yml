@@ -44,6 +44,8 @@ permissions:
     description: Permission to /ignore!
   pistonchat.playernamereply:
     description: Make player names clickable!
+  pistonchat.greenprefix:
+    description: Allows players to use > to make their message green!
   pistonchat.player:
     description: Default permissions for players!
     children:
@@ -51,4 +53,5 @@ permissions:
       pistonchat.reply: true
       pistonchat.whisper: true
       pistonchat.ignore: true
+      pistonchat.greenprefix: true
     default: true

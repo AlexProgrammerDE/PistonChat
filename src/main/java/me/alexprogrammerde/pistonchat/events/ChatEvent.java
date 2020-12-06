@@ -28,14 +28,14 @@ public class ChatEvent implements Listener {
 
                     builder.append(event.getFormat());
 
-                    // TODO: Config entry
-                    builder.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + ChatColor.stripColor(chatter.getDisplayName())));
-                    builder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Message " + ChatColor.stripColor(chatter.getDisplayName()))));
+                    if (player.hasPermission("pistonchat.playernamereply")) {
+                        builder.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + ChatColor.stripColor(chatter.getDisplayName())));
+                        builder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("Message " + ChatColor.stripColor(chatter.getDisplayName()))));
+                    }
 
                     builder.append(event.getMessage());
 
-                    // TODO: Config entry
-                    if (event.getMessage().startsWith(">")) {
+                    if (player.hasPermission("pistonchat.greenprefix") && event.getMessage().startsWith(">")) {
                         builder.color(ChatColor.GREEN);
                     }
 
