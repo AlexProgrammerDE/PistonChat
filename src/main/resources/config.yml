@@ -1,1 +1,4 @@
 prefix: "[&2PistonChat&r] "
+whisper:
+  from: "&d%player% whispers: %message%"
+  to: "&dYou whisper to %player%: %message%"

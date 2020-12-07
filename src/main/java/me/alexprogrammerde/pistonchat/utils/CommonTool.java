@@ -14,18 +14,18 @@ public class CommonTool {
 
     public static void sendWhisperTo(Player sender, String message, Player receiver) {
         if (sender == receiver) {
-            sender.sendMessage("Please do not send a message to yourself!");
+            sender.sendMessage(CommonTool.getPrefix() + "Please do not send a message to yourself!");
             return;
         }
 
         if (!TempDataTool.isWhisperingEnabled(receiver)) {
-            sender.sendMessage("This person has whispering disabled!");
+            sender.sendMessage(CommonTool.getPrefix() + "This person has whispering disabled!");
             return;
         }
 
-        receiver.sendMessage(ChatColor.LIGHT_PURPLE + ChatColor.stripColor(sender.getDisplayName()) + " whispers: " + message);
+        receiver.sendMessage(ChatColor.translateAlternateColorCodes('&', ConfigTool.getPluginConfig().getString("whisper.from").replaceAll("%player%", ChatColor.stripColor(sender.getDisplayName())).replaceAll("%message%", message)));
 
-        sender.sendMessage(ChatColor.LIGHT_PURPLE + "You whisper to " + ChatColor.stripColor(receiver.getDisplayName()) + ": " + message);
+        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', ConfigTool.getPluginConfig().getString("whisper.to").replaceAll("%player%", ChatColor.stripColor(sender.getDisplayName())).replaceAll("%message%", message)));
 
         CacheTool.sendMessage(sender, receiver);
     }
