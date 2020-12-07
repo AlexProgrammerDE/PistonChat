@@ -23,7 +23,7 @@ public class ChatEvent implements Listener {
             event.setCancelled(true);
 
             for (Player player : Bukkit.getOnlinePlayers()) {
-                if (!ConfigTool.isIgnored(chatter, player) || TempDataTool.isChatEnabled(player)) {
+                if (!ConfigTool.isIgnored(chatter, player) && TempDataTool.isChatEnabled(player)) {
                     ComponentBuilder builder = new ComponentBuilder("<" + chatter.getDisplayName() + ChatColor.RESET + "> ");
 
                     if (player.hasPermission("pistonchat.playernamereply")) {

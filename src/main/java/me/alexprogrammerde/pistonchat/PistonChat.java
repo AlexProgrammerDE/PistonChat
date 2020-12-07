@@ -17,20 +17,20 @@ public final class PistonChat extends JavaPlugin {
         Logger log = getLogger();
         Server server = getServer();
 
-        log.info(ChatColor.GOLD + "  _____  _       _                  _____  _             _   ");
-        log.info(ChatColor.GOLD + " |  __ \\(_)     | |                / ____|| |           | |  ");
-        log.info(ChatColor.GOLD + " | |__) |_  ___ | |_  ___   _ __  | |     | |__    __ _ | |_ ");
-        log.info(ChatColor.GOLD + " |  ___/| |/ __|| __|/ _ \\ | '_ \\ | |     | '_ \\  / _` || __|");
-        log.info(ChatColor.GOLD + " | |    | |\\__ \\| |_| (_) || | | || |____ | | | || (_| || |_ ");
-        log.info(ChatColor.GOLD + " |_|    |_||___/ \\__|\\___/ |_| |_| \\_____||_| |_| \\__,_| \\__|");
+        log.info(ChatColor.DARK_GREEN + "  _____  _       _                  _____  _             _   ");
+        log.info(ChatColor.DARK_GREEN + " |  __ \\(_)     | |                / ____|| |           | |  ");
+        log.info(ChatColor.DARK_GREEN + " | |__) |_  ___ | |_  ___   _ __  | |     | |__    __ _ | |_ ");
+        log.info(ChatColor.DARK_GREEN + " |  ___/| |/ __|| __|/ _ \\ | '_ \\ | |     | '_ \\  / _` || __|");
+        log.info(ChatColor.DARK_GREEN + " | |    | |\\__ \\| |_| (_) || | | || |____ | | | || (_| || |_ ");
+        log.info(ChatColor.DARK_GREEN + " |_|    |_||___/ \\__|\\___/ |_| |_| \\_____||_| |_| \\__,_| \\__|");
 
-        log.info(ChatColor.GOLD + "Loading config");
+        log.info(ChatColor.DARK_GREEN + "Loading config");
         saveDefaultConfig();
         getConfig().options().copyDefaults(true);
         saveConfig();
         new ConfigTool().setupTool(this);
 
-        log.info(ChatColor.GOLD + "Registering commands");
+        log.info(ChatColor.DARK_GREEN + "Registering commands");
         PluginCommand ignore = server.getPluginCommand("ignore");
         PluginCommand whisper = server.getPluginCommand("whisper");
         PluginCommand reply = server.getPluginCommand("reply");
@@ -74,8 +74,10 @@ public final class PistonChat extends JavaPlugin {
             togglechat.setTabCompleter(new ToggleChatCommand());
         }
 
-        log.info(ChatColor.GOLD + "Registering listeners");
+        log.info(ChatColor.DARK_GREEN + "Registering listeners");
         server.getPluginManager().registerEvents(new ChatEvent(), this);
+
+        log.info(ChatColor.DARK_GREEN + "Done! :D");
     }
 
     @Override

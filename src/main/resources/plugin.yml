@@ -54,18 +54,23 @@ commands:
     permission: pistonchat.togglechat
     permission-message: You have no permission to do that!
     usage: "§4Usage: /<command>"
+  pistonchat:
+    description: Main command!
+    permission: pistonchat.command
+    permission-message: You have no permission to do that!
+    usage: "§4Usage: /<command> [help|reload]"
 permissions:
   pistonchat.last:
-    description: Permission to /last!
+    description: Permission for /last!
   pistonchat.reply:
-    description: Permission to /reply!
+    description: Permission for /reply!
   pistonchat.whisper:
-    description: Permission to /whisper!
+    description: Permission for /whisper!
     children:
       pistonchat.playernamereply: true
       pistonchat.togglewhispering: true
   pistonchat.ignore:
-    description: Permission to /ignore!
+    description: Permission for /ignore!
     children:
       pistonchat.ignorelist: true
   pistonchat.playernamereply:
@@ -73,11 +78,21 @@ permissions:
   pistonchat.greenprefix:
     description: Allows players to use > to make their message green!
   pistonchat.ignorelist:
-    description: Permission to /ignorelist!
+    description: Permission for /ignorelist!
   pistonchat.togglewhispering:
-    description: Permission to /togglewhispering!
+    description: Permission for /togglewhispering!
   pistonchat.togglechat:
-    description: Permission to /togglechat!
+    description: Permission for /togglechat!
+  pistonchat.command:
+    description: Permission for /pistonchat!
+  pistonchat.help:
+    description: Permission for /pistonchat help!
+    children:
+      pistonchat.command: true
+  pistonchat.reload:
+    description: Permission for /pistonchat reload!
+    children:
+      pistonchat.command: true
   pistonchat.player:
     description: Default permissions for players!
     children:
@@ -87,4 +102,9 @@ permissions:
       pistonchat.ignore: true
       pistonchat.greenprefix: true
       pistonchat.togglechat: true
+      pistonchat.help: true
     default: true
+  pistonchat.admin:
+    children:
+      pistonchat.reload: true
+    default: op

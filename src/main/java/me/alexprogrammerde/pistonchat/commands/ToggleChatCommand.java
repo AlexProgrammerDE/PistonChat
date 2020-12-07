@@ -1,5 +1,6 @@
 package me.alexprogrammerde.pistonchat.commands;
 
+import me.alexprogrammerde.pistonchat.utils.CommonTool;
 import me.alexprogrammerde.pistonchat.utils.ConfigTool;
 import me.alexprogrammerde.pistonchat.utils.TempDataTool;
 import org.bukkit.command.Command;
@@ -20,12 +21,12 @@ public class ToggleChatCommand implements CommandExecutor, TabExecutor {
             TempDataTool.setChatEnabled(player, !TempDataTool.isChatEnabled(player));
 
             if (TempDataTool.isChatEnabled(player)) {
-                player.sendMessage("Enabled chat messages!");
+                player.sendMessage(CommonTool.getPrefix() + "Enabled chat messages!");
             } else {
-                player.sendMessage("Disabled chat messages! (Will be reset on rejoin!)");
+                player.sendMessage(CommonTool.getPrefix() + "Disabled chat messages! (Will be reset on rejoin!)");
             }
         } else {
-            sender.sendMessage("You need to be a player to do that!");
+            sender.sendMessage(CommonTool.getPrefix() + "You need to be a player to do that!");
         }
 
         return true;

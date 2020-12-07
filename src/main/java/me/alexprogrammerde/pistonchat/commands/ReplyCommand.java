@@ -22,9 +22,9 @@ public class ReplyCommand implements CommandExecutor, TabExecutor {
 
             if (lastMessagedOf.isPresent()) {
                 if (ConfigTool.isIgnored(player, lastMessagedOf.get())) {
-                    player.sendMessage("This person blocked you!");
+                    player.sendMessage(CommonTool.getPrefix() + "This person blocked you!");
                 } else if (ConfigTool.isIgnored(lastMessagedOf.get(), player)) {
-                    player.sendMessage("You block this person!");
+                    player.sendMessage(CommonTool.getPrefix() + "You block this person!");
                 } else {
                     if (args.length > 0) {
                         CommonTool.sendWhisperTo(player, CommonTool.mergeArgs(args, 0), lastMessagedOf.get());
@@ -33,10 +33,10 @@ public class ReplyCommand implements CommandExecutor, TabExecutor {
                     }
                 }
             } else {
-                player.sendMessage("Player not found/online!");
+                player.sendMessage(CommonTool.getPrefix() + "Player not found/online!");
             }
         } else {
-            sender.sendMessage("You need to be a player to do this!");
+            sender.sendMessage(CommonTool.getPrefix() + "You need to be a player to do this!");
         }
 
         return true;

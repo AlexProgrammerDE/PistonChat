@@ -95,4 +95,8 @@ public class ConfigTool {
     public enum IgnoreType {
         IGNORE, UNIGNORE
     }
+
+    public static FileConfiguration getPluginConfig() {
+        return plugin.getConfig();
+    }
 }

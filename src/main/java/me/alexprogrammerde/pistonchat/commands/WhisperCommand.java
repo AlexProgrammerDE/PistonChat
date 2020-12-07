@@ -23,9 +23,9 @@ public class WhisperCommand implements CommandExecutor, TabExecutor {
 
                 if (receiver.isPresent()) {
                     if (ConfigTool.isIgnored(player, receiver.get())) {
-                        player.sendMessage("This person blocked you!");
+                        player.sendMessage(CommonTool.getPrefix() + "This person blocked you!");
                     } else if (ConfigTool.isIgnored(receiver.get(), player)) {
-                        player.sendMessage("You block this person!");
+                        player.sendMessage(CommonTool.getPrefix() + "You block this person!");
                     } else {
                         if (args.length > 1) {
                             CommonTool.sendWhisperTo(player, CommonTool.mergeArgs(args, 1), receiver.get());
@@ -34,13 +34,13 @@ public class WhisperCommand implements CommandExecutor, TabExecutor {
                         }
                     }
                 } else {
-                    sender.sendMessage("This player doesn't exist!");
+                    sender.sendMessage(CommonTool.getPrefix() + "This player doesn't exist!");
                 }
             } else {
                 return false;
             }
         } else {
-            sender.sendMessage("You need to be a player to do this!");
+            sender.sendMessage(CommonTool.getPrefix() + "You need to be a player to do this!");
         }
 
         return true;

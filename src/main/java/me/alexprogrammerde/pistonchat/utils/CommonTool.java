@@ -33,4 +33,8 @@ public class CommonTool {
     public static String mergeArgs(String[] args, int start) {
         return String.join(" ", Arrays.copyOfRange(args, start, args.length));
     }
+
+    public static String getPrefix() {
+        return ChatColor.translateAlternateColorCodes('&', ConfigTool.getPluginConfig().getString("prefix"));
+    }
 }

@@ -26,18 +26,18 @@ public class IgnoreCommand implements CommandExecutor, TabExecutor {
                     ConfigTool.IgnoreType type = ConfigTool.ignorePlayer(player, ignored.get());
 
                     if (type == ConfigTool.IgnoreType.IGNORE) {
-                        player.sendMessage("You ignore " + ChatColor.stripColor(ignored.get().getDisplayName()) + " now!");
+                        player.sendMessage(CommonTool.getPrefix() + "You ignore " + ChatColor.stripColor(ignored.get().getDisplayName()) + " now!");
                     } else if (type == ConfigTool.IgnoreType.UNIGNORE) {
-                        player.sendMessage("You unignored " + ChatColor.stripColor(ignored.get().getDisplayName()) + "!");
+                        player.sendMessage(CommonTool.getPrefix() + "You unignored " + ChatColor.stripColor(ignored.get().getDisplayName()) + "!");
                     }
                 } else {
-                    player.sendMessage("This player doesn't exist!");
+                    player.sendMessage(CommonTool.getPrefix() + "This player doesn't exist!");
                 }
             } else {
                 return false;
             }
         } else {
-            sender.sendMessage("You need to be a player to do that!");
+            sender.sendMessage(CommonTool.getPrefix() + "You need to be a player to do that!");
         }
 
         return true;

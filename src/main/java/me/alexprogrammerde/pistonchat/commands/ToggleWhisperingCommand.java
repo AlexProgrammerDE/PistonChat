@@ -1,5 +1,6 @@
 package me.alexprogrammerde.pistonchat.commands;
 
+import me.alexprogrammerde.pistonchat.utils.CommonTool;
 import me.alexprogrammerde.pistonchat.utils.ConfigTool;
 import me.alexprogrammerde.pistonchat.utils.TempDataTool;
 import org.bukkit.command.Command;
@@ -20,12 +21,12 @@ public class ToggleWhisperingCommand implements CommandExecutor, TabExecutor {
             TempDataTool.setWhisperingEnabled(player, !TempDataTool.isWhisperingEnabled(player));
 
             if (TempDataTool.isWhisperingEnabled(player)) {
-                player.sendMessage("Enabled whispering!");
+                player.sendMessage(CommonTool.getPrefix() + "Enabled whispering!");
             } else {
-                player.sendMessage("Disabled whispering! (Will be reset on rejoin!)");
+                player.sendMessage(CommonTool.getPrefix() + "Disabled whispering! (Will be reset on rejoin!)");
             }
         } else {
-            sender.sendMessage("You need to be a player to do that!");
+            sender.sendMessage(CommonTool.getPrefix() + "You need to be a player to do that!");
         }
 
         return true;
