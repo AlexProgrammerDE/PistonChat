@@ -11,18 +11,18 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.logging.Logger;
 
 public final class PistonChat extends JavaPlugin {
-
     @Override
     public void onEnable() {
         Logger log = getLogger();
         Server server = getServer();
 
-        log.info(ChatColor.DARK_GREEN + "  _____  _       _                  _____  _             _   ");
-        log.info(ChatColor.DARK_GREEN + " |  __ \\(_)     | |                / ____|| |           | |  ");
-        log.info(ChatColor.DARK_GREEN + " | |__) |_  ___ | |_  ___   _ __  | |     | |__    __ _ | |_ ");
-        log.info(ChatColor.DARK_GREEN + " |  ___/| |/ __|| __|/ _ \\ | '_ \\ | |     | '_ \\  / _` || __|");
-        log.info(ChatColor.DARK_GREEN + " | |    | |\\__ \\| |_| (_) || | | || |____ | | | || (_| || |_ ");
-        log.info(ChatColor.DARK_GREEN + " |_|    |_||___/ \\__|\\___/ |_| |_| \\_____||_| |_| \\__,_| \\__|");
+        log.info("  _____  _       _                  _____  _             _   ");
+        log.info(" |  __ \\(_)     | |                / ____|| |           | |  ");
+        log.info(" | |__) |_  ___ | |_  ___   _ __  | |     | |__    __ _ | |_ ");
+        log.info(" |  ___/| |/ __|| __|/ _ \\ | '_ \\ | |     | '_ \\  / _` || __|");
+        log.info(" | |    | |\\__ \\| |_| (_) || | | || |____ | | | || (_| || |_ ");
+        log.info(" |_|    |_||___/ \\__|\\___/ |_| |_| \\_____||_| |_| \\__,_| \\__|");
+        log.info("                                                             ");
 
         log.info(ChatColor.DARK_GREEN + "Loading config");
         saveDefaultConfig();
@@ -84,10 +84,5 @@ public final class PistonChat extends JavaPlugin {
         server.getPluginManager().registerEvents(new ChatEvent(), this);
 
         log.info(ChatColor.DARK_GREEN + "Done! :D");
-    }
-
-    @Override
-    public void onDisable() {
-
     }
 }

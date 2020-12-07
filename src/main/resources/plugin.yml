@@ -10,14 +10,14 @@ commands:
     description: Ignore a players chat messages!
     permission: pistonchat.ignore
     permission-message: You have no permission to do that!
-    usage: "§4Usage: /<command> [player]"
+    usage: "§4Usage: /<command> <player>"
     aliases:
       - block
   whisper:
     description: Whisper to a player!
     permission: pistonchat.whisper
     permission-message: You have no permission to do that!
-    usage: "§4Usage: /<command> [player] [message]"
+    usage: "§4Usage: /<command> <player> <message>"
     aliases:
       - tell
       - w
@@ -27,14 +27,14 @@ commands:
     description: Reply to the last message someone sent to you!
     permission: pistonchat.reply
     permission-message: You have no permission to do that!
-    usage: "§4Usage: /<command> [message]"
+    usage: "§4Usage: /<command> <message>"
     aliases:
       - r
   last:
     description: Message the last person you messaged!
     permission: pistonchat.reply
     permission-message: You have no permission to do that!
-    usage: "§4Usage: /<command> [message]"
+    usage: "§4Usage: /<command> <message>"
     aliases:
       - l
   ignorelist:
@@ -58,7 +58,7 @@ commands:
     description: Main command!
     permission: pistonchat.command
     permission-message: You have no permission to do that!
-    usage: "§4Usage: /<command> [help|reload]"
+    usage: "§4Usage: /<command> <help|reload>"
 permissions:
   pistonchat.last:
     description: Permission for /last!
