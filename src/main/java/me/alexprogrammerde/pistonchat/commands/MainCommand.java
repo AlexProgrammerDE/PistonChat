@@ -1,6 +1,7 @@
 package me.alexprogrammerde.pistonchat.commands;
 
 import me.alexprogrammerde.pistonchat.PistonChat;
+import me.alexprogrammerde.pistonchat.utils.CommonTool;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -16,6 +17,7 @@ import java.util.List;
 
 public class MainCommand implements CommandExecutor, TabExecutor {
     private final PistonChat plugin;
+
     public MainCommand(PistonChat plugin) {
         this.plugin = plugin;
     }
@@ -26,23 +28,22 @@ public class MainCommand implements CommandExecutor, TabExecutor {
             switch (args[0].toLowerCase()) {
                 case "help":
                     if (sender.hasPermission("pistonchat.help")) {
-                        ComponentBuilder builder = new ComponentBuilder("---[PistonChat]---").color(ChatColor.GOLD);
+                        ComponentBuilder builder = new ComponentBuilder("---" + CommonTool.getPrefix() + "---").color(ChatColor.GOLD);
 
-                        plugin.getDescription().getCommands().forEach((name, info) -> {
-                            builder.append("\n/" + name)
-                                    .color(ChatColor.GOLD)
-                                    .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/" + name))
-                                    .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                            new ComponentBuilder("Click me!")
-                                                    .color(ChatColor.GOLD)
-                                                    .create()
-                                    ))
-                                    .append(" - ")
-                                    .color(ChatColor.GOLD)
-                                    .append(info.get("description").toString());
-                        });
+                        plugin.getDescription().getCommands().forEach((name, info) ->
+                                builder.append("\n/" + name)
+                                .color(ChatColor.GOLD)
+                                .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/" + name + " "))
+                                .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                        new ComponentBuilder("Click me!")
+                                                .color(ChatColor.GOLD)
+                                                .create()
+                                ))
+                                .append(" - ")
+                                .color(ChatColor.GOLD)
+                                .append(info.get("description").toString()));
 
-                        sender.spigot().sendMessage();
+                        sender.spigot().sendMessage(builder.create());
                     } else {
                         sender.sendMessage(command.getPermissionMessage());
                     }
@@ -57,6 +58,8 @@ public class MainCommand implements CommandExecutor, TabExecutor {
                     }
 
                     break;
+                default:
+                    return false;
             }
         } else {
             return false;
