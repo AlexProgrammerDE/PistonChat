@@ -6,6 +6,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,7 +25,7 @@ public class ChatEvent implements Listener {
 
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (!ConfigTool.isIgnored(chatter, player) && TempDataTool.isChatEnabled(player)) {
-                    ComponentBuilder builder = new ComponentBuilder("<" + chatter.getDisplayName() + ChatColor.RESET + "> ");
+                    ComponentBuilder builder = new ComponentBuilder("<" + chatter.getDisplayName() + ChatColor.RESET + ">");
 
                     if (player.hasPermission("pistonchat.playernamereply")) {
                         builder.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + ChatColor.stripColor(chatter.getDisplayName()) + " "));
@@ -37,7 +38,9 @@ public class ChatEvent implements Listener {
                         ));
                     }
 
-                    builder.append(event.getMessage());
+                    builder.append(" ").reset();
+
+                    builder.append(new TextComponent(TextComponent.fromLegacyText(event.getMessage())));
 
                     if (player.hasPermission("pistonchat.greenprefix") && event.getMessage().startsWith(">")) {
                         builder.color(ChatColor.GREEN);

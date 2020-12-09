@@ -3,7 +3,7 @@ package me.alexprogrammerde.pistonchat;
 import me.alexprogrammerde.pistonchat.commands.*;
 import me.alexprogrammerde.pistonchat.events.ChatEvent;
 import me.alexprogrammerde.pistonchat.utils.ConfigTool;
-import org.bukkit.ChatColor;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;

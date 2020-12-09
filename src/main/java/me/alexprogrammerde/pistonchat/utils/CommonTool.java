@@ -1,7 +1,8 @@
 package me.alexprogrammerde.pistonchat.utils;
 
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
@@ -23,9 +24,17 @@ public class CommonTool {
             return;
         }
 
-        receiver.sendMessage(ChatColor.translateAlternateColorCodes('&', ConfigTool.getPluginConfig().getString("whisper.from").replaceAll("%player%", ChatColor.stripColor(sender.getDisplayName())).replaceAll("%message%", message)));
+        String receiverString = ChatColor.translateAlternateColorCodes('&', ConfigTool.getPluginConfig().getString("whisper.from")
+                                .replaceAll("%player%", ChatColor.stripColor(sender.getDisplayName()))
+                                .replaceAll("%message%", message));
 
-        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', ConfigTool.getPluginConfig().getString("whisper.to").replaceAll("%player%", ChatColor.stripColor(sender.getDisplayName())).replaceAll("%message%", message)));
+        String senderString = ChatColor.translateAlternateColorCodes('&', ConfigTool.getPluginConfig().getString("whisper.to")
+                        .replaceAll("%player%", ChatColor.stripColor(receiver.getDisplayName()))
+                        .replaceAll("%message%", message));
+
+        receiver.spigot().sendMessage(new TextComponent(TextComponent.fromLegacyText(receiverString)));
+
+        sender.spigot().sendMessage(new TextComponent(TextComponent.fromLegacyText(senderString)));
 
         CacheTool.sendMessage(sender, receiver);
     }
