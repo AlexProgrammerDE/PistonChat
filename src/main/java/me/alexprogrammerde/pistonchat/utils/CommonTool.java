@@ -3,6 +3,7 @@ package me.alexprogrammerde.pistonchat.utils;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
@@ -44,6 +45,22 @@ public class CommonTool {
     }
 
     public static String getPrefix() {
-        return ChatColor.translateAlternateColorCodes('&', ConfigTool.getPluginConfig().getString("prefix"));
+        return ChatColor.translateAlternateColorCodes('&', ConfigTool.getPluginConfig().getString("log"));
+    }
+
+    public static ChatColor getChatColorFor(String message, Player player) {
+        FileConfiguration config = ConfigTool.getPluginConfig();
+
+        for (String str : config.getConfigurationSection("prefixes").getKeys(false)) {
+            if (!config.getString("prefixes." + str).equalsIgnoreCase("/") && message.toLowerCase().startsWith(config.getString("prefixes." + str))) {
+                if (player.hasPermission("pistonchat." + str)) {
+                    return ChatColor.valueOf(str);
+                } else {
+                    return ChatColor.WHITE;
+                }
+            }
+        }
+
+        return ChatColor.WHITE;
     }
 }

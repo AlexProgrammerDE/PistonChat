@@ -1,4 +1,26 @@
-prefix: "[&2PistonChat&r] "
+# To use these prefixes you need additionally the pistonchat.<COLORCODE>
+# / indicates disabled!
+log: "[&2PistonChat&r] "
 whisper:
   from: "&d%player% whispers: %message%"
   to: "&dYou whisper to %player%: %message%"
+prefixes:
+  GREEN: ">"
+  BLUE: '/'
+  RED: '/'
+  AQUA: '/'
+  GOLD: '/'
+  YELLOW: '/'
+  GRAY: '/'
+  BLACK: '/'
+  DARK_GREEN: '/'
+  DARK_RED: '/'
+  DARK_GRAY: '/'
+  DARK_BLUE: '/'
+  DARK_AQUA: '/'
+  DARK_PURPLE: '/'
+  LIGHT_PURPLE: '/'
+  ITALIC: '/'
+  UNDERLINE: '/'
+  BOLD: '/'
+  STRIKETHROUGH: '/'

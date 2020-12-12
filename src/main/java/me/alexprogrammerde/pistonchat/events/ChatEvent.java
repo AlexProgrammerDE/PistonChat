@@ -1,5 +1,6 @@
 package me.alexprogrammerde.pistonchat.events;
 
+import me.alexprogrammerde.pistonchat.utils.CommonTool;
 import me.alexprogrammerde.pistonchat.utils.ConfigTool;
 import me.alexprogrammerde.pistonchat.utils.TempDataTool;
 import net.md_5.bungee.api.ChatColor;
@@ -42,9 +43,7 @@ public class ChatEvent implements Listener {
 
                     builder.append(new TextComponent(TextComponent.fromLegacyText(event.getMessage())));
 
-                    if (player.hasPermission("pistonchat.greenprefix") && event.getMessage().startsWith(">")) {
-                        builder.color(ChatColor.GREEN);
-                    }
+                    builder.color(CommonTool.getChatColorFor(event.getMessage(), player));
 
                     player.spigot().sendMessage(builder.create());
                 }
