@@ -141,6 +141,7 @@ permissions:
       pistonchat.GREEN: true
     default: true
   pistonchat.admin:
+    description: Default permissions for admins!
     children:
       pistonchat.reload: true
     default: op

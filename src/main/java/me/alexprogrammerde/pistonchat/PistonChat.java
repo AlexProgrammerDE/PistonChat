@@ -4,6 +4,7 @@ import me.alexprogrammerde.pistonchat.commands.*;
 import me.alexprogrammerde.pistonchat.events.ChatEvent;
 import me.alexprogrammerde.pistonchat.utils.ConfigTool;
 import net.md_5.bungee.api.ChatColor;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Server;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -82,6 +83,9 @@ public final class PistonChat extends JavaPlugin {
 
         log.info(ChatColor.DARK_GREEN + "Registering listeners");
         server.getPluginManager().registerEvents(new ChatEvent(), this);
+
+        log.info(ChatColor.DARK_GREEN + "Loading metrics");
+        new Metrics(this, 9630);
 
         log.info(ChatColor.DARK_GREEN + "Done! :D");
     }
