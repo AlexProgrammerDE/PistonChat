@@ -3,6 +3,10 @@ package me.alexprogrammerde.pistonchat;
 import me.alexprogrammerde.pistonchat.commands.*;
 import me.alexprogrammerde.pistonchat.events.ChatEvent;
 import me.alexprogrammerde.pistonchat.utils.ConfigTool;
+import me.alexprogrammerde.pistonutils.PistonLogger;
+import me.alexprogrammerde.pistonutils.UpdateChecker;
+import me.alexprogrammerde.pistonutils.UpdateParser;
+import me.alexprogrammerde.pistonutils.UpdateType;
 import net.md_5.bungee.api.ChatColor;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Server;
@@ -83,6 +87,24 @@ public final class PistonChat extends JavaPlugin {
 
         log.info(ChatColor.DARK_GREEN + "Registering listeners");
         server.getPluginManager().registerEvents(new ChatEvent(), this);
+
+        log.info(ChatColor.DARK_GREEN + "Checking for a newer version");
+        new UpdateChecker(new PistonLogger(getLogger())).getVersion("", version -> new UpdateParser(getDescription().getVersion(), version).parseUpdate(updateType -> {
+            if (updateType == UpdateType.NONE || updateType == UpdateType.AHEAD) {
+                log.info(ChatColor.DARK_GREEN + "Your up to date!");
+            } else {
+                if (updateType == UpdateType.MAJOR) {
+                    log.info(ChatColor.RED + "There is a MAJOR update available!");
+                } else if (updateType == UpdateType.MINOR) {
+                    log.info(ChatColor.RED + "There is a MINOR update available!");
+                } else if (updateType == UpdateType.PATCH) {
+                    log.info(ChatColor.RED + "There is a PATCH update available!");
+                }
+
+                log.info(ChatColor.RED + "Current version: " + this.getDescription().getVersion() + " New version: " + version);
+                log.info(ChatColor.RED + "Download it at: https://www.spigotmc.org/resources/80567/updates");
+            }
+        }));
 
         log.info(ChatColor.DARK_GREEN + "Loading metrics");
         new Metrics(this, 9630);

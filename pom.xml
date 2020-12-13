@@ -103,5 +103,10 @@
             <version>1.7</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>me.alexprogrammerde</groupId>
+            <artifactId>PistonUtils</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 </project>

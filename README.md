@@ -12,12 +12,12 @@
 
 ## Commands
 
-* ignore: Ignore a players chat messages!
+* /ignore: Ignore a players chat messages!
   permission: pistonchat.ignore
   aliases:
   block
 
-* whisper: Whisper to a player!
+* /whisper: Whisper to a player!
   permission: pistonchat.whisper
   aliases:
   tell
@@ -25,32 +25,32 @@
   pm
   msg
 
-* reply: Reply to the last message someone sent to you!
+* /reply: Reply to the last message someone sent to you!
   permission: pistonchat.reply
   aliases:
   r
 
-* last: Message the last person you messaged!
+* /last: Message the last person you messaged!
   permission: pistonchat.reply
   aliases:
   l
 
-* ignorelist: List all ignored players!
+* /ignorelist: List all ignored players!
   permission: pistonchat.ignorelist
 
-* togglewhispering: Prevent getting whispered to!
+* /togglewhispering: Prevent getting whispered to!
   permission: pistonchat.togglewhispering
   aliases: toggletells
 
-* togglechat: Prevent getting chat messages!
+* /togglechat: Prevent getting chat messages!
   permission: pistonchat.togglechat
 
-* pistonchat: Main command!
+* /pistonchat: Main command!
   permission: pistonchat.command
 
 ## Permissions
 
-*  pistonchat.last: Permission for /last!
+* pistonchat.last: Permission for /last!
 
 * pistonchat.reply: Permission for /reply!
 * pistonchat.whisper: Permission for /whisper!
