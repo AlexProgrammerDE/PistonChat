@@ -1,0 +1,51 @@
+package me.alexprogrammerde.pistonchat.api;
+
+import com.google.common.base.Preconditions;
+import me.alexprogrammerde.pistonchat.utils.CommonTool;
+import me.alexprogrammerde.pistonchat.utils.ConfigTool;
+import org.bukkit.entity.Player;
+
+import javax.annotation.Nonnull;
+import java.util.List;
+
+/**
+ * API for interacting with PistonChat!
+ */
+@SuppressWarnings({"unused"})
+public final class PistonChatAPI {
+    /**
+     * Ignore players! (Can also unignore)
+     * @param ignorer The person that ignores someone!
+     * @param ignored The person to ignore!
+     */
+    public static void ignorePlayer(@Nonnull Player ignorer, @Nonnull Player ignored) {
+        Preconditions.checkNotNull(ignorer, "Ignorer can not be null!");
+        Preconditions.checkNotNull(ignored, "Ignored can not be null!");
+
+        ConfigTool.ignorePlayer(ignorer, ignored);
+    }
+
+    /**
+     * Get a list of all players a player ignores!
+     * @param player The person who ignores players!
+     * @return A list of all players this players ignored!
+     */
+    public static List<String> getIgnoreList(Player player) {
+        Preconditions.checkNotNull(player, "Player can not be null!");
+
+        return ConfigTool.getIgnoredPlayers(player);
+    }
+
+    /**
+     * Send whispers!
+     * @param sender The player who sends the whisper!
+     * @param message Whisper to send!
+     * @param receiver The person who receives the whisper!
+     */
+    public static void whisperPlayer(Player sender, String message, Player receiver) {
+        Preconditions.checkNotNull(sender, "Sender can not be null!");
+        Preconditions.checkNotNull(receiver, "Receiver can not be null!");
+
+        CommonTool.sendWhisperTo(sender, message, receiver);
+    }
+}

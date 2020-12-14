@@ -89,7 +89,7 @@ public final class PistonChat extends JavaPlugin {
         server.getPluginManager().registerEvents(new ChatEvent(), this);
 
         log.info(ChatColor.DARK_GREEN + "Checking for a newer version");
-        new UpdateChecker(new PistonLogger(getLogger())).getVersion("", version -> new UpdateParser(getDescription().getVersion(), version).parseUpdate(updateType -> {
+        new UpdateChecker(new PistonLogger(getLogger())).getVersion("https://www.pistonmaster.net/PistonChat/VERSION.txt", version -> new UpdateParser(getDescription().getVersion(), version).parseUpdate(updateType -> {
             if (updateType == UpdateType.NONE || updateType == UpdateType.AHEAD) {
                 log.info(ChatColor.DARK_GREEN + "Your up to date!");
             } else {
@@ -102,7 +102,7 @@ public final class PistonChat extends JavaPlugin {
                 }
 
                 log.info(ChatColor.RED + "Current version: " + this.getDescription().getVersion() + " New version: " + version);
-                log.info(ChatColor.RED + "Download it at: https://www.spigotmc.org/resources/80567/updates");
+                log.info(ChatColor.RED + "Download it at: https://github.com/AlexProgrammerDE/PistonChat/releases");
             }
         }));
 
