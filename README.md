@@ -5,11 +5,17 @@
 
 **An advanced chat plugin for survival/anarchy servers.**
 
+## About
+This plugin was created to be a recreation of ChatCo from the ground up.
+A lot of chat plugins usually don't get any updates anymore or have been abandoned by the developers. 
+
+PistonChat will always get updates and contributing is welcome!
+
 ## Features
 * Green Text
 * Private Messaging
 * Auto Complete when you click on a players name just like on the server 2b2t.org
 * Ignore Commands
 
-## Servers that use PistonChat
+## Servers
 * 2bee2tee.org

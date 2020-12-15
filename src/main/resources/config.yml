@@ -4,6 +4,7 @@ log: "[&2PistonChat&r] "
 whisper:
   from: "&d%player% whispers: %message%"
   to: "&dYou whisper to %player%: %message%"
+hovertext: "&6Message &3%player%"
 prefixes:
   GREEN: ">"
   BLUE: '/'

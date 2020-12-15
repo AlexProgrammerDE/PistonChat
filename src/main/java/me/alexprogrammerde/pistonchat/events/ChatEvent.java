@@ -30,12 +30,17 @@ public class ChatEvent implements Listener {
 
                     if (player.hasPermission("pistonchat.playernamereply")) {
                         builder.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + ChatColor.stripColor(chatter.getDisplayName()) + " "));
+
+                        String hoverText = ConfigTool.getPluginConfig().getString("hovertext");
+
                         builder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                new ComponentBuilder("Message ")
-                                .color(ChatColor.GOLD)
-                                .append(ChatColor.stripColor(chatter.getDisplayName()))
-                                .color(ChatColor.DARK_AQUA)
-                                .create()
+                                new ComponentBuilder(
+                                        ChatColor.translateAlternateColorCodes('&',
+                                                hoverText.replaceAll("%player%",
+                                                        ChatColor.stripColor(player.getDisplayName())
+                                                )
+                                        )
+                                ).create()
                         ));
                     }
 
