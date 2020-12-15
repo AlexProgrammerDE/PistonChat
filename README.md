@@ -10,3 +10,6 @@
 * Private Messaging
 * Auto Complete when you click on a players name just like on the server 2b2t.org
 * Ignore Commands
+
+## Servers that use PistonChat
+* 2bee2tee.org
