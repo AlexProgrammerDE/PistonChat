@@ -32,9 +32,9 @@ public class ChatEvent implements Listener {
                         builder.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + ChatColor.stripColor(chatter.getDisplayName()) + " "));
                         builder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                                 new ComponentBuilder("Message ")
-                                .color(ChatColor.DARK_AQUA)
-                                .append(ChatColor.stripColor(chatter.getDisplayName()))
                                 .color(ChatColor.GOLD)
+                                .append(ChatColor.stripColor(chatter.getDisplayName()))
+                                .color(ChatColor.DARK_AQUA)
                                 .create()
                         ));
                     }
