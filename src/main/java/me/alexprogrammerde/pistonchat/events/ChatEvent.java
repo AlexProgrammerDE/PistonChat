@@ -1,5 +1,6 @@
 package me.alexprogrammerde.pistonchat.events;
 
+import me.alexprogrammerde.pistonchat.api.PistonChatEvent;
 import me.alexprogrammerde.pistonchat.utils.CommonTool;
 import me.alexprogrammerde.pistonchat.utils.ConfigTool;
 import me.alexprogrammerde.pistonchat.utils.TempDataTool;
@@ -17,12 +18,18 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public class ChatEvent implements Listener {
     // Mute plugins should have a lower priority to work!
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onChat(AsyncPlayerChatEvent event) {
-        if (!event.isCancelled()) {
-            Player chatter = event.getPlayer();
+        Player chatter = event.getPlayer();
 
-            event.setCancelled(true);
+        event.setCancelled(true);
+
+        PistonChatEvent pistonChatEvent = new PistonChatEvent(chatter, event.getMessage());
+
+        Bukkit.getPluginManager().callEvent(pistonChatEvent);
+
+        if (!pistonChatEvent.isCancelled()) {
+            String message = pistonChatEvent.getMessage();
 
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (!ConfigTool.isIgnored(chatter, player) && TempDataTool.isChatEnabled(player)) {
@@ -46,13 +53,14 @@ public class ChatEvent implements Listener {
 
                     builder.append(" ").reset();
 
-                    builder.append(new TextComponent(TextComponent.fromLegacyText(event.getMessage())));
+                    builder.append(new TextComponent(TextComponent.fromLegacyText(message)));
 
-                    builder.color(CommonTool.getChatColorFor(event.getMessage(), player));
+                    builder.color(CommonTool.getChatColorFor(message, player));
 
                     player.spigot().sendMessage(builder.create());
                 }
             }
         }
+
     }
 }
