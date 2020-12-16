@@ -30,7 +30,7 @@ public final class PistonChatAPI {
      * @param player The person who ignores players!
      * @return A list of all players this players ignored!
      */
-    public static List<String> getIgnoreList(Player player) {
+    public static @Nonnull List<String> getIgnoreList(@Nonnull Player player) {
         Preconditions.checkNotNull(player, "Player can not be null!");
 
         return ConfigTool.getIgnoredPlayers(player);
@@ -42,7 +42,7 @@ public final class PistonChatAPI {
      * @param message Whisper to send!
      * @param receiver The person who receives the whisper!
      */
-    public static void whisperPlayer(Player sender, String message, Player receiver) {
+    public static void whisperPlayer(@Nonnull Player sender, @Nonnull String message, @Nonnull Player receiver) {
         Preconditions.checkNotNull(sender, "Sender can not be null!");
         Preconditions.checkNotNull(receiver, "Receiver can not be null!");
 

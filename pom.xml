@@ -42,6 +42,10 @@
         </snapshotRepository>
     </distributionManagement>
 
+    <scm>
+        <connection>scm:git:https://github.com/AlexProgrammerDE/PistonChat</connection>
+    </scm>
+
     <build>
         <plugins>
             <plugin>
