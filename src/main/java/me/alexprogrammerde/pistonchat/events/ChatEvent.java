@@ -22,7 +22,7 @@ public class ChatEvent implements Listener {
     public void onChat(AsyncPlayerChatEvent event) {
         Player chatter = event.getPlayer();
 
-        event.setCancelled(true);
+        event.getRecipients().clear();
 
         PistonChatEvent pistonChatEvent = new PistonChatEvent(chatter, event.getMessage());
 
@@ -61,6 +61,5 @@ public class ChatEvent implements Listener {
                 }
             }
         }
-
     }
 }
