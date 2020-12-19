@@ -73,7 +73,8 @@ public class ConfigTool {
 
     private static void generateFile() {
         if (!plugin.getDataFolder().exists()) {
-            plugin.getDataFolder().mkdir();
+            if (!plugin.getDataFolder().mkdir())
+                return;
         }
 
         if (!dataFile.exists()) {

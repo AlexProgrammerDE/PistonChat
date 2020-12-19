@@ -28,6 +28,8 @@ public class ChatEvent implements Listener {
 
         Bukkit.getPluginManager().callEvent(pistonChatEvent);
 
+        event.setCancelled(pistonChatEvent.isCancelled());
+
         if (!pistonChatEvent.isCancelled()) {
             String message = pistonChatEvent.getMessage();
 
