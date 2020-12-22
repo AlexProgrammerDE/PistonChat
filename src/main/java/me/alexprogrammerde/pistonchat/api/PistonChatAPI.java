@@ -22,7 +22,7 @@ public final class PistonChatAPI {
         Preconditions.checkNotNull(ignorer, "Ignorer can not be null!");
         Preconditions.checkNotNull(ignored, "Ignored can not be null!");
 
-        ConfigTool.ignorePlayer(ignorer, ignored);
+        ConfigTool.hardIgnorePlayer(ignorer, ignored);
     }
 
     /**
@@ -33,7 +33,7 @@ public final class PistonChatAPI {
     public static @Nonnull List<String> getIgnoreList(@Nonnull Player player) {
         Preconditions.checkNotNull(player, "Player can not be null!");
 
-        return ConfigTool.getIgnoredPlayers(player);
+        return ConfigTool.getHardIgnoredPlayers(player);
     }
 
     /**

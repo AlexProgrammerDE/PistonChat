@@ -12,35 +12,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class WhisperCommand implements CommandExecutor, TabExecutor {
+public class HardIgnoreCommand implements CommandExecutor, TabExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
 
             if (args.length > 0) {
-                Optional<Player> receiver = CommonTool.getPlayer(args[0]);
+                Optional<Player> ignored = CommonTool.getPlayer(args[0]);
 
-                if (receiver.isPresent()) {
-                    if (ConfigTool.isHardIgnored(player, receiver.get())) {
-                        player.sendMessage(CommonTool.getPrefix() + "This person blocked you!");
-                    } else if (ConfigTool.isHardIgnored(receiver.get(), player)) {
-                        player.sendMessage(CommonTool.getPrefix() + "You block this person!");
-                    } else {
-                        if (args.length > 1) {
-                            CommonTool.sendWhisperTo(player, CommonTool.mergeArgs(args, 1), receiver.get());
-                        } else {
-                            return false;
-                        }
+                if (ignored.isPresent()) {
+                    ConfigTool.IgnoreType type = ConfigTool.hardIgnorePlayer(player, ignored.get());
+
+                    if (type == ConfigTool.IgnoreType.IGNORE) {
+                        player.sendMessage(ConfigTool.getPreparedString("ignorehard"));
+                    } else if (type == ConfigTool.IgnoreType.UNIGNORE) {
+                        player.sendMessage(ConfigTool.getPreparedString("unignorehard"));
                     }
                 } else {
-                    sender.sendMessage(CommonTool.getPrefix() + "This player doesn't exist!");
+                    player.sendMessage(CommonTool.getPrefix() + "This player doesn't exist!");
                 }
             } else {
                 return false;
             }
         } else {
-            sender.sendMessage(CommonTool.getPrefix() + "You need to be a player to do this!");
+            sender.sendMessage(CommonTool.getPrefix() + "You need to be a player to do that!");
         }
 
         return true;

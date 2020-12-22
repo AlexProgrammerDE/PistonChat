@@ -22,9 +22,9 @@ public class LastCommand implements CommandExecutor, TabExecutor {
             Optional<Player> lastMessagedOf = CacheTool.getLastMessagedOf(player);
 
             if (lastSentTo.isPresent()) {
-                if (ConfigTool.isIgnored(player, lastSentTo.get())) {
+                if (ConfigTool.isHardIgnored(player, lastSentTo.get())) {
                     player.sendMessage(CommonTool.getPrefix() + "This person blocked you!");
-                } else if (ConfigTool.isIgnored(lastSentTo.get(), player)) {
+                } else if (ConfigTool.isHardIgnored(lastSentTo.get(), player)) {
                     player.sendMessage(CommonTool.getPrefix() + "You block this person!");
                 } else {
                     if (args.length > 0) {
@@ -34,9 +34,9 @@ public class LastCommand implements CommandExecutor, TabExecutor {
                     }
                 }
             } else if (lastMessagedOf.isPresent()) {
-                if (ConfigTool.isIgnored(player, lastMessagedOf.get())) {
+                if (ConfigTool.isHardIgnored(player, lastMessagedOf.get())) {
                     player.sendMessage(CommonTool.getPrefix() + "This person blocked you!");
-                } else if (ConfigTool.isIgnored(lastMessagedOf.get(), player)) {
+                } else if (ConfigTool.isHardIgnored(lastMessagedOf.get(), player)) {
                     player.sendMessage(CommonTool.getPrefix() + "You block this person!");
                 } else {
                     if (args.length > 0) {

@@ -1,6 +1,7 @@
 package me.alexprogrammerde.pistonchat.utils;
 
 import me.alexprogrammerde.pistonchat.PistonChat;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -17,7 +18,7 @@ public class ConfigTool {
     private static FileConfiguration dataConfig;
     private static File dataFile;
 
-    public static IgnoreType ignorePlayer(Player player, Player ignored) {
+    public static IgnoreType hardIgnorePlayer(Player player, Player ignored) {
         List<String> list = dataConfig.getStringList(player.getUniqueId().toString());
 
         if (list.contains(ignored.getUniqueId().toString())) {
@@ -39,11 +40,11 @@ public class ConfigTool {
         }
     }
 
-    public static boolean isIgnored(Player chatter, Player receiver) {
+    public static boolean isHardIgnored(Player chatter, Player receiver) {
         return dataConfig.getStringList(receiver.getUniqueId().toString()).contains(chatter.getUniqueId().toString());
     }
 
-    public static List<String> getIgnoredPlayers(Player player) {
+    public static List<String> getHardIgnoredPlayers(Player player) {
         List<String> listUUID = dataConfig.getStringList(player.getUniqueId().toString());
 
         List<String> returnedNames = new ArrayList<>();
@@ -99,5 +100,9 @@ public class ConfigTool {
 
     public static FileConfiguration getPluginConfig() {
         return plugin.getConfig();
+    }
+
+    public static String getPreparedString(String str) {
+        return ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString(str));
     }
 }

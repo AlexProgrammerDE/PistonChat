@@ -21,9 +21,9 @@ public class ReplyCommand implements CommandExecutor, TabExecutor {
             Optional<Player> lastMessagedOf = CacheTool.getLastMessagedOf(player);
 
             if (lastMessagedOf.isPresent()) {
-                if (ConfigTool.isIgnored(player, lastMessagedOf.get())) {
+                if (ConfigTool.isHardIgnored(player, lastMessagedOf.get())) {
                     player.sendMessage(CommonTool.getPrefix() + "This person blocked you!");
-                } else if (ConfigTool.isIgnored(lastMessagedOf.get(), player)) {
+                } else if (ConfigTool.isHardIgnored(lastMessagedOf.get(), player)) {
                     player.sendMessage(CommonTool.getPrefix() + "You block this person!");
                 } else {
                     if (args.length > 0) {

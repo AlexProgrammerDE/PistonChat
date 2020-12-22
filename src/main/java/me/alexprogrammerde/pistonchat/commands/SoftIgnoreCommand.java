@@ -2,7 +2,6 @@ package me.alexprogrammerde.pistonchat.commands;
 
 import me.alexprogrammerde.pistonchat.utils.CommonTool;
 import me.alexprogrammerde.pistonchat.utils.ConfigTool;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -13,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class IgnoreCommand implements CommandExecutor, TabExecutor {
+public class SoftIgnoreCommand implements CommandExecutor, TabExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
@@ -23,12 +22,12 @@ public class IgnoreCommand implements CommandExecutor, TabExecutor {
                 Optional<Player> ignored = CommonTool.getPlayer(args[0]);
 
                 if (ignored.isPresent()) {
-                    ConfigTool.IgnoreType type = ConfigTool.ignorePlayer(player, ignored.get());
+                    ConfigTool.IgnoreType type = ConfigTool.hardIgnorePlayer(player, ignored.get());
 
                     if (type == ConfigTool.IgnoreType.IGNORE) {
-                        player.sendMessage(CommonTool.getPrefix() + "You ignore " + ChatColor.stripColor(ignored.get().getDisplayName()) + " now!");
+                        player.sendMessage(ConfigTool.getPreparedString("ignore"));
                     } else if (type == ConfigTool.IgnoreType.UNIGNORE) {
-                        player.sendMessage(CommonTool.getPrefix() + "You unignored " + ChatColor.stripColor(ignored.get().getDisplayName()) + "!");
+                        player.sendMessage(ConfigTool.getPreparedString("unignore"));
                     }
                 } else {
                     player.sendMessage(CommonTool.getPrefix() + "This player doesn't exist!");

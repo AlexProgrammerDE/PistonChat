@@ -36,7 +36,7 @@ public final class PistonChat extends JavaPlugin {
         new ConfigTool().setupTool(this);
 
         log.info(ChatColor.DARK_GREEN + "Registering commands");
-        PluginCommand ignore = server.getPluginCommand("ignore");
+        PluginCommand ignore = server.getPluginCommand("ignorehard");
         PluginCommand whisper = server.getPluginCommand("whisper");
         PluginCommand reply = server.getPluginCommand("reply");
         PluginCommand last = server.getPluginCommand("last");
@@ -46,8 +46,8 @@ public final class PistonChat extends JavaPlugin {
         PluginCommand main = server.getPluginCommand("pistonchat");
 
         if (ignore != null) {
-            ignore.setExecutor(new IgnoreCommand());
-            ignore.setTabCompleter(new IgnoreCommand());
+            ignore.setExecutor(new HardIgnoreCommand());
+            ignore.setTabCompleter(new HardIgnoreCommand());
         }
 
         if (whisper != null) {

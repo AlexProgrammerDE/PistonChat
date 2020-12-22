@@ -5,6 +5,13 @@ whisper:
   from: "&d%player% whispers: %message%"
   to: "&dYou whisper to %player%: %message%"
 hovertext: "&6Message &3%player%"
+
+ignore: "&6Now ignoring &3%player%"
+unignore: "&6No longer ignoring &3%player%"
+ignorehard: "&6Permanently ignoring %player%. This is saved in &4/ignorelist."
+unignorehard: "&6No longer permanently ignoring &3%player%"
+
+ignorelistsize: 9
 prefixes:
   GREEN: ">"
   BLUE: '/'

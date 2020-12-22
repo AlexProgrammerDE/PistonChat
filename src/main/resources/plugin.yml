@@ -6,7 +6,7 @@ description: An advanced chat plugin for survival/anarchy servers.
 website: https://pistonmaster.net/
 
 commands:
-  ignore:
+  ignorehard:
     description: Ignore a players chat messages!
     permission: pistonchat.ignore
     permission-message: You have no permission to do that!

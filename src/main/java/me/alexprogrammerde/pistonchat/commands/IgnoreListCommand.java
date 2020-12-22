@@ -17,7 +17,7 @@ public class IgnoreListCommand implements CommandExecutor, TabExecutor {
         if (sender instanceof Player) {
             Player player = (Player) sender;
 
-            List<String> list = ConfigTool.getIgnoredPlayers(player);
+            List<String> list = ConfigTool.getHardIgnoredPlayers(player);
 
             if (list.isEmpty()) {
                 player.sendMessage(CommonTool.getPrefix() + "You have no players ignored!");
