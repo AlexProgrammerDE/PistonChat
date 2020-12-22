@@ -23,11 +23,11 @@ public class SoftIgnoreCommand implements CommandExecutor, TabExecutor {
                 Optional<Player> ignored = CommonTool.getPlayer(args[0]);
 
                 if (ignored.isPresent()) {
-                    SoftIgnoreTool.IgnoreType type = SoftIgnoreTool.softIgnorePlayer(player, ignored.get());
+                    SoftIgnoreTool.SoftReturn type = SoftIgnoreTool.softIgnorePlayer(player, ignored.get());
 
-                    if (type == SoftIgnoreTool.IgnoreType.IGNORE) {
+                    if (type == SoftIgnoreTool.SoftReturn.IGNORE) {
                         player.sendMessage(ConfigTool.getPreparedString("ignore"));
-                    } else if (type == SoftIgnoreTool.IgnoreType.UNIGNORE) {
+                    } else if (type == SoftIgnoreTool.SoftReturn.UNIGNORE) {
                         player.sendMessage(ConfigTool.getPreparedString("unignore"));
                     }
                 } else {

@@ -2,6 +2,7 @@ package me.alexprogrammerde.pistonchat.commands;
 
 import me.alexprogrammerde.pistonchat.utils.CommonTool;
 import me.alexprogrammerde.pistonchat.utils.ConfigTool;
+import me.alexprogrammerde.pistonchat.utils.IgnoreTool;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -11,6 +12,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class IgnoreListCommand implements CommandExecutor, TabExecutor {
     @Override
@@ -20,7 +22,7 @@ public class IgnoreListCommand implements CommandExecutor, TabExecutor {
 
             List<String> list = new ArrayList<>();
 
-            for (OfflinePlayer offlinePlayer : ConfigTool.getHardIgnoredPlayers(player)) {
+            for (OfflinePlayer offlinePlayer : IgnoreTool.getIgnoredPlayers(player).keySet()) {
                 list.add(offlinePlayer.getName());
             }
 

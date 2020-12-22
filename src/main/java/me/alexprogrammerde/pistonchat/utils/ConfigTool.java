@@ -19,7 +19,7 @@ public class ConfigTool {
     private static FileConfiguration dataConfig;
     private static File dataFile;
 
-    public static IgnoreType hardIgnorePlayer(Player player, Player ignored) {
+    public static HardReturn hardIgnorePlayer(Player player, Player ignored) {
         List<String> list = dataConfig.getStringList(player.getUniqueId().toString());
 
         if (list.contains(ignored.getUniqueId().toString())) {
@@ -29,7 +29,7 @@ public class ConfigTool {
 
             saveData();
 
-            return IgnoreType.UNIGNORE;
+            return HardReturn.UNIGNORE;
         } else {
             list.add(ignored.getUniqueId().toString());
 
@@ -37,7 +37,7 @@ public class ConfigTool {
 
             saveData();
 
-            return IgnoreType.IGNORE;
+            return HardReturn.IGNORE;
         }
     }
 
@@ -45,7 +45,7 @@ public class ConfigTool {
         return dataConfig.getStringList(receiver.getUniqueId().toString()).contains(chatter.getUniqueId().toString());
     }
 
-    public static List<OfflinePlayer> getHardIgnoredPlayers(Player player) {
+    protected static List<OfflinePlayer> getHardIgnoredPlayers(Player player) {
         List<String> listUUID = dataConfig.getStringList(player.getUniqueId().toString());
 
         List<OfflinePlayer> returnedPlayers = new ArrayList<>();
@@ -95,15 +95,15 @@ public class ConfigTool {
         loadData();
     }
 
-    public enum IgnoreType {
-        IGNORE, UNIGNORE
-    }
-
     public static FileConfiguration getPluginConfig() {
         return plugin.getConfig();
     }
 
     public static String getPreparedString(String str) {
         return ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString(str));
+    }
+
+    public enum HardReturn {
+        IGNORE, UNIGNORE
     }
 }

@@ -22,11 +22,11 @@ public class HardIgnoreCommand implements CommandExecutor, TabExecutor {
                 Optional<Player> ignored = CommonTool.getPlayer(args[0]);
 
                 if (ignored.isPresent()) {
-                    ConfigTool.IgnoreType type = ConfigTool.hardIgnorePlayer(player, ignored.get());
+                    ConfigTool.HardReturn type = ConfigTool.hardIgnorePlayer(player, ignored.get());
 
-                    if (type == ConfigTool.IgnoreType.IGNORE) {
+                    if (type == ConfigTool.HardReturn.IGNORE) {
                         player.sendMessage(ConfigTool.getPreparedString("ignorehard"));
-                    } else if (type == ConfigTool.IgnoreType.UNIGNORE) {
+                    } else if (type == ConfigTool.HardReturn.UNIGNORE) {
                         player.sendMessage(ConfigTool.getPreparedString("unignorehard"));
                     }
                 } else {

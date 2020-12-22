@@ -3,11 +3,14 @@ package me.alexprogrammerde.pistonchat.api;
 import com.google.common.base.Preconditions;
 import me.alexprogrammerde.pistonchat.utils.CommonTool;
 import me.alexprogrammerde.pistonchat.utils.ConfigTool;
+import me.alexprogrammerde.pistonchat.utils.IgnoreTool;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * API for interacting with PistonChat!
@@ -31,10 +34,10 @@ public final class PistonChatAPI {
      * @param player The person who ignores players!
      * @return A list of all players this players ignored!
      */
-    public static @Nonnull List<OfflinePlayer> getIgnoreList(@Nonnull Player player) {
+    public static @Nonnull Map<OfflinePlayer, IgnoreTool.IgnoreType> getIgnoreList(@Nonnull Player player) {
         Preconditions.checkNotNull(player, "Player can not be null!");
 
-        return ConfigTool.getHardIgnoredPlayers(player);
+        return IgnoreTool.getIgnoredPlayers(player);
     }
 
     /**

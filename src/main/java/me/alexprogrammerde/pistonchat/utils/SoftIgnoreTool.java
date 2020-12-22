@@ -12,7 +12,7 @@ import java.util.UUID;
 public class SoftIgnoreTool {
     private static final HashMap<UUID, List<UUID>> map = new HashMap<>();
 
-    public static IgnoreType softIgnorePlayer(Player player, Player ignored) {
+    public static SoftReturn softIgnorePlayer(Player player, Player ignored) {
         indexPlayer(player);
         indexPlayer(ignored);
 
@@ -21,11 +21,11 @@ public class SoftIgnoreTool {
         if (list.contains(ignored.getUniqueId())) {
             list.remove(ignored.getUniqueId());
 
-            return IgnoreType.UNIGNORE;
+            return SoftReturn.UNIGNORE;
         } else {
             list.add(ignored.getUniqueId());
 
-            return IgnoreType.IGNORE;
+            return SoftReturn.IGNORE;
         }
     }
 
@@ -36,7 +36,7 @@ public class SoftIgnoreTool {
         return map.get(receiver.getUniqueId()).contains(chatter.getUniqueId());
     }
 
-    public static List<OfflinePlayer> getSoftIgnoredPlayers(Player player) {
+    protected static List<OfflinePlayer> getSoftIgnoredPlayers(Player player) {
         indexPlayer(player);
 
         List<UUID> listUUID = map.get(player.getUniqueId());
@@ -56,7 +56,7 @@ public class SoftIgnoreTool {
         }
     }
 
-    public enum IgnoreType {
+    public enum SoftReturn {
         IGNORE, UNIGNORE
     }
 }
