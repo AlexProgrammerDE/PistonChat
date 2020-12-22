@@ -29,7 +29,7 @@ public class SoftIgnoreTool {
         }
     }
 
-    public static boolean isSoftIgnored(Player chatter, Player receiver) {
+    protected static boolean isSoftIgnored(Player chatter, Player receiver) {
         indexPlayer(receiver);
         indexPlayer(chatter);
 

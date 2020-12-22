@@ -41,7 +41,7 @@ public class ConfigTool {
         }
     }
 
-    public static boolean isHardIgnored(Player chatter, Player receiver) {
+    protected static boolean isHardIgnored(Player chatter, Player receiver) {
         return dataConfig.getStringList(receiver.getUniqueId().toString()).contains(chatter.getUniqueId().toString());
     }
 

@@ -2,6 +2,7 @@ package me.alexprogrammerde.pistonchat.commands;
 
 import me.alexprogrammerde.pistonchat.utils.CommonTool;
 import me.alexprogrammerde.pistonchat.utils.ConfigTool;
+import me.alexprogrammerde.pistonchat.utils.IgnoreTool;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -22,9 +23,9 @@ public class WhisperCommand implements CommandExecutor, TabExecutor {
                 Optional<Player> receiver = CommonTool.getPlayer(args[0]);
 
                 if (receiver.isPresent()) {
-                    if (ConfigTool.isHardIgnored(player, receiver.get())) {
+                    if (IgnoreTool.isIgnored(player, receiver.get())) {
                         player.sendMessage(CommonTool.getPrefix() + "This person blocked you!");
-                    } else if (ConfigTool.isHardIgnored(receiver.get(), player)) {
+                    } else if (IgnoreTool.isIgnored(receiver.get(), player)) {
                         player.sendMessage(CommonTool.getPrefix() + "You block this person!");
                     } else {
                         if (args.length > 1) {

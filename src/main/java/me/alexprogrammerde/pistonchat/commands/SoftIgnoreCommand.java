@@ -2,6 +2,7 @@ package me.alexprogrammerde.pistonchat.commands;
 
 import me.alexprogrammerde.pistonchat.utils.CommonTool;
 import me.alexprogrammerde.pistonchat.utils.ConfigTool;
+import me.alexprogrammerde.pistonchat.utils.SoftIgnoreTool;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -22,11 +23,11 @@ public class SoftIgnoreCommand implements CommandExecutor, TabExecutor {
                 Optional<Player> ignored = CommonTool.getPlayer(args[0]);
 
                 if (ignored.isPresent()) {
-                    ConfigTool.IgnoreType type = ConfigTool.hardIgnorePlayer(player, ignored.get());
+                    SoftIgnoreTool.IgnoreType type = SoftIgnoreTool.softIgnorePlayer(player, ignored.get());
 
-                    if (type == ConfigTool.IgnoreType.IGNORE) {
+                    if (type == SoftIgnoreTool.IgnoreType.IGNORE) {
                         player.sendMessage(ConfigTool.getPreparedString("ignore"));
-                    } else if (type == ConfigTool.IgnoreType.UNIGNORE) {
+                    } else if (type == SoftIgnoreTool.IgnoreType.UNIGNORE) {
                         player.sendMessage(ConfigTool.getPreparedString("unignore"));
                     }
                 } else {

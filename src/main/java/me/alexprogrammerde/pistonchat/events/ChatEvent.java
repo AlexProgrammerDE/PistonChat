@@ -3,6 +3,7 @@ package me.alexprogrammerde.pistonchat.events;
 import me.alexprogrammerde.pistonchat.api.PistonChatEvent;
 import me.alexprogrammerde.pistonchat.utils.CommonTool;
 import me.alexprogrammerde.pistonchat.utils.ConfigTool;
+import me.alexprogrammerde.pistonchat.utils.IgnoreTool;
 import me.alexprogrammerde.pistonchat.utils.TempDataTool;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -34,7 +35,7 @@ public class ChatEvent implements Listener {
             String message = pistonChatEvent.getMessage();
 
             for (Player player : Bukkit.getOnlinePlayers()) {
-                if (!ConfigTool.isHardIgnored(chatter, player) && TempDataTool.isChatEnabled(player)) {
+                if (!IgnoreTool.isIgnored(chatter, player) && TempDataTool.isChatEnabled(player)) {
                     ComponentBuilder builder = new ComponentBuilder("<" + chatter.getDisplayName() + ChatColor.RESET + ">");
 
                     if (player.hasPermission("pistonchat.playernamereply")) {

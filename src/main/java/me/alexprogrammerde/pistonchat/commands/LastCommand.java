@@ -3,6 +3,7 @@ package me.alexprogrammerde.pistonchat.commands;
 import me.alexprogrammerde.pistonchat.utils.CacheTool;
 import me.alexprogrammerde.pistonchat.utils.CommonTool;
 import me.alexprogrammerde.pistonchat.utils.ConfigTool;
+import me.alexprogrammerde.pistonchat.utils.IgnoreTool;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -22,9 +23,9 @@ public class LastCommand implements CommandExecutor, TabExecutor {
             Optional<Player> lastMessagedOf = CacheTool.getLastMessagedOf(player);
 
             if (lastSentTo.isPresent()) {
-                if (ConfigTool.isHardIgnored(player, lastSentTo.get())) {
+                if (IgnoreTool.isIgnored(player, lastSentTo.get())) {
                     player.sendMessage(CommonTool.getPrefix() + "This person blocked you!");
-                } else if (ConfigTool.isHardIgnored(lastSentTo.get(), player)) {
+                } else if (IgnoreTool.isIgnored(lastSentTo.get(), player)) {
                     player.sendMessage(CommonTool.getPrefix() + "You block this person!");
                 } else {
                     if (args.length > 0) {
@@ -34,9 +35,9 @@ public class LastCommand implements CommandExecutor, TabExecutor {
                     }
                 }
             } else if (lastMessagedOf.isPresent()) {
-                if (ConfigTool.isHardIgnored(player, lastMessagedOf.get())) {
+                if (IgnoreTool.isIgnored(player, lastMessagedOf.get())) {
                     player.sendMessage(CommonTool.getPrefix() + "This person blocked you!");
-                } else if (ConfigTool.isHardIgnored(lastMessagedOf.get(), player)) {
+                } else if (IgnoreTool.isIgnored(lastMessagedOf.get(), player)) {
                     player.sendMessage(CommonTool.getPrefix() + "You block this person!");
                 } else {
                     if (args.length > 0) {
