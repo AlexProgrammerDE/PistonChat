@@ -2,6 +2,7 @@ package me.alexprogrammerde.pistonchat.commands;
 
 import me.alexprogrammerde.pistonchat.utils.CommonTool;
 import me.alexprogrammerde.pistonchat.utils.ConfigTool;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,7 +18,11 @@ public class IgnoreListCommand implements CommandExecutor, TabExecutor {
         if (sender instanceof Player) {
             Player player = (Player) sender;
 
-            List<String> list = ConfigTool.getHardIgnoredPlayers(player);
+            List<String> list = new ArrayList<>();
+
+            for (OfflinePlayer offlinePlayer : ConfigTool.getHardIgnoredPlayers(player)) {
+                list.add(offlinePlayer.getName());
+            }
 
             if (list.isEmpty()) {
                 player.sendMessage(CommonTool.getPrefix() + "You have no players ignored!");

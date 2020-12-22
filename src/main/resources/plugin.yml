@@ -6,13 +6,16 @@ description: An advanced chat plugin for survival/anarchy servers.
 website: https://pistonmaster.net/
 
 commands:
-  ignorehard:
-    description: Ignore a players chat messages!
+  ignore:
+    description: Ignore a players chat messages to the next server restart!
     permission: pistonchat.ignore
     permission-message: You have no permission to do that!
     usage: "§4Usage: /<command> <player>"
-    aliases:
-      - block
+  ignorehard:
+    description: Ignore a players chat messages permanently!
+    permission: pistonchat.ignorehard
+    permission-message: You have no permission to do that!
+    usage: "§4Usage: /<command> <player>"
   whisper:
     description: Whisper to a player!
     permission: pistonchat.whisper
@@ -60,6 +63,10 @@ commands:
     permission-message: You have no permission to do that!
     usage: "§4Usage: /<command> <help|reload>"
 permissions:
+  pistonchat.ignorehard:
+    description: Permission for /ignorehard!
+    children:
+      pistonchat.ignorelist: true
   pistonchat.last:
     description: Permission for /last!
   pistonchat.reply:
@@ -136,6 +143,7 @@ permissions:
       pistonchat.reply: true
       pistonchat.whisper: true
       pistonchat.ignore: true
+      pistonchat.ignorehard: true
       pistonchat.togglechat: true
       pistonchat.help: true
       pistonchat.GREEN: true

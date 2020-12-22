@@ -3,6 +3,7 @@ package me.alexprogrammerde.pistonchat.utils;
 import me.alexprogrammerde.pistonchat.PistonChat;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -44,16 +45,16 @@ public class ConfigTool {
         return dataConfig.getStringList(receiver.getUniqueId().toString()).contains(chatter.getUniqueId().toString());
     }
 
-    public static List<String> getHardIgnoredPlayers(Player player) {
+    public static List<OfflinePlayer> getHardIgnoredPlayers(Player player) {
         List<String> listUUID = dataConfig.getStringList(player.getUniqueId().toString());
 
-        List<String> returnedNames = new ArrayList<>();
+        List<OfflinePlayer> returnedPlayers = new ArrayList<>();
 
         for (String str : listUUID) {
-            returnedNames.add(Bukkit.getOfflinePlayer(UUID.fromString(str)).getName());
+            returnedPlayers.add(Bukkit.getOfflinePlayer(UUID.fromString(str)));
         }
 
-        return returnedNames;
+        return returnedPlayers;
     }
 
     private static void loadData() {
