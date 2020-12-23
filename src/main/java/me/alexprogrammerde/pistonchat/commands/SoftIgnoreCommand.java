@@ -26,9 +26,9 @@ public class SoftIgnoreCommand implements CommandExecutor, TabExecutor {
                     SoftIgnoreTool.SoftReturn type = SoftIgnoreTool.softIgnorePlayer(player, ignored.get());
 
                     if (type == SoftIgnoreTool.SoftReturn.IGNORE) {
-                        player.sendMessage(ConfigTool.getPreparedString("ignore", player));
+                        player.sendMessage(ConfigTool.getPreparedString("ignore", ignored.get()));
                     } else if (type == SoftIgnoreTool.SoftReturn.UNIGNORE) {
-                        player.sendMessage(ConfigTool.getPreparedString("unignore", player));
+                        player.sendMessage(ConfigTool.getPreparedString("unignore", ignored.get()));
                     }
                 } else {
                     player.sendMessage(CommonTool.getPrefix() + "This player doesn't exist!");

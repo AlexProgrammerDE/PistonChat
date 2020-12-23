@@ -25,9 +25,9 @@ public class HardIgnoreCommand implements CommandExecutor, TabExecutor {
                     ConfigTool.HardReturn type = ConfigTool.hardIgnorePlayer(player, ignored.get());
 
                     if (type == ConfigTool.HardReturn.IGNORE) {
-                        player.sendMessage(ConfigTool.getPreparedString("ignorehard", player));
+                        player.sendMessage(ConfigTool.getPreparedString("ignorehard", ignored.get()));
                     } else if (type == ConfigTool.HardReturn.UNIGNORE) {
-                        player.sendMessage(ConfigTool.getPreparedString("unignorehard", player));
+                        player.sendMessage(ConfigTool.getPreparedString("unignorehard", ignored.get()));
                     }
                 } else {
                     player.sendMessage(CommonTool.getPrefix() + "This player doesn't exist!");

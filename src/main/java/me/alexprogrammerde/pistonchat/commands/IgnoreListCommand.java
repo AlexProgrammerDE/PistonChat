@@ -114,8 +114,6 @@ public class IgnoreListCommand implements CommandExecutor, TabExecutor {
                 playerBuilder.color(ChatColor.GRAY);
 
                 player.spigot().sendMessage(playerBuilder.create());
-            } else {
-                break;
             }
 
             i++;

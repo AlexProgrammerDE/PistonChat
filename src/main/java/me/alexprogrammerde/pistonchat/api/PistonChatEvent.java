@@ -16,6 +16,8 @@ public final class PistonChatEvent extends Event implements Cancellable {
     private String message;
 
     public PistonChatEvent(Player player, String message) {
+        super(true);
+
         this.player = player;
         this.message = message;
         this.isCancelled = false;
