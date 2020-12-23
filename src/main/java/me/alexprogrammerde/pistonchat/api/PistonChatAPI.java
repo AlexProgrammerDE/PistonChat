@@ -8,6 +8,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,7 +35,7 @@ public final class PistonChatAPI {
      * @param player The person who ignores players!
      * @return A list of all players this players ignored!
      */
-    public static @Nonnull Map<OfflinePlayer, IgnoreTool.IgnoreType> getIgnoreList(@Nonnull Player player) {
+    public static @Nonnull HashMap<OfflinePlayer, IgnoreTool.IgnoreType> getIgnoreList(@Nonnull Player player) {
         Preconditions.checkNotNull(player, "Player can not be null!");
 
         return IgnoreTool.getIgnoredPlayers(player);

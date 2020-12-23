@@ -16,7 +16,7 @@ public class IgnoreTool {
         } else return ConfigTool.isHardIgnored(chatter, receiver);
     }
 
-    public static Map<OfflinePlayer, IgnoreType> getIgnoredPlayers(Player player) {
+    public static HashMap<OfflinePlayer, IgnoreType> getIgnoredPlayers(Player player) {
         HashMap<OfflinePlayer, IgnoreType> map = new HashMap<>();
 
         for (OfflinePlayer ignoredPlayer : SoftIgnoreTool.getSoftIgnoredPlayers(player)) {

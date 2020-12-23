@@ -99,11 +99,15 @@ public class ConfigTool {
         return plugin.getConfig();
     }
 
-    public static String getPreparedString(String str) {
-        return ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString(str));
+    public static String getPreparedString(String str, Player player) {
+        return ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString(str).replaceAll("%player%", ChatColor.stripColor(player.getDisplayName())));
     }
 
     public enum HardReturn {
         IGNORE, UNIGNORE
+    }
+
+    public static int getPageSize() {
+        return plugin.getConfig().getInt("ignorelistsize");
     }
 }
