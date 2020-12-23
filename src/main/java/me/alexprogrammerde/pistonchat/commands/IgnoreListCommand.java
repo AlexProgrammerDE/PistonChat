@@ -36,7 +36,13 @@ public class IgnoreListCommand implements CommandExecutor, TabExecutor {
                 player.sendMessage(CommonTool.getPrefix() + "You have no players ignored!");
             } else {
                 if (args.length > 0) {
-                    showList(Integer.parseInt(args[0]), player);
+                    int page = Integer.parseInt(args[0]);
+
+                    if (page < IgnoreTool.getIgnoredPlayers(player).size()) {
+                        showList(page, player);
+                    } else {
+                        player.sendMessage(CommonTool.getPrefix() + "This page doesn't exist!");
+                    }
                 } else {
                     showList(1, player);
                 }
@@ -67,6 +73,7 @@ public class IgnoreListCommand implements CommandExecutor, TabExecutor {
 
         if (page > 1) {
             navigation.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ignorelist " + (page - 1)));
+            navigation.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to go to the previous page!").color(ChatColor.GOLD).create()));
         }
 
         navigation.append(" " + page + "/" + allPages + " ").reset().color(ChatColor.GOLD);
@@ -75,6 +82,7 @@ public class IgnoreListCommand implements CommandExecutor, TabExecutor {
 
         if (allPages > page) {
             navigation.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ignorelist " + (page + 1)));
+            navigation.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to go to the next page!").color(ChatColor.GOLD).create()));
         }
 
         navigation.append(" ]").reset().color(ChatColor.GOLD);
