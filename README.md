@@ -23,5 +23,5 @@ PistonChat will always get updates and contributing is welcome!
 * 2bee2tee.org
 * 10b10t.org
 
-**Do you use PistonChat and want to add your server here? Create a pull request!
+**Do you use PistonChat and want to add your server here? Create a pull request!**
 
