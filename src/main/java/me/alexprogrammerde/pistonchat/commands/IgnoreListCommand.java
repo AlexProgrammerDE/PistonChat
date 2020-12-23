@@ -8,7 +8,6 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -87,8 +86,6 @@ public class IgnoreListCommand implements CommandExecutor, TabExecutor {
         for (OfflinePlayer ignored : map.keySet()) {
             if (i >= minValue && i < maxValue) {
                 ComponentBuilder playerBuilder = new ComponentBuilder(ChatColor.stripColor(ignored.getName()));
-
-                playerBuilder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText(player.getUniqueId().toString())));
 
                 playerBuilder.append(" ").reset();
 
