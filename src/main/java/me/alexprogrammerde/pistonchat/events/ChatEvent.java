@@ -34,11 +34,11 @@ public class ChatEvent implements Listener {
         if (!pistonChatEvent.isCancelled()) {
             String message = pistonChatEvent.getMessage();
 
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                if (!IgnoreTool.isIgnored(chatter, player) && TempDataTool.isChatEnabled(player)) {
+            for (Player receiver : Bukkit.getOnlinePlayers()) {
+                if (!IgnoreTool.isIgnored(chatter, receiver) && TempDataTool.isChatEnabled(receiver)) {
                     ComponentBuilder builder = new ComponentBuilder("<" + chatter.getDisplayName() + ChatColor.RESET + ">");
 
-                    if (player.hasPermission("pistonchat.playernamereply")) {
+                    if (receiver.hasPermission("pistonchat.playernamereply")) {
                         builder.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + ChatColor.stripColor(chatter.getDisplayName()) + " "));
 
                         String hoverText = ConfigTool.getPluginConfig().getString("hovertext");
@@ -47,7 +47,7 @@ public class ChatEvent implements Listener {
                                 new ComponentBuilder(
                                         ChatColor.translateAlternateColorCodes('&',
                                                 hoverText.replaceAll("%player%",
-                                                        ChatColor.stripColor(player.getDisplayName())
+                                                        ChatColor.stripColor(chatter.getDisplayName())
                                                 )
                                         )
                                 ).create()
@@ -58,9 +58,9 @@ public class ChatEvent implements Listener {
 
                     builder.append(new TextComponent(TextComponent.fromLegacyText(message)));
 
-                    builder.color(CommonTool.getChatColorFor(message, player));
+                    builder.color(CommonTool.getChatColorFor(message, chatter));
 
-                    player.spigot().sendMessage(builder.create());
+                    receiver.spigot().sendMessage(builder.create());
                 }
             }
         }
