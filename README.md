@@ -16,6 +16,12 @@ PistonChat will always get updates and contributing is welcome!
 * Private Messaging
 * Auto Complete when you click on a players name just like on the server 2b2t.org
 * Ignore Commands
+* Lots of features that 2b2t's chat plugin has.
 
-## Servers
+## Servers that use PistonChat
+* Hisparquia.org
 * 2bee2tee.org
+* 10b10t.org
+
+**Do you use PistonChat and want to add your server here? Create a pull request!**
+
