@@ -6,7 +6,7 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * Alternative chatevent that is fired when PistonChat executes the chat event.
+ * Alternative chat event that is fired when PistonChat executes the chat event.
  */
 @SuppressWarnings({"unused"})
 public final class PistonChatEvent extends Event implements Cancellable {

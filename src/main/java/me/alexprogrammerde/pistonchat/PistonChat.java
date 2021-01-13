@@ -42,8 +42,8 @@ public final class PistonChat extends JavaPlugin {
         PluginCommand reply = server.getPluginCommand("reply");
         PluginCommand last = server.getPluginCommand("last");
         PluginCommand ignorelist = server.getPluginCommand("ignorelist");
-        PluginCommand togglewhispering = server.getPluginCommand("togglewhispering");
-        PluginCommand togglechat = server.getPluginCommand("togglechat");
+        PluginCommand toggleWhispering = server.getPluginCommand("togglewhispering");
+        PluginCommand toggleChat = server.getPluginCommand("togglechat");
         PluginCommand main = server.getPluginCommand("pistonchat");
 
         if (ignorehard != null) {
@@ -76,14 +76,14 @@ public final class PistonChat extends JavaPlugin {
             ignorelist.setTabCompleter(new IgnoreListCommand());
         }
 
-        if (togglewhispering != null) {
-            togglewhispering.setExecutor(new ToggleWhisperingCommand());
-            togglewhispering.setTabCompleter(new ToggleWhisperingCommand());
+        if (toggleWhispering != null) {
+            toggleWhispering.setExecutor(new ToggleWhisperingCommand());
+            toggleWhispering.setTabCompleter(new ToggleWhisperingCommand());
         }
 
-        if (togglechat != null) {
-            togglechat.setExecutor(new ToggleChatCommand());
-            togglechat.setTabCompleter(new ToggleChatCommand());
+        if (toggleChat != null) {
+            toggleChat.setExecutor(new ToggleChatCommand());
+            toggleChat.setTabCompleter(new ToggleChatCommand());
         }
 
         if (main != null) {
