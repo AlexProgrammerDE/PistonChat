@@ -7,6 +7,8 @@ import java.util.HashMap;
 public class TempDataTool {
     private static final HashMap<Player, TempData> map = new HashMap<>();
 
+    private TempDataTool() {}
+
     public static void setWhisperingEnabled(Player player, boolean value) {
         indexPlayer(player);
 
@@ -38,7 +40,7 @@ public class TempDataTool {
     }
 
     private static class TempData {
-        public boolean whispering = true;
-        public boolean chat = true;
+        private boolean whispering = true;
+        private boolean chat = true;
     }
 }

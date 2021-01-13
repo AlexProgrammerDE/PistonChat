@@ -11,6 +11,8 @@ import java.util.UUID;
 public class CacheTool {
     private static final HashMap<UUID, PlayerData> map = new HashMap<>();
 
+    private CacheTool() {}
+
     public static void sendMessage(Player sender, Player receiver) {
         indexPlayer(sender);
         indexPlayer(receiver);

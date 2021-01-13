@@ -33,7 +33,7 @@ public final class PistonChat extends JavaPlugin {
         saveDefaultConfig();
         getConfig().options().copyDefaults(true);
         saveConfig();
-        new ConfigTool().setupTool(this);
+        ConfigTool.setupTool(this);
 
         log.info(ChatColor.DARK_GREEN + "Registering commands");
         PluginCommand ignorehard = server.getPluginCommand("ignorehard");

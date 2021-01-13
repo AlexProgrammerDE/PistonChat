@@ -17,8 +17,8 @@ import org.bukkit.entity.Player;
 
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class IgnoreListCommand implements CommandExecutor, TabExecutor {
     @Override
@@ -63,7 +63,7 @@ public class IgnoreListCommand implements CommandExecutor, TabExecutor {
         int maxValue = page * ConfigTool.getPageSize();
         int minValue = maxValue - ConfigTool.getPageSize();
 
-        HashMap<OfflinePlayer, IgnoreTool.IgnoreType> map = IgnoreTool.getIgnoredPlayers(player);
+        Map<OfflinePlayer, IgnoreTool.IgnoreType> map = IgnoreTool.getIgnoredPlayers(player);
 
         int allPages = IntMath.divide(map.size(), ConfigTool.getPageSize(), RoundingMode.CEILING);
 
@@ -91,9 +91,9 @@ public class IgnoreListCommand implements CommandExecutor, TabExecutor {
 
         int i = 0;
 
-        for (OfflinePlayer ignored : map.keySet()) {
+        for (Map.Entry<OfflinePlayer, IgnoreTool.IgnoreType> entry : map.entrySet()) {
             if (i >= minValue && i < maxValue) {
-                ComponentBuilder playerBuilder = new ComponentBuilder(ChatColor.stripColor(ignored.getName()));
+                ComponentBuilder playerBuilder = new ComponentBuilder(ChatColor.stripColor(entry.getKey().getName()));
 
                 playerBuilder.append(" ").reset();
 
@@ -101,15 +101,15 @@ public class IgnoreListCommand implements CommandExecutor, TabExecutor {
 
                 playerBuilder.color(ChatColor.GRAY);
 
-                if (map.get(ignored) == IgnoreTool.IgnoreType.HARD) {
+                if (entry.getValue() == IgnoreTool.IgnoreType.HARD) {
                     playerBuilder.append("hard");
 
                     playerBuilder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to remove the permanent ignore").color(ChatColor.GOLD).create()));
-                    playerBuilder.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ignorehard " + ChatColor.stripColor(ignored.getName())));
+                    playerBuilder.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ignorehard " + ChatColor.stripColor(entry.getKey().getName())));
                 } else {
                     playerBuilder.append("soft");
                     playerBuilder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to remove the temporary ignore").color(ChatColor.GOLD).create()));
-                    playerBuilder.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ignore " + ChatColor.stripColor(ignored.getName())));
+                    playerBuilder.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ignore " + ChatColor.stripColor(entry.getKey().getName())));
                 }
 
                 playerBuilder.color(ChatColor.GOLD);

@@ -46,7 +46,7 @@ public class ChatEvent implements Listener {
                         builder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                                 new ComponentBuilder(
                                         ChatColor.translateAlternateColorCodes('&',
-                                                hoverText.replaceAll("%player%",
+                                                hoverText.replace("%player%",
                                                         ChatColor.stripColor(chatter.getDisplayName())
                                                 )
                                         )

@@ -2,7 +2,6 @@ package me.alexprogrammerde.pistonchat.commands;
 
 import me.alexprogrammerde.pistonchat.utils.CacheTool;
 import me.alexprogrammerde.pistonchat.utils.CommonTool;
-import me.alexprogrammerde.pistonchat.utils.ConfigTool;
 import me.alexprogrammerde.pistonchat.utils.IgnoreTool;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

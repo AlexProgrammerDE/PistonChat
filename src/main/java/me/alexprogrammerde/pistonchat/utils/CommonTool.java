@@ -14,6 +14,8 @@ public class CommonTool {
         return Optional.ofNullable(Bukkit.getPlayer(name));
     }
 
+    private CommonTool() {}
+
     public static void sendWhisperTo(Player sender, String message, Player receiver) {
         if (sender == receiver) {
             sender.sendMessage(CommonTool.getPrefix() + "Please do not send a message to yourself!");
@@ -26,12 +28,12 @@ public class CommonTool {
         }
 
         String receiverString = ChatColor.translateAlternateColorCodes('&', ConfigTool.getPluginConfig().getString("whisper.from")
-                                .replaceAll("%player%", ChatColor.stripColor(sender.getDisplayName()))
-                                .replaceAll("%message%", message));
+                                .replace("%player%", ChatColor.stripColor(sender.getDisplayName()))
+                                .replace("%message%", message));
 
         String senderString = ChatColor.translateAlternateColorCodes('&', ConfigTool.getPluginConfig().getString("whisper.to")
-                        .replaceAll("%player%", ChatColor.stripColor(receiver.getDisplayName()))
-                        .replaceAll("%message%", message));
+                        .replace("%player%", ChatColor.stripColor(receiver.getDisplayName()))
+                        .replace("%message%", message));
 
         receiver.spigot().sendMessage(new TextComponent(TextComponent.fromLegacyText(receiverString)));
 

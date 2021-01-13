@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class ConfigTool {
-    public static PistonChat plugin;
+    private static PistonChat plugin;
     private static FileConfiguration dataConfig;
     private static File dataFile;
 
@@ -74,21 +74,20 @@ public class ConfigTool {
     }
 
     private static void generateFile() {
-        if (!plugin.getDataFolder().exists()) {
-            if (!plugin.getDataFolder().mkdir())
+        if (!plugin.getDataFolder().exists() && !plugin.getDataFolder().mkdir())
                 return;
-        }
 
         if (!dataFile.exists()) {
             try {
-                dataFile.createNewFile();
+                if (!dataFile.createNewFile())
+                    throw new IOException("Couldn't create file " + dataFile.getAbsolutePath());
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public void setupTool(PistonChat plugin) {
+    public static void setupTool(PistonChat plugin) {
         ConfigTool.plugin = plugin;
         ConfigTool.dataFile = new File(plugin.getDataFolder(), "data.yml");
 
@@ -100,7 +99,8 @@ public class ConfigTool {
     }
 
     public static String getPreparedString(String str, Player player) {
-        return ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString(str).replaceAll("%player%", ChatColor.stripColor(player.getDisplayName())));
+        return ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString(str)
+                .replace("%player%", ChatColor.stripColor(player.getDisplayName())));
     }
 
     public enum HardReturn {
