@@ -36,7 +36,7 @@ public class ChatEvent implements Listener {
 
             for (Player receiver : Bukkit.getOnlinePlayers()) {
                 if (!IgnoreTool.isIgnored(chatter, receiver) && TempDataTool.isChatEnabled(receiver)) {
-                    ComponentBuilder builder = new ComponentBuilder("<" + chatter.getDisplayName() + ChatColor.RESET + ">");
+                    ComponentBuilder builder = new ComponentBuilder(CommonTool.getFormat(chatter));
 
                     if (receiver.hasPermission("pistonchat.playernamereply")) {
                         builder.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + ChatColor.stripColor(chatter.getDisplayName()) + " "));

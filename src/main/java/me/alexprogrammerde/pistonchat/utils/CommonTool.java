@@ -65,4 +65,20 @@ public class CommonTool {
 
         return ChatColor.WHITE;
     }
+
+    public static String getFormat(Player player) {
+        FileConfiguration config = ConfigTool.getPluginConfig();
+
+        return  ChatColor.translateAlternateColorCodes('&', config.getString("chatformat").replace("%player%", getName(player)));
+    }
+
+    private static String getName(Player player) {
+        FileConfiguration config = ConfigTool.getPluginConfig();
+
+        if (config.getBoolean("stripnamecolor")) {
+            return ChatColor.stripColor(player.getDisplayName());
+        } else {
+            return player.getDisplayName();
+        }
+    }
 }
