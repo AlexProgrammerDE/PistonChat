@@ -69,7 +69,7 @@ public class CommonTool {
     public static String getFormat(Player player) {
         FileConfiguration config = ConfigTool.getPluginConfig();
 
-        return  ChatColor.translateAlternateColorCodes('&', config.getString("chatformat").replace("%player%", getName(player)));
+        return ChatColor.translateAlternateColorCodes('&', config.getString("chatformat").replace("%player%", getName(player)));
     }
 
     private static String getName(Player player) {
