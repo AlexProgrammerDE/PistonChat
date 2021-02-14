@@ -93,7 +93,7 @@ public class IgnoreListCommand implements CommandExecutor, TabExecutor {
 
         for (Map.Entry<OfflinePlayer, IgnoreTool.IgnoreType> entry : map.entrySet()) {
             if (i >= minValue && i < maxValue) {
-                ComponentBuilder playerBuilder = new ComponentBuilder(ChatColor.stripColor(entry.getKey().getName()));
+                ComponentBuilder playerBuilder = new ComponentBuilder(entry.getKey().getName());
 
                 playerBuilder.append(" ").reset();
 

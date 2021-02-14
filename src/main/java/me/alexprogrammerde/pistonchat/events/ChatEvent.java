@@ -22,10 +22,9 @@ public class ChatEvent implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onChat(AsyncPlayerChatEvent event) {
         Player chatter = event.getPlayer();
+        PistonChatEvent pistonChatEvent = new PistonChatEvent(chatter, event.getMessage());
 
         event.getRecipients().clear();
-
-        PistonChatEvent pistonChatEvent = new PistonChatEvent(chatter, event.getMessage());
 
         Bukkit.getPluginManager().callEvent(pistonChatEvent);
 
@@ -39,7 +38,7 @@ public class ChatEvent implements Listener {
                     ComponentBuilder builder = new ComponentBuilder(CommonTool.getFormat(chatter));
 
                     if (receiver.hasPermission("pistonchat.playernamereply")) {
-                        builder.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + ChatColor.stripColor(chatter.getDisplayName()) + " "));
+                        builder.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/w " + ChatColor.stripColor(chatter.getDisplayName()) + " "));
 
                         String hoverText = ConfigTool.getPluginConfig().getString("hovertext");
 

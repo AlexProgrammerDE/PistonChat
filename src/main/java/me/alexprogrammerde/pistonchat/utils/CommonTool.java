@@ -3,8 +3,10 @@ package me.alexprogrammerde.pistonchat.utils;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import me.clip.placeholderapi.PlaceholderAPI;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -67,9 +69,13 @@ public class CommonTool {
     }
 
     public static String getFormat(Player player) {
-        FileConfiguration config = ConfigTool.getPluginConfig();
+        String str = ChatColor.translateAlternateColorCodes('&', ConfigTool.getPluginConfig().getString("chatformat").replace("%player%", getName(player)));
 
-        return ChatColor.translateAlternateColorCodes('&', config.getString("chatformat").replace("%player%", getName(player)));
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            str = parse(player, str);
+        }
+
+        return str;
     }
 
     private static String getName(Player player) {
@@ -80,5 +86,9 @@ public class CommonTool {
         } else {
             return player.getDisplayName();
         }
+    }
+
+    public static String parse(OfflinePlayer player, String str) {
+        return PlaceholderAPI.setPlaceholders(player, str);
     }
 }

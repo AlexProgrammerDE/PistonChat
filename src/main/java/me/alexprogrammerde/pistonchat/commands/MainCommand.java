@@ -13,6 +13,7 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.util.StringUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MainCommand implements CommandExecutor, TabExecutor {
@@ -32,18 +33,26 @@ public class MainCommand implements CommandExecutor, TabExecutor {
 
                         plugin.getDescription().getCommands().forEach((name, info) ->
                                 builder.append("\n/" + name)
-                                .color(ChatColor.GOLD)
-                                .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/" + name + " "))
-                                .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                        new ComponentBuilder("Click me!")
-                                                .color(ChatColor.GOLD)
-                                                .create()
-                                ))
-                                .append(" - ")
-                                .color(ChatColor.GOLD)
-                                .append(info.get("description").toString()));
+                                        .color(ChatColor.GOLD)
+                                        .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/" + name + " "))
+                                        .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                                new ComponentBuilder("Click me!")
+                                                        .color(ChatColor.GOLD)
+                                                        .create()
+                                        ))
+                                        .append(" - ")
+                                        .color(ChatColor.GOLD)
+                                        .append(info.get("description").toString()));
 
                         sender.spigot().sendMessage(builder.create());
+                    } else {
+                        sender.sendMessage(command.getPermissionMessage());
+                    }
+
+                    break;
+                case "version":
+                    if (sender.hasPermission("pistonchat.version")) {
+                        sender.sendMessage(ChatColor.GOLD + "Currently running: " + plugin.getDescription().getFullName());
                     } else {
                         sender.sendMessage(command.getPermissionMessage());
                     }
@@ -83,9 +92,10 @@ public class MainCommand implements CommandExecutor, TabExecutor {
             }
 
             StringUtil.copyPartialMatches(args[0], possibleCommands, completions);
+            Collections.sort(completions);
 
             return completions;
-         } else {
+        } else {
             return new ArrayList<>();
         }
     }
