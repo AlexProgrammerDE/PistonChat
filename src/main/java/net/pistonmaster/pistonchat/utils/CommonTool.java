@@ -1,4 +1,4 @@
-package me.alexprogrammerde.pistonchat.utils;
+package net.pistonmaster.pistonchat.utils;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;

@@ -1,9 +1,9 @@
-package me.alexprogrammerde.pistonchat.api;
+package net.pistonmaster.pistonchat.api;
 
 import com.google.common.base.Preconditions;
-import me.alexprogrammerde.pistonchat.utils.CommonTool;
-import me.alexprogrammerde.pistonchat.utils.ConfigTool;
-import me.alexprogrammerde.pistonchat.utils.IgnoreTool;
+import net.pistonmaster.pistonchat.utils.CommonTool;
+import net.pistonmaster.pistonchat.utils.ConfigTool;
+import net.pistonmaster.pistonchat.utils.IgnoreTool;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 

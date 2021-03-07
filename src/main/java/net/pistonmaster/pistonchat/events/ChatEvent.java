@@ -1,10 +1,10 @@
-package me.alexprogrammerde.pistonchat.events;
+package net.pistonmaster.pistonchat.events;
 
-import me.alexprogrammerde.pistonchat.api.PistonChatEvent;
-import me.alexprogrammerde.pistonchat.utils.CommonTool;
-import me.alexprogrammerde.pistonchat.utils.ConfigTool;
-import me.alexprogrammerde.pistonchat.utils.IgnoreTool;
-import me.alexprogrammerde.pistonchat.utils.TempDataTool;
+import net.pistonmaster.pistonchat.api.PistonChatEvent;
+import net.pistonmaster.pistonchat.utils.CommonTool;
+import net.pistonmaster.pistonchat.utils.ConfigTool;
+import net.pistonmaster.pistonchat.utils.IgnoreTool;
+import net.pistonmaster.pistonchat.utils.TempDataTool;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;

@@ -6,7 +6,7 @@
 
     <groupId>me.alexprogrammerde</groupId>
     <artifactId>PistonChat</artifactId>
-    <version>1.3.0</version>
+    <version>1.3.1</version>
     <packaging>jar</packaging>
 
     <name>PistonChat</name>
@@ -73,11 +73,11 @@
                             <relocations>
                                 <relocation>
                                     <pattern>org.bstats</pattern>
-                                    <shadedPattern>me.alexprogrammerde.pistonchat.bstats</shadedPattern>
+                                    <shadedPattern>net.pistonmaster.pistonchat.shade.bstats</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>me.alexprogrammerde.pistonutils</pattern>
-                                    <shadedPattern>me.alexprogrammerde.pistonchat.pistonutils</shadedPattern>
+                                    <pattern>net.pistonmaster.pistonutils</pattern>
+                                    <shadedPattern>net.pistonmaster.pistonchat.shade.pistonutils</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
@@ -155,7 +155,7 @@
         <dependency>
             <groupId>me.alexprogrammerde</groupId>
             <artifactId>PistonUtils</artifactId>
-            <version>1.2.0</version>
+            <version>1.2.1</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

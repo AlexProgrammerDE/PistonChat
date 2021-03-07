@@ -1,7 +1,7 @@
-package me.alexprogrammerde.pistonchat.commands;
+package net.pistonmaster.pistonchat.commands;
 
-import me.alexprogrammerde.pistonchat.PistonChat;
-import me.alexprogrammerde.pistonchat.utils.CommonTool;
+import net.pistonmaster.pistonchat.PistonChat;
+import net.pistonmaster.pistonchat.utils.CommonTool;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;

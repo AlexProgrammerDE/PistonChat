@@ -1,6 +1,6 @@
-package me.alexprogrammerde.pistonchat.utils;
+package net.pistonmaster.pistonchat.utils;
 
-import me.alexprogrammerde.pistonchat.PistonChat;
+import net.pistonmaster.pistonchat.PistonChat;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;

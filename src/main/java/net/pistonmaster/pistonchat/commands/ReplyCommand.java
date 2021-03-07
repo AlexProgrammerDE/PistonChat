@@ -1,8 +1,8 @@
-package me.alexprogrammerde.pistonchat.commands;
+package net.pistonmaster.pistonchat.commands;
 
-import me.alexprogrammerde.pistonchat.utils.CacheTool;
-import me.alexprogrammerde.pistonchat.utils.CommonTool;
-import me.alexprogrammerde.pistonchat.utils.IgnoreTool;
+import net.pistonmaster.pistonchat.utils.CacheTool;
+import net.pistonmaster.pistonchat.utils.CommonTool;
+import net.pistonmaster.pistonchat.utils.IgnoreTool;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -13,27 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class LastCommand implements CommandExecutor, TabExecutor {
+public class ReplyCommand implements CommandExecutor, TabExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            Optional<Player> lastSentTo = CacheTool.getLastSentTo(player);
             Optional<Player> lastMessagedOf = CacheTool.getLastMessagedOf(player);
 
-            if (lastSentTo.isPresent()) {
-                if (IgnoreTool.isIgnored(player, lastSentTo.get())) {
-                    player.sendMessage(CommonTool.getPrefix() + "This person blocked you!");
-                } else if (IgnoreTool.isIgnored(lastSentTo.get(), player)) {
-                    player.sendMessage(CommonTool.getPrefix() + "You block this person!");
-                } else {
-                    if (args.length > 0) {
-                        CommonTool.sendWhisperTo(player, CommonTool.mergeArgs(args, 0), lastSentTo.get());
-                    } else {
-                        return false;
-                    }
-                }
-            } else if (lastMessagedOf.isPresent()) {
+            if (lastMessagedOf.isPresent()) {
                 if (IgnoreTool.isIgnored(player, lastMessagedOf.get())) {
                     player.sendMessage(CommonTool.getPrefix() + "This person blocked you!");
                 } else if (IgnoreTool.isIgnored(lastMessagedOf.get(), player)) {

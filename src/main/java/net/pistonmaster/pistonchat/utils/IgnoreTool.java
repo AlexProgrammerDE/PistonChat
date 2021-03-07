@@ -1,4 +1,4 @@
-package me.alexprogrammerde.pistonchat.utils;
+package net.pistonmaster.pistonchat.utils;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;

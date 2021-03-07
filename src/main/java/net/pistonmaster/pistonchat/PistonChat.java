@@ -1,13 +1,13 @@
-package me.alexprogrammerde.pistonchat;
+package net.pistonmaster.pistonchat;
 
-import me.alexprogrammerde.pistonchat.commands.*;
-import me.alexprogrammerde.pistonchat.events.ChatEvent;
-import me.alexprogrammerde.pistonchat.utils.ConfigTool;
-import me.alexprogrammerde.pistonutils.PistonLogger;
-import me.alexprogrammerde.pistonutils.update.UpdateChecker;
-import me.alexprogrammerde.pistonutils.update.UpdateParser;
-import me.alexprogrammerde.pistonutils.update.UpdateType;
+import net.pistonmaster.pistonchat.events.ChatEvent;
+import net.pistonmaster.pistonchat.utils.ConfigTool;
 import net.md_5.bungee.api.ChatColor;
+import net.pistonmaster.pistonchat.commands.*;
+import net.pistonmaster.pistonutils.logging.PistonLogger;
+import net.pistonmaster.pistonutils.update.UpdateChecker;
+import net.pistonmaster.pistonutils.update.UpdateParser;
+import net.pistonmaster.pistonutils.update.UpdateType;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Server;
 import org.bukkit.command.PluginCommand;

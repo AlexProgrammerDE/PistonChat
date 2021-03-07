@@ -1,4 +1,4 @@
-package me.alexprogrammerde.pistonchat.utils;
+package net.pistonmaster.pistonchat.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

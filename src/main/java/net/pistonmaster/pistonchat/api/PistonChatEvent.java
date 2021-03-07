@@ -1,4 +1,4 @@
-package me.alexprogrammerde.pistonchat.api;
+package net.pistonmaster.pistonchat.api;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
