@@ -19,7 +19,7 @@ PistonChat will always get updates and contributing is welcome!
 * Lots of features that 2b2t's chat plugin has.
 
 ## Servers that use PistonChat
-* Hisparquia.org
+* hisparquia.org
 * 2bee2tee.org
 * 10b10t.org
 * 2b2t.com.au
