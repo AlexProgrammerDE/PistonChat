@@ -1,6 +1,6 @@
 name: PistonChat
 version: ${project.version}
-main: me.alexprogrammerde.pistonchat.PistonChat
+main: net.pistonmaster.pistonchat.PistonChat
 authors: [ AlexProgrammerDE ]
 description: An advanced chat plugin for survival/anarchy servers.
 website: https://pistonmaster.net/
