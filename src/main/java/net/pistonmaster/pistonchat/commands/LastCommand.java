@@ -3,6 +3,7 @@ package net.pistonmaster.pistonchat.commands;
 import net.pistonmaster.pistonchat.utils.CacheTool;
 import net.pistonmaster.pistonchat.utils.CommonTool;
 import net.pistonmaster.pistonchat.utils.IgnoreTool;
+import net.pistonmaster.pistonchat.utils.LanguageTool;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -46,10 +47,10 @@ public class LastCommand implements CommandExecutor, TabExecutor {
                     }
                 }
             } else {
-                player.sendMessage(CommonTool.getPrefix() + "Player not found/online!");
+                player.sendMessage(LanguageTool.getMessage("notonline"));
             }
         } else {
-            sender.sendMessage(CommonTool.getPrefix() + "You need to be a player to do this!");
+            sender.sendMessage(LanguageTool.getMessage("playeronly"));
         }
 
         return true;

@@ -1,21 +1,29 @@
 package net.pistonmaster.pistonchat;
 
 import net.pistonmaster.pistonchat.events.ChatEvent;
+import net.pistonmaster.pistonchat.utils.ConfigManager;
 import net.pistonmaster.pistonchat.utils.ConfigTool;
 import net.md_5.bungee.api.ChatColor;
 import net.pistonmaster.pistonchat.commands.*;
+import net.pistonmaster.pistonchat.utils.LanguageTool;
 import net.pistonmaster.pistonutils.logging.PistonLogger;
 import net.pistonmaster.pistonutils.update.UpdateChecker;
 import net.pistonmaster.pistonutils.update.UpdateParser;
 import net.pistonmaster.pistonutils.update.UpdateType;
 import org.bstats.bukkit.Metrics;
+import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.IOException;
 import java.util.logging.Logger;
 
 public final class PistonChat extends JavaPlugin {
+    private final ConfigManager config = new ConfigManager(this, "config.yml");
+    private final ConfigManager language = new ConfigManager(this, "language.yml");
+
     @Override
     public void onEnable() {
         Logger log = getLogger();
@@ -30,10 +38,15 @@ public final class PistonChat extends JavaPlugin {
         log.info("                                                             ");
 
         log.info(ChatColor.DARK_GREEN + "Loading config");
-        saveDefaultConfig();
-        getConfig().options().copyDefaults(true);
-        saveConfig();
+        try {
+            config.create();
+            language.create();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Bukkit.getPluginManager().disablePlugin(this);
+        }
         ConfigTool.setupTool(this);
+        LanguageTool.setupTool(this);
 
         log.info(ChatColor.DARK_GREEN + "Registering commands");
         PluginCommand ignorehard = server.getPluginCommand("ignorehard");
@@ -116,5 +129,14 @@ public final class PistonChat extends JavaPlugin {
         new Metrics(this, 9630);
 
         log.info(ChatColor.DARK_GREEN + "Done! :D");
+    }
+
+    @Override
+    public FileConfiguration getConfig() {
+        return config.get();
+    }
+
+    public FileConfiguration getLanguage() {
+        return language.get();
     }
 }

@@ -29,11 +29,11 @@ public class CommonTool {
             return;
         }
 
-        String receiverString = ChatColor.translateAlternateColorCodes('&', ConfigTool.getPluginConfig().getString("whisper.from")
+        String receiverString = ChatColor.translateAlternateColorCodes('&', ConfigTool.getConfig().getString("whisper.from")
                                 .replace("%player%", ChatColor.stripColor(sender.getDisplayName()))
                                 .replace("%message%", message));
 
-        String senderString = ChatColor.translateAlternateColorCodes('&', ConfigTool.getPluginConfig().getString("whisper.to")
+        String senderString = ChatColor.translateAlternateColorCodes('&', ConfigTool.getConfig().getString("whisper.to")
                         .replace("%player%", ChatColor.stripColor(receiver.getDisplayName()))
                         .replace("%message%", message));
 
@@ -49,11 +49,11 @@ public class CommonTool {
     }
 
     public static String getPrefix() {
-        return ChatColor.translateAlternateColorCodes('&', ConfigTool.getPluginConfig().getString("log"));
+        return ChatColor.translateAlternateColorCodes('&', ConfigTool.getLanguage().getString("prefix"));
     }
 
     public static ChatColor getChatColorFor(String message, Player player) {
-        FileConfiguration config = ConfigTool.getPluginConfig();
+        FileConfiguration config = ConfigTool.getConfig();
 
         for (String str : config.getConfigurationSection("prefixes").getKeys(false)) {
             if (!config.getString("prefixes." + str).equalsIgnoreCase("/") && message.toLowerCase().startsWith(config.getString("prefixes." + str))) {
@@ -69,7 +69,7 @@ public class CommonTool {
     }
 
     public static String getFormat(Player player) {
-        String str = ChatColor.translateAlternateColorCodes('&', ConfigTool.getPluginConfig().getString("chatformat").replace("%player%", getName(player)));
+        String str = ChatColor.translateAlternateColorCodes('&', ConfigTool.getConfig().getString("chatformat").replace("%player%", getName(player)));
 
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             str = parse(player, str);
@@ -79,7 +79,7 @@ public class CommonTool {
     }
 
     private static String getName(Player player) {
-        FileConfiguration config = ConfigTool.getPluginConfig();
+        FileConfiguration config = ConfigTool.getConfig();
 
         if (config.getBoolean("stripnamecolor")) {
             return ChatColor.stripColor(player.getDisplayName());

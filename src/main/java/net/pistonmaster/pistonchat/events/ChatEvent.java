@@ -40,7 +40,7 @@ public class ChatEvent implements Listener {
                     if (receiver.hasPermission("pistonchat.playernamereply")) {
                         builder.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/w " + ChatColor.stripColor(chatter.getDisplayName()) + " "));
 
-                        String hoverText = ConfigTool.getPluginConfig().getString("hovertext");
+                        String hoverText = ConfigTool.getConfig().getString("hovertext");
 
                         builder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                                 new ComponentBuilder(

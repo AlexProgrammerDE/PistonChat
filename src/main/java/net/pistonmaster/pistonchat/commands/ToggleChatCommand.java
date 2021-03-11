@@ -1,6 +1,7 @@
 package net.pistonmaster.pistonchat.commands;
 
 import net.pistonmaster.pistonchat.utils.CommonTool;
+import net.pistonmaster.pistonchat.utils.LanguageTool;
 import net.pistonmaster.pistonchat.utils.TempDataTool;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -25,7 +26,7 @@ public class ToggleChatCommand implements CommandExecutor, TabExecutor {
                 player.sendMessage(CommonTool.getPrefix() + "Disabled chat messages! (Will be reset on rejoin!)");
             }
         } else {
-            sender.sendMessage(CommonTool.getPrefix() + "You need to be a player to do that!");
+            sender.sendMessage(LanguageTool.getMessage("playeronly"));
         }
 
         return true;

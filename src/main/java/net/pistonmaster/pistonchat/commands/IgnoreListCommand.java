@@ -8,6 +8,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
+import net.pistonmaster.pistonchat.utils.LanguageTool;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -48,7 +49,7 @@ public class IgnoreListCommand implements CommandExecutor, TabExecutor {
                 }
             }
         } else {
-            sender.sendMessage(CommonTool.getPrefix() + "You need to be a player to do that!");
+            sender.sendMessage(LanguageTool.getMessage("playeronly"));
         }
 
         return true;

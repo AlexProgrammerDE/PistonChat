@@ -94,7 +94,11 @@ public class ConfigTool {
         loadData();
     }
 
-    public static FileConfiguration getPluginConfig() {
+    public static FileConfiguration getConfig() {
+        return plugin.getConfig();
+    }
+
+    public static FileConfiguration getLanguage() {
         return plugin.getConfig();
     }
 

@@ -168,5 +168,10 @@
             <version>2.10.9</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.amihaiemil.web</groupId>
+            <artifactId>eo-yaml</artifactId>
+            <version>5.1.9</version>
+        </dependency>
     </dependencies>
 </project>
