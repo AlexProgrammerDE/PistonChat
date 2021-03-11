@@ -1,4 +1,4 @@
-package net.pistonmaster.pistonchat.commands;
+package net.pistonmaster.pistonchat.commands.ignore;
 
 import com.google.common.math.IntMath;
 import net.md_5.bungee.api.ChatColor;

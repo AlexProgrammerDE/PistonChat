@@ -1,4 +1,4 @@
-package net.pistonmaster.pistonchat.commands;
+package net.pistonmaster.pistonchat.commands.whisper;
 
 import net.pistonmaster.pistonchat.utils.CommonTool;
 import net.pistonmaster.pistonchat.utils.IgnoreTool;

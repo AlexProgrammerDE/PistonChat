@@ -2,6 +2,14 @@ package net.pistonmaster.pistonchat;
 
 import net.md_5.bungee.api.ChatColor;
 import net.pistonmaster.pistonchat.commands.*;
+import net.pistonmaster.pistonchat.commands.ignore.HardIgnoreCommand;
+import net.pistonmaster.pistonchat.commands.ignore.IgnoreListCommand;
+import net.pistonmaster.pistonchat.commands.ignore.SoftIgnoreCommand;
+import net.pistonmaster.pistonchat.commands.toggle.ToggleChatCommand;
+import net.pistonmaster.pistonchat.commands.toggle.ToggleWhisperingCommand;
+import net.pistonmaster.pistonchat.commands.whisper.LastCommand;
+import net.pistonmaster.pistonchat.commands.whisper.ReplyCommand;
+import net.pistonmaster.pistonchat.commands.whisper.WhisperCommand;
 import net.pistonmaster.pistonchat.events.ChatEvent;
 import net.pistonmaster.pistonchat.utils.ConfigManager;
 import net.pistonmaster.pistonchat.utils.ConfigTool;

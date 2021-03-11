@@ -14,6 +14,7 @@ chatformat: "<%player%&r>"
 stripnamecolor: false
 
 allowpmself: true
+allowpmignored: true
 
 ignorelistsize: 9
 prefixes:

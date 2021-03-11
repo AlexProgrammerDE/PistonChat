@@ -1,4 +1,4 @@
-package net.pistonmaster.pistonchat.commands;
+package net.pistonmaster.pistonchat.commands.toggle;
 
 import net.pistonmaster.pistonchat.utils.LanguageTool;
 import net.pistonmaster.pistonchat.utils.TempDataTool;
