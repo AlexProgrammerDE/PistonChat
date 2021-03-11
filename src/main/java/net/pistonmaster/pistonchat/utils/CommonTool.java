@@ -1,12 +1,12 @@
 package net.pistonmaster.pistonchat.utils;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import me.clip.placeholderapi.PlaceholderAPI;
 
 import java.util.Arrays;
 import java.util.Optional;

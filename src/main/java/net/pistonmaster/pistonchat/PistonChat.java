@@ -1,11 +1,10 @@
 package net.pistonmaster.pistonchat;
 
+import net.md_5.bungee.api.ChatColor;
+import net.pistonmaster.pistonchat.commands.*;
 import net.pistonmaster.pistonchat.events.ChatEvent;
 import net.pistonmaster.pistonchat.utils.ConfigManager;
 import net.pistonmaster.pistonchat.utils.ConfigTool;
-import net.md_5.bungee.api.ChatColor;
-import net.pistonmaster.pistonchat.commands.*;
-import net.pistonmaster.pistonchat.utils.LanguageTool;
 import net.pistonmaster.pistonutils.logging.PistonLogger;
 import net.pistonmaster.pistonutils.update.UpdateChecker;
 import net.pistonmaster.pistonutils.update.UpdateParser;

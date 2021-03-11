@@ -1,11 +1,11 @@
 package net.pistonmaster.pistonchat.commands;
 
-import net.pistonmaster.pistonchat.PistonChat;
-import net.pistonmaster.pistonchat.utils.CommonTool;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
+import net.pistonmaster.pistonchat.PistonChat;
+import net.pistonmaster.pistonchat.utils.CommonTool;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

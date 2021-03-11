@@ -1,7 +1,7 @@
 package net.pistonmaster.pistonchat.utils;
 
-import net.pistonmaster.pistonchat.PistonChat;
 import net.md_5.bungee.api.ChatColor;
+import net.pistonmaster.pistonchat.PistonChat;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;

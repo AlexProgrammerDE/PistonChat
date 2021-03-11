@@ -1,13 +1,13 @@
 package net.pistonmaster.pistonchat.commands;
 
 import com.google.common.math.IntMath;
-import net.pistonmaster.pistonchat.utils.CommonTool;
-import net.pistonmaster.pistonchat.utils.ConfigTool;
-import net.pistonmaster.pistonchat.utils.IgnoreTool;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
+import net.pistonmaster.pistonchat.utils.CommonTool;
+import net.pistonmaster.pistonchat.utils.ConfigTool;
+import net.pistonmaster.pistonchat.utils.IgnoreTool;
 import net.pistonmaster.pistonchat.utils.LanguageTool;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;

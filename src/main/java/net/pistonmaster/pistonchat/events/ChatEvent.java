@@ -1,15 +1,15 @@
 package net.pistonmaster.pistonchat.events;
 
-import net.pistonmaster.pistonchat.api.PistonChatEvent;
-import net.pistonmaster.pistonchat.utils.CommonTool;
-import net.pistonmaster.pistonchat.utils.ConfigTool;
-import net.pistonmaster.pistonchat.utils.IgnoreTool;
-import net.pistonmaster.pistonchat.utils.TempDataTool;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.pistonmaster.pistonchat.api.PistonChatEvent;
+import net.pistonmaster.pistonchat.utils.CommonTool;
+import net.pistonmaster.pistonchat.utils.ConfigTool;
+import net.pistonmaster.pistonchat.utils.IgnoreTool;
+import net.pistonmaster.pistonchat.utils.TempDataTool;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
