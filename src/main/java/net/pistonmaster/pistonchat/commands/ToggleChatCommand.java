@@ -21,9 +21,9 @@ public class ToggleChatCommand implements CommandExecutor, TabExecutor {
             TempDataTool.setChatEnabled(player, !TempDataTool.isChatEnabled(player));
 
             if (TempDataTool.isChatEnabled(player)) {
-                player.sendMessage(CommonTool.getPrefix() + "Enabled chat messages!");
+                player.sendMessage(LanguageTool.getMessage("chaton"));
             } else {
-                player.sendMessage(CommonTool.getPrefix() + "Disabled chat messages! (Will be reset on rejoin!)");
+                player.sendMessage(LanguageTool.getMessage("chatoff"));
             }
         } else {
             sender.sendMessage(LanguageTool.getMessage("playeronly"));

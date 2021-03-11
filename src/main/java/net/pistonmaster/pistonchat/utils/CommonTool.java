@@ -19,8 +19,8 @@ public class CommonTool {
     private CommonTool() {}
 
     public static void sendWhisperTo(Player sender, String message, Player receiver) {
-        if (sender == receiver) {
-            sender.sendMessage(CommonTool.getPrefix() + "Please do not send a message to yourself!");
+        if (!ConfigTool.getConfig().getBoolean("allowpmself") && sender == receiver) {
+            sender.sendMessage(LanguageTool.getMessage("pmself"));
             return;
         }
 

@@ -13,6 +13,8 @@ unignorehard: "&6No longer permanently ignoring &3%player%"
 chatformat: "<%player%&r>"
 stripnamecolor: false
 
+allowpmself: true
+
 ignorelistsize: 9
 prefixes:
   GREEN: ">"
