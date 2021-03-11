@@ -46,7 +46,6 @@ public final class PistonChat extends JavaPlugin {
             Bukkit.getPluginManager().disablePlugin(this);
         }
         ConfigTool.setupTool(this);
-        LanguageTool.setupTool(this);
 
         log.info(ChatColor.DARK_GREEN + "Registering commands");
         PluginCommand ignorehard = server.getPluginCommand("ignorehard");

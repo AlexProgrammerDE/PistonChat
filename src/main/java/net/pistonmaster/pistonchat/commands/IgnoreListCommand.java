@@ -34,7 +34,7 @@ public class IgnoreListCommand implements CommandExecutor, TabExecutor {
             }
 
             if (list.isEmpty()) {
-                player.sendMessage(CommonTool.getPrefix() + "You have no players ignored!");
+                player.sendMessage(LanguageTool.getMessage("nooneignored"));
             } else {
                 if (args.length > 0) {
                     int page = Integer.parseInt(args[0]);

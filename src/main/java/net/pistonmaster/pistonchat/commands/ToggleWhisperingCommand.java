@@ -1,6 +1,5 @@
 package net.pistonmaster.pistonchat.commands;
 
-import net.pistonmaster.pistonchat.utils.CommonTool;
 import net.pistonmaster.pistonchat.utils.LanguageTool;
 import net.pistonmaster.pistonchat.utils.TempDataTool;
 import org.bukkit.command.Command;
@@ -21,9 +20,9 @@ public class ToggleWhisperingCommand implements CommandExecutor, TabExecutor {
             TempDataTool.setWhisperingEnabled(player, !TempDataTool.isWhisperingEnabled(player));
 
             if (TempDataTool.isWhisperingEnabled(player)) {
-                player.sendMessage(CommonTool.getPrefix() + "Enabled whispering!");
+                player.sendMessage(LanguageTool.getMessage("pmson"));
             } else {
-                player.sendMessage(CommonTool.getPrefix() + "Disabled whispering! (Will be reset on rejoin!)");
+                player.sendMessage(LanguageTool.getMessage("pmsoff"));
             }
         } else {
             sender.sendMessage(LanguageTool.getMessage("playeronly"));
