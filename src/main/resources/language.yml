@@ -1,13 +1,12 @@
 # You can find pre translated languages on crowdin!
 # <insert link here>
-# The prefix can also be set to ""
-# %p% means %prefix%
+# The prefix can also be set to just "&6"
 prefix: "[&2PistonChat&r] &6"
-playeronly: "%p%You need to be a player to do this."
-notonline: "%p%This player is not online."
-nooneignored: "%p%No players ignored."
-chaton: "%p%Chat messages unhidden."
-chatoff: "%p%Chat messages hidden."
-pmson: "%p%Private messages hidden."
-pmsoff: "%p%Private messages unhidden."
-pmself: "%p%Please do not pm yourself."
+playeronly: "%prefix%You need to be a player to do this."
+notonline: "%prefix%This player is not online."
+nooneignored: "%prefix%No players ignored."
+chaton: "%prefix%Chat messages unhidden."
+chatoff: "%prefix%Chat messages hidden."
+pmson: "%prefix%Private messages hidden."
+pmsoff: "%prefix%Private messages unhidden."
+pmself: "%prefix%Please do not pm yourself."
