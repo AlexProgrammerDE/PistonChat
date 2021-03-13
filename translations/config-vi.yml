@@ -2,13 +2,13 @@
 #To use these prefixes you need additionally the pistonchat.<COLORCODE>
 #/ indicates disabled!
 whisper:
-  from: "&d%player% whispers: %message%"
-  to: "&dYou whisper to %player%: %message%"
-hovertext: "&6Message &3%player%"
-ignore: "&6Now ignoring &3%player%"
-unignore: "&6No longer ignoring &3%player%"
-ignorehard: "&6Permanently ignoring %player%. This is saved in &4/ignorelist."
-unignorehard: "&6No longer permanently ignoring &3%player%"
+  from: "&d%player% nhắn bạn: %message%"
+  to: "&dBạn nhắn %player%: %message%"
+hovertext: "&6Nhắn tin cho &3%player%"
+ignore: "&6Đã làm ngơ &3%player%"
+unignore: "&6Hủy làm ngơ &3%player%"
+ignorehard: "&6Làm ngơ %player% vĩnh viễn. Thông tin lưu tại &4/ignorelist."
+unignorehard: "&6Đã hủy làm ngơ &3%player%"
 chatformat: "<%player%&r>"
 stripnamecolor: false
 allowpmself: true
