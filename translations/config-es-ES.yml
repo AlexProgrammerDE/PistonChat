@@ -1,6 +1,7 @@
 ---
 #To use these prefixes you need additionally the pistonchat.<COLORCODE>
 #/ indicates disabled!
+#This config is configured to be what 2b2t.org has.
 whisper:
   from: "&d%player% susurra: %message%"
   to: "&dLe susurras a %player%: %message%"
@@ -13,6 +14,7 @@ chatformat: "<%player%&r>"
 stripnamecolor: false
 allowpmself: true
 allowpmignored: true
+onlyhidepms: true
 ignorelistsize: 9
 prefixes:
   GREEN: ">"
