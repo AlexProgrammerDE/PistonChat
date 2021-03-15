@@ -14,8 +14,8 @@ import java.nio.file.Files;
 @SuppressWarnings("unused")
 public class ConfigManager {
     private final PistonChat plugin;
-    private FileConfiguration config;
     private final String fileName;
+    private FileConfiguration config;
 
     public ConfigManager(PistonChat plugin, String fileName) {
         this.plugin = plugin;

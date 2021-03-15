@@ -7,7 +7,8 @@ import java.util.HashMap;
 public class TempDataTool {
     private static final HashMap<Player, TempData> map = new HashMap<>();
 
-    private TempDataTool() {}
+    private TempDataTool() {
+    }
 
     public static void setWhisperingEnabled(Player player, boolean value) {
         indexPlayer(player);

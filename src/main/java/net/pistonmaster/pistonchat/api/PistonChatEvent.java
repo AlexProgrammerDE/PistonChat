@@ -11,8 +11,8 @@ import org.bukkit.event.HandlerList;
 @SuppressWarnings({"unused"})
 public final class PistonChatEvent extends Event implements Cancellable {
     private static final HandlerList HANDLERS = new HandlerList();
-    private boolean isCancelled;
     private final Player player;
+    private boolean isCancelled;
     private String message;
 
     public PistonChatEvent(Player player, String message) {
@@ -23,12 +23,12 @@ public final class PistonChatEvent extends Event implements Cancellable {
         this.isCancelled = false;
     }
 
-    @Override
-    public HandlerList getHandlers() {
+    public static HandlerList getHandlerList() {
         return HANDLERS;
     }
 
-    public static HandlerList getHandlerList() {
+    @Override
+    public HandlerList getHandlers() {
         return HANDLERS;
     }
 
@@ -56,6 +56,7 @@ public final class PistonChatEvent extends Event implements Cancellable {
 
     /**
      * Get the player who sends the message.
+     *
      * @return the player who sends the message
      */
     public Player getPlayer() {
@@ -64,6 +65,7 @@ public final class PistonChatEvent extends Event implements Cancellable {
 
     /**
      * Get the message the player sends.
+     *
      * @return the message
      */
     public String getMessage() {
@@ -72,6 +74,7 @@ public final class PistonChatEvent extends Event implements Cancellable {
 
     /**
      * Set the message that the player sends.
+     *
      * @param message the message to set
      */
     public void setMessage(String message) {

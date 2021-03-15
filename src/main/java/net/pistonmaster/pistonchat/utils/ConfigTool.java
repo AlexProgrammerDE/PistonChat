@@ -75,7 +75,7 @@ public class ConfigTool {
 
     private static void generateFile() {
         if (!plugin.getDataFolder().exists() && !plugin.getDataFolder().mkdir())
-                return;
+            return;
 
         if (!dataFile.exists()) {
             try {
@@ -107,11 +107,11 @@ public class ConfigTool {
                 .replace("%player%", ChatColor.stripColor(player.getDisplayName())));
     }
 
-    public enum HardReturn {
-        IGNORE, UNIGNORE
-    }
-
     public static int getPageSize() {
         return plugin.getConfig().getInt("ignorelistsize");
+    }
+
+    public enum HardReturn {
+        IGNORE, UNIGNORE
     }
 }

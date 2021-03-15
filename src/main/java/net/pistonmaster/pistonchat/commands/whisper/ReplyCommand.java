@@ -1,9 +1,6 @@
 package net.pistonmaster.pistonchat.commands.whisper;
 
-import net.pistonmaster.pistonchat.utils.CacheTool;
-import net.pistonmaster.pistonchat.utils.CommonTool;
-import net.pistonmaster.pistonchat.utils.IgnoreTool;
-import net.pistonmaster.pistonchat.utils.LanguageTool;
+import net.pistonmaster.pistonchat.utils.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -23,9 +20,13 @@ public class ReplyCommand implements CommandExecutor, TabExecutor {
 
             if (lastMessagedOf.isPresent()) {
                 if (IgnoreTool.isIgnored(player, lastMessagedOf.get())) {
-                    player.sendMessage(CommonTool.getPrefix() + "This person blocked you!");
-                } else if (IgnoreTool.isIgnored(lastMessagedOf.get(), player)) {
-                    player.sendMessage(CommonTool.getPrefix() + "You block this person!");
+                    if (ConfigTool.getConfig().getBoolean("onlyhidepms")) {
+                        CommonTool.sendSender(player, CommonTool.mergeArgs(args, 0), lastMessagedOf.get());
+                    } else {
+                        player.sendMessage(CommonTool.getPrefix() + "This person ignores you!");
+                    }
+                } else if (!ConfigTool.getConfig().getBoolean("allowpmignored") && IgnoreTool.isIgnored(lastMessagedOf.get(), player)) {
+                    player.sendMessage(CommonTool.getPrefix() + "You ignore this person!");
                 } else {
                     if (args.length > 0) {
                         CommonTool.sendWhisperTo(player, CommonTool.mergeArgs(args, 0), lastMessagedOf.get());

@@ -1,7 +1,7 @@
 package net.pistonmaster.pistonchat;
 
 import net.md_5.bungee.api.ChatColor;
-import net.pistonmaster.pistonchat.commands.*;
+import net.pistonmaster.pistonchat.commands.MainCommand;
 import net.pistonmaster.pistonchat.commands.ignore.HardIgnoreCommand;
 import net.pistonmaster.pistonchat.commands.ignore.IgnoreListCommand;
 import net.pistonmaster.pistonchat.commands.ignore.SoftIgnoreCommand;

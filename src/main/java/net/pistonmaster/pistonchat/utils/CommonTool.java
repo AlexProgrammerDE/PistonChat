@@ -12,11 +12,12 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public class CommonTool {
+    private CommonTool() {
+    }
+
     public static Optional<Player> getPlayer(String name) {
         return Optional.ofNullable(Bukkit.getPlayer(name));
     }
-
-    private CommonTool() {}
 
     public static void sendWhisperTo(Player sender, String message, Player receiver) {
         if (!ConfigTool.getConfig().getBoolean("allowpmself") && sender == receiver) {
@@ -25,23 +26,34 @@ public class CommonTool {
         }
 
         if (!TempDataTool.isWhisperingEnabled(receiver)) {
-            sender.sendMessage(CommonTool.getPrefix() + "This person has whispering disabled!");
+            if (ConfigTool.getConfig().getBoolean("onlyhidepms")) {
+                sendSender(sender, message, receiver);
+            } else {
+                sender.sendMessage(CommonTool.getPrefix() + "This person has whispering disabled!");
+            }
             return;
         }
 
-        String receiverString = ChatColor.translateAlternateColorCodes('&', ConfigTool.getConfig().getString("whisper.from")
-                                .replace("%player%", ChatColor.stripColor(sender.getDisplayName()))
-                                .replace("%message%", message));
-
-        String senderString = ChatColor.translateAlternateColorCodes('&', ConfigTool.getConfig().getString("whisper.to")
-                        .replace("%player%", ChatColor.stripColor(receiver.getDisplayName()))
-                        .replace("%message%", message));
-
-        receiver.spigot().sendMessage(new TextComponent(TextComponent.fromLegacyText(receiverString)));
-
-        sender.spigot().sendMessage(new TextComponent(TextComponent.fromLegacyText(senderString)));
+        sendSender(sender, message, receiver);
+        sendReceiver(sender, message, receiver);
 
         CacheTool.sendMessage(sender, receiver);
+    }
+
+    public static void sendSender(Player sender, String message, Player receiver) {
+        String senderString = ChatColor.translateAlternateColorCodes('&', ConfigTool.getConfig().getString("whisper.to")
+                .replace("%player%", ChatColor.stripColor(receiver.getDisplayName()))
+                .replace("%message%", message));
+
+        sender.spigot().sendMessage(new TextComponent(TextComponent.fromLegacyText(senderString)));
+    }
+
+    private static void sendReceiver(Player sender, String message, Player receiver) {
+        String receiverString = ChatColor.translateAlternateColorCodes('&', ConfigTool.getConfig().getString("whisper.from")
+                .replace("%player%", ChatColor.stripColor(sender.getDisplayName()))
+                .replace("%message%", message));
+
+        receiver.spigot().sendMessage(new TextComponent(TextComponent.fromLegacyText(receiverString)));
     }
 
     public static String mergeArgs(String[] args, int start) {

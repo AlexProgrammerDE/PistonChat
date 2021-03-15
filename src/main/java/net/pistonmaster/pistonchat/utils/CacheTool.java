@@ -11,7 +11,8 @@ import java.util.UUID;
 public class CacheTool {
     private static final HashMap<UUID, PlayerData> map = new HashMap<>();
 
-    private CacheTool() {}
+    private CacheTool() {
+    }
 
     public static void sendMessage(Player sender, Player receiver) {
         indexPlayer(sender);
@@ -23,6 +24,7 @@ public class CacheTool {
 
     /**
      * Get the last person a player sent a message to.
+     *
      * @param player The player to get data from.
      * @return The last person the player sent a message to.
      */
@@ -34,6 +36,7 @@ public class CacheTool {
 
     /**
      * Get the last person a player was messaged from.
+     *
      * @param player The player to get data from.
      * @return The last person the player was messaged from.
      */
@@ -50,7 +53,9 @@ public class CacheTool {
     }
 
     private static class PlayerData {
-        public @Nullable UUID sentTo = null;
-        public @Nullable UUID messagedOf = null;
+        public @Nullable
+        UUID sentTo = null;
+        public @Nullable
+        UUID messagedOf = null;
     }
 }
