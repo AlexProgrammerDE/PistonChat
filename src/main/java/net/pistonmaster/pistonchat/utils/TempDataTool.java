@@ -35,9 +35,7 @@ public class TempDataTool {
     }
 
     private static void indexPlayer(Player player) {
-        if (!map.containsKey(player)) {
-            map.put(player, new TempDataTool.TempData());
-        }
+        map.putIfAbsent(player, new TempDataTool.TempData());
     }
 
     private static class TempData {
