@@ -3,13 +3,13 @@
 #/ indicates disabled!
 #This config is configured to be what 2b2t.org has.
 whisper:
-  from: "&d%player% whispers: %message%"
-  to: "&dYou whisper to %player%: %message%"
-hovertext: "&6Message &3%player%"
-ignore: "&6Now ignoring &3%player%"
-unignore: "&6No longer ignoring &3%player%"
-ignorehard: "&6Permanently ignoring %player%. This is saved in &4/ignorelist."
-unignorehard: "&6No longer permanently ignoring &3%player%"
+  from: "&d%player% กระซิบว่า: %message%"
+  to: "&dคุณได้กระซิบไปหา %player%: %message%"
+hovertext: "&6กระซิบไปหา &3%player%"
+ignore: "&6คุณได้เมินเฉย &3%player%"
+unignore: "&6คุณได้หยุดเมิน &3%player% แล้ว"
+ignorehard: "&6ได้เมิน %player% อย่างถาวรแล้ว สามารถดูได้ที่ &4/ignorelist"
+unignorehard: "&6คุณได้หยุดเมิน &3%player% อย่างถาวรแล้ว"
 chatformat: "<%player%&r>"
 stripnamecolor: false
 allowpmself: true
