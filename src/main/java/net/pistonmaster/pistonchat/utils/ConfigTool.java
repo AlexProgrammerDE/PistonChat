@@ -99,7 +99,7 @@ public class ConfigTool {
     }
 
     public static FileConfiguration getLanguage() {
-        return plugin.getConfig();
+        return plugin.getLanguage();
     }
 
     public static String getPreparedString(String str, Player player) {
