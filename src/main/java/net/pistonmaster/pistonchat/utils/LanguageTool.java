@@ -7,6 +7,6 @@ public class LanguageTool {
     }
 
     public static String getMessage(String property) {
-        return ChatColor.translateAlternateColorCodes('&', ConfigTool.getLanguage().getString(property).replace("%prefix%", CommonTool.getPrefix()));
+        return ChatColor.translateAlternateColorCodes('&', CommonTool.getPrefix() + ConfigTool.getLanguage().getString(property));
     }
 }
