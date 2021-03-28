@@ -1,5 +1,6 @@
 package net.pistonmaster.pistonchat;
 
+import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
 import net.pistonmaster.pistonchat.commands.MainCommand;
 import net.pistonmaster.pistonchat.commands.ignore.HardIgnoreCommand;
@@ -13,6 +14,7 @@ import net.pistonmaster.pistonchat.commands.whisper.WhisperCommand;
 import net.pistonmaster.pistonchat.events.ChatEvent;
 import net.pistonmaster.pistonchat.utils.ConfigManager;
 import net.pistonmaster.pistonchat.utils.ConfigTool;
+import net.pistonmaster.pistonchat.utils.TempDataTool;
 import net.pistonmaster.pistonutils.logging.PistonLogger;
 import net.pistonmaster.pistonutils.update.UpdateChecker;
 import net.pistonmaster.pistonutils.update.UpdateParser;
@@ -30,6 +32,8 @@ import java.util.logging.Logger;
 public final class PistonChat extends JavaPlugin {
     private final ConfigManager config = new ConfigManager(this, "config.yml");
     private final ConfigManager language = new ConfigManager(this, "language.yml");
+    @Getter
+    private final TempDataTool tempDataTool = new TempDataTool();
 
     @Override
     public void onEnable() {
@@ -96,13 +100,13 @@ public final class PistonChat extends JavaPlugin {
         }
 
         if (toggleWhispering != null) {
-            toggleWhispering.setExecutor(new ToggleWhisperingCommand());
-            toggleWhispering.setTabCompleter(new ToggleWhisperingCommand());
+            toggleWhispering.setExecutor(new ToggleWhisperingCommand(this));
+            toggleWhispering.setTabCompleter(new ToggleWhisperingCommand(this));
         }
 
         if (toggleChat != null) {
-            toggleChat.setExecutor(new ToggleChatCommand());
-            toggleChat.setTabCompleter(new ToggleChatCommand());
+            toggleChat.setExecutor(new ToggleChatCommand(this));
+            toggleChat.setTabCompleter(new ToggleChatCommand(this));
         }
 
         if (main != null) {
@@ -111,7 +115,7 @@ public final class PistonChat extends JavaPlugin {
         }
 
         log.info(ChatColor.DARK_GREEN + "Registering listeners");
-        server.getPluginManager().registerEvents(new ChatEvent(), this);
+        server.getPluginManager().registerEvents(new ChatEvent(this), this);
 
         log.info(ChatColor.DARK_GREEN + "Checking for a newer version");
         new UpdateChecker(new PistonLogger(getLogger())).getVersion("https://www.pistonmaster.net/PistonChat/VERSION.txt", version -> new UpdateParser(getDescription().getVersion(), version).parseUpdate(updateType -> {

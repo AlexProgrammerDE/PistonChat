@@ -37,8 +37,8 @@ public final class PistonChatAPI {
      * @param player The person who ignores players!
      * @return A list of all players this players ignored!
      */
-    public static @Nonnull
-    Map<OfflinePlayer, IgnoreTool.IgnoreType> getIgnoreList(@Nonnull Player player) {
+    @Nonnull
+    public static Map<OfflinePlayer, IgnoreTool.IgnoreType> getIgnoreList(@Nonnull Player player) {
         Preconditions.checkNotNull(player, "Player can not be null!");
 
         return IgnoreTool.getIgnoredPlayers(player);

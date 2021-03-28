@@ -3,6 +3,7 @@ package net.pistonmaster.pistonchat.utils;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.pistonmaster.pistonchat.PistonChat;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -25,7 +26,7 @@ public class CommonTool {
             return;
         }
 
-        if (!TempDataTool.isWhisperingEnabled(receiver)) {
+        if (!PistonChat.getPlugin(PistonChat.class).getTempDataTool().isWhisperingEnabled(receiver)) {
             if (ConfigTool.getConfig().getBoolean("onlyhidepms")) {
                 sendSender(sender, message, receiver);
             } else {

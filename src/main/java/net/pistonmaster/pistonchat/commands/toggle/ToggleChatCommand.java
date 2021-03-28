@@ -1,5 +1,7 @@
 package net.pistonmaster.pistonchat.commands.toggle;
 
+import lombok.RequiredArgsConstructor;
+import net.pistonmaster.pistonchat.PistonChat;
 import net.pistonmaster.pistonchat.utils.LanguageTool;
 import net.pistonmaster.pistonchat.utils.TempDataTool;
 import org.bukkit.command.Command;
@@ -11,15 +13,18 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
+@RequiredArgsConstructor
 public class ToggleChatCommand implements CommandExecutor, TabExecutor {
+    private final PistonChat plugin;
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
 
-            TempDataTool.setChatEnabled(player, !TempDataTool.isChatEnabled(player));
+            plugin.getTempDataTool().setChatEnabled(player, !plugin.getTempDataTool().isChatEnabled(player));
 
-            if (TempDataTool.isChatEnabled(player)) {
+            if (plugin.getTempDataTool().isChatEnabled(player)) {
                 player.sendMessage(LanguageTool.getMessage("chaton"));
             } else {
                 player.sendMessage(LanguageTool.getMessage("chatoff"));
