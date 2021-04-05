@@ -17,7 +17,7 @@ public class IgnoreTool {
     }
 
     public static Map<OfflinePlayer, IgnoreType> getIgnoredPlayers(Player player) {
-        HashMap<OfflinePlayer, IgnoreType> map = new HashMap<>();
+        Map<OfflinePlayer, IgnoreType> map = new HashMap<>();
 
         for (OfflinePlayer ignoredPlayer : SoftIgnoreTool.getSoftIgnoredPlayers(player)) {
             map.put(ignoredPlayer, IgnoreType.SOFT);

@@ -24,8 +24,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
@@ -34,6 +37,20 @@ public final class PistonChat extends JavaPlugin {
     private final ConfigManager language = new ConfigManager(this, "language.yml");
     @Getter
     private final TempDataTool tempDataTool = new TempDataTool();
+    @Getter
+    private boolean unitTest = false;
+
+    public PistonChat()
+    {
+        super();
+    }
+
+    protected PistonChat(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file)
+    {
+        super(loader, description, dataFolder, file);
+
+        unitTest = true;
+    }
 
     @Override
     public void onEnable() {
@@ -135,8 +152,10 @@ public final class PistonChat extends JavaPlugin {
             }
         }));
 
-        log.info(ChatColor.DARK_GREEN + "Loading metrics");
-        new Metrics(this, 9630);
+        if (!unitTest) {
+            log.info(ChatColor.DARK_GREEN + "Loading metrics");
+            new Metrics(this, 9630);
+        }
 
         log.info(ChatColor.DARK_GREEN + "Done! :D");
     }
