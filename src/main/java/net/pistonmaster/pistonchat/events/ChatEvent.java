@@ -41,7 +41,7 @@ public class ChatEvent implements Listener {
                     if (!IgnoreTool.isIgnored(chatter, receiver) && plugin.getTempDataTool().isChatEnabled(receiver)) {
                         PistonChatReceiveEvent perPlayerEvent = new PistonChatReceiveEvent(chatter, receiver, message);
 
-                        Bukkit.getPluginManager().callEvent(pistonChatEvent);
+                        Bukkit.getPluginManager().callEvent(perPlayerEvent);
 
                         if (perPlayerEvent.isCancelled())
                             continue;
