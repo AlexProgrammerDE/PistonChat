@@ -4,6 +4,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.pistonmaster.pistonchat.PistonChat;
+import net.pistonmaster.pistonchat.api.PistonWhisperEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -34,6 +35,15 @@ public class CommonTool {
             }
             return;
         }
+
+        PistonWhisperEvent pistonWhisperEvent = new PistonWhisperEvent(sender, receiver, message);
+
+        Bukkit.getPluginManager().callEvent(pistonWhisperEvent);
+
+        if (pistonWhisperEvent.isCancelled())
+            return;
+
+        message = pistonWhisperEvent.getMessage();
 
         sendSender(sender, message, receiver);
         sendReceiver(sender, message, receiver);
