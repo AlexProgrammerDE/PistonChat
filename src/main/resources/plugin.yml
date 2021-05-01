@@ -53,6 +53,7 @@ commands:
     permission-message: You have no permission to do that!
     usage: "§4Usage: /<command>"
     aliases:
+      - toggleprivatemsgs
       - toggletells
   togglechat:
     description: Prevent getting chat messages!
