@@ -1,6 +1,6 @@
 # To use these prefixes you need additionally the pistonchat.<COLORCODE>
 # / indicates disabled!
-log: "[&2PistonChat&r] "
+# This config is configured to be what 2b2t.org has.
 whisper:
   from: "&d%player% whispers: %message%"
   to: "&dYou whisper to %player%: %message%"
@@ -10,6 +10,13 @@ ignore: "&6Now ignoring &3%player%"
 unignore: "&6No longer ignoring &3%player%"
 ignorehard: "&6Permanently ignoring %player%. This is saved in &4/ignorelist."
 unignorehard: "&6No longer permanently ignoring &3%player%"
+
+chatformat: "<%player%&r>"
+stripnamecolor: false
+
+allowpmself: true
+allowpmignored: true
+onlyhidepms: true
 
 ignorelistsize: 9
 prefixes:

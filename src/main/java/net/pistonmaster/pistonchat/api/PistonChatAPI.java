@@ -1,9 +1,9 @@
-package me.alexprogrammerde.pistonchat.api;
+package net.pistonmaster.pistonchat.api;
 
 import com.google.common.base.Preconditions;
-import me.alexprogrammerde.pistonchat.utils.CommonTool;
-import me.alexprogrammerde.pistonchat.utils.ConfigTool;
-import me.alexprogrammerde.pistonchat.utils.IgnoreTool;
+import net.pistonmaster.pistonchat.utils.CommonTool;
+import net.pistonmaster.pistonchat.utils.ConfigTool;
+import net.pistonmaster.pistonchat.utils.IgnoreTool;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -15,10 +15,12 @@ import java.util.Map;
  */
 @SuppressWarnings({"unused"})
 public final class PistonChatAPI {
-    private PistonChatAPI() {}
+    private PistonChatAPI() {
+    }
 
     /**
      * Ignore players! (Can also unignore)
+     *
      * @param ignorer The person that ignores someone!
      * @param ignored The person to ignore!
      */
@@ -31,10 +33,12 @@ public final class PistonChatAPI {
 
     /**
      * Get a list of all players a player ignores!
+     *
      * @param player The person who ignores players!
      * @return A list of all players this players ignored!
      */
-    public static @Nonnull Map<OfflinePlayer, IgnoreTool.IgnoreType> getIgnoreList(@Nonnull Player player) {
+    @Nonnull
+    public static Map<OfflinePlayer, IgnoreTool.IgnoreType> getIgnoreList(@Nonnull Player player) {
         Preconditions.checkNotNull(player, "Player can not be null!");
 
         return IgnoreTool.getIgnoredPlayers(player);
@@ -42,8 +46,9 @@ public final class PistonChatAPI {
 
     /**
      * Send whispers!
-     * @param sender The player who sends the whisper!
-     * @param message Whisper to send!
+     *
+     * @param sender   The player who sends the whisper!
+     * @param message  Whisper to send!
      * @param receiver The person who receives the whisper!
      */
     public static void whisperPlayer(@Nonnull Player sender, @Nonnull String message, @Nonnull Player receiver) {

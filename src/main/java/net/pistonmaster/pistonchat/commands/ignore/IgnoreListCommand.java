@@ -1,13 +1,14 @@
-package me.alexprogrammerde.pistonchat.commands;
+package net.pistonmaster.pistonchat.commands.ignore;
 
 import com.google.common.math.IntMath;
-import me.alexprogrammerde.pistonchat.utils.CommonTool;
-import me.alexprogrammerde.pistonchat.utils.ConfigTool;
-import me.alexprogrammerde.pistonchat.utils.IgnoreTool;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
+import net.pistonmaster.pistonchat.utils.CommonTool;
+import net.pistonmaster.pistonchat.utils.ConfigTool;
+import net.pistonmaster.pistonchat.utils.IgnoreTool;
+import net.pistonmaster.pistonchat.utils.LanguageTool;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -33,7 +34,7 @@ public class IgnoreListCommand implements CommandExecutor, TabExecutor {
             }
 
             if (list.isEmpty()) {
-                player.sendMessage(CommonTool.getPrefix() + "You have no players ignored!");
+                player.sendMessage(LanguageTool.getMessage("nooneignored"));
             } else {
                 if (args.length > 0) {
                     int page = Integer.parseInt(args[0]);
@@ -48,7 +49,7 @@ public class IgnoreListCommand implements CommandExecutor, TabExecutor {
                 }
             }
         } else {
-            sender.sendMessage(CommonTool.getPrefix() + "You need to be a player to do that!");
+            sender.sendMessage(LanguageTool.getMessage("playeronly"));
         }
 
         return true;
@@ -93,7 +94,7 @@ public class IgnoreListCommand implements CommandExecutor, TabExecutor {
 
         for (Map.Entry<OfflinePlayer, IgnoreTool.IgnoreType> entry : map.entrySet()) {
             if (i >= minValue && i < maxValue) {
-                ComponentBuilder playerBuilder = new ComponentBuilder(ChatColor.stripColor(entry.getKey().getName()));
+                ComponentBuilder playerBuilder = new ComponentBuilder(entry.getKey().getName());
 
                 playerBuilder.append(" ").reset();
 

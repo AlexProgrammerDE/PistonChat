@@ -1,7 +1,8 @@
-package me.alexprogrammerde.pistonchat.commands;
+package net.pistonmaster.pistonchat.commands.ignore;
 
-import me.alexprogrammerde.pistonchat.utils.CommonTool;
-import me.alexprogrammerde.pistonchat.utils.ConfigTool;
+import net.pistonmaster.pistonchat.utils.CommonTool;
+import net.pistonmaster.pistonchat.utils.ConfigTool;
+import net.pistonmaster.pistonchat.utils.LanguageTool;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -30,13 +31,13 @@ public class HardIgnoreCommand implements CommandExecutor, TabExecutor {
                         player.sendMessage(ConfigTool.getPreparedString("unignorehard", ignored.get()));
                     }
                 } else {
-                    player.sendMessage(CommonTool.getPrefix() + "This player doesn't exist!");
+                    player.sendMessage(LanguageTool.getMessage("notonline"));
                 }
             } else {
                 return false;
             }
         } else {
-            sender.sendMessage(CommonTool.getPrefix() + "You need to be a player to do that!");
+            sender.sendMessage(LanguageTool.getMessage("playeronly"));
         }
 
         return true;

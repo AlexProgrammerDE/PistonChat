@@ -1,4 +1,4 @@
-package me.alexprogrammerde.pistonchat.utils;
+package net.pistonmaster.pistonchat.utils;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -17,7 +17,7 @@ public class IgnoreTool {
     }
 
     public static Map<OfflinePlayer, IgnoreType> getIgnoredPlayers(Player player) {
-        HashMap<OfflinePlayer, IgnoreType> map = new HashMap<>();
+        Map<OfflinePlayer, IgnoreType> map = new HashMap<>();
 
         for (OfflinePlayer ignoredPlayer : SoftIgnoreTool.getSoftIgnoredPlayers(player)) {
             map.put(ignoredPlayer, IgnoreType.SOFT);

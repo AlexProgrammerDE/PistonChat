@@ -1,7 +1,9 @@
-package me.alexprogrammerde.pistonchat.commands;
+package net.pistonmaster.pistonchat.commands.whisper;
 
-import me.alexprogrammerde.pistonchat.utils.CommonTool;
-import me.alexprogrammerde.pistonchat.utils.IgnoreTool;
+import net.pistonmaster.pistonchat.utils.CommonTool;
+import net.pistonmaster.pistonchat.utils.ConfigTool;
+import net.pistonmaster.pistonchat.utils.IgnoreTool;
+import net.pistonmaster.pistonchat.utils.LanguageTool;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -23,9 +25,13 @@ public class WhisperCommand implements CommandExecutor, TabExecutor {
 
                 if (receiver.isPresent()) {
                     if (IgnoreTool.isIgnored(player, receiver.get())) {
-                        player.sendMessage(CommonTool.getPrefix() + "This person blocked you!");
-                    } else if (IgnoreTool.isIgnored(receiver.get(), player)) {
-                        player.sendMessage(CommonTool.getPrefix() + "You block this person!");
+                        if (ConfigTool.getConfig().getBoolean("onlyhidepms")) {
+                            CommonTool.sendSender(player, CommonTool.mergeArgs(args, 0), receiver.get());
+                        } else {
+                            player.sendMessage(CommonTool.getPrefix() + "This person ignores you!");
+                        }
+                    } else if (!ConfigTool.getConfig().getBoolean("allowpmignored") && IgnoreTool.isIgnored(receiver.get(), player)) {
+                        player.sendMessage(CommonTool.getPrefix() + "You ignore this person!");
                     } else {
                         if (args.length > 1) {
                             CommonTool.sendWhisperTo(player, CommonTool.mergeArgs(args, 1), receiver.get());
@@ -34,13 +40,13 @@ public class WhisperCommand implements CommandExecutor, TabExecutor {
                         }
                     }
                 } else {
-                    sender.sendMessage(CommonTool.getPrefix() + "This player doesn't exist!");
+                    player.sendMessage(LanguageTool.getMessage("notonline"));
                 }
             } else {
                 return false;
             }
         } else {
-            sender.sendMessage(CommonTool.getPrefix() + "You need to be a player to do this!");
+            sender.sendMessage(LanguageTool.getMessage("playeronly"));
         }
 
         return true;

@@ -1,9 +1,11 @@
 name: PistonChat
 version: ${project.version}
-main: me.alexprogrammerde.pistonchat.PistonChat
+api-version: 1.13
+main: net.pistonmaster.pistonchat.PistonChat
 authors: [ AlexProgrammerDE ]
 description: An advanced chat plugin for survival/anarchy servers.
 website: https://pistonmaster.net/
+softdepend: ["PlaceholderAPI"]
 
 commands:
   ignore:
@@ -136,6 +138,8 @@ permissions:
     description: Just another chat color!
   pistonchat.STRIKETHROUGH:
     description: Just another chat color!
+  pistonchat.version:
+    description: Permission for /pistonchat version
   pistonchat.player:
     description: Default permissions for players!
     children:
@@ -152,4 +156,5 @@ permissions:
     description: Default permissions for admins!
     children:
       pistonchat.reload: true
+      pistonchat.version: true
     default: op

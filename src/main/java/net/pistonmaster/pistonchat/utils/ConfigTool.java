@@ -1,7 +1,7 @@
-package me.alexprogrammerde.pistonchat.utils;
+package net.pistonmaster.pistonchat.utils;
 
-import me.alexprogrammerde.pistonchat.PistonChat;
 import net.md_5.bungee.api.ChatColor;
+import net.pistonmaster.pistonchat.PistonChat;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -75,7 +75,7 @@ public class ConfigTool {
 
     private static void generateFile() {
         if (!plugin.getDataFolder().exists() && !plugin.getDataFolder().mkdir())
-                return;
+            return;
 
         if (!dataFile.exists()) {
             try {
@@ -94,8 +94,12 @@ public class ConfigTool {
         loadData();
     }
 
-    public static FileConfiguration getPluginConfig() {
+    public static FileConfiguration getConfig() {
         return plugin.getConfig();
+    }
+
+    public static FileConfiguration getLanguage() {
+        return plugin.getLanguage();
     }
 
     public static String getPreparedString(String str, Player player) {
@@ -103,11 +107,11 @@ public class ConfigTool {
                 .replace("%player%", ChatColor.stripColor(player.getDisplayName())));
     }
 
-    public enum HardReturn {
-        IGNORE, UNIGNORE
-    }
-
     public static int getPageSize() {
         return plugin.getConfig().getInt("ignorelistsize");
+    }
+
+    public enum HardReturn {
+        IGNORE, UNIGNORE
     }
 }

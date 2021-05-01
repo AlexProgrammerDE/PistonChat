@@ -1,7 +1,9 @@
-package me.alexprogrammerde.pistonchat.commands;
+package net.pistonmaster.pistonchat.commands.toggle;
 
-import me.alexprogrammerde.pistonchat.utils.CommonTool;
-import me.alexprogrammerde.pistonchat.utils.TempDataTool;
+import lombok.RequiredArgsConstructor;
+import net.pistonmaster.pistonchat.PistonChat;
+import net.pistonmaster.pistonchat.utils.LanguageTool;
+import net.pistonmaster.pistonchat.utils.TempDataTool;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -11,21 +13,24 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
+@RequiredArgsConstructor
 public class ToggleWhisperingCommand implements CommandExecutor, TabExecutor {
+    private final PistonChat plugin;
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
 
-            TempDataTool.setWhisperingEnabled(player, !TempDataTool.isWhisperingEnabled(player));
+            plugin.getTempDataTool().setWhisperingEnabled(player, !plugin.getTempDataTool().isWhisperingEnabled(player));
 
-            if (TempDataTool.isWhisperingEnabled(player)) {
-                player.sendMessage(CommonTool.getPrefix() + "Enabled whispering!");
+            if (plugin.getTempDataTool().isWhisperingEnabled(player)) {
+                player.sendMessage(LanguageTool.getMessage("pmson"));
             } else {
-                player.sendMessage(CommonTool.getPrefix() + "Disabled whispering! (Will be reset on rejoin!)");
+                player.sendMessage(LanguageTool.getMessage("pmsoff"));
             }
         } else {
-            sender.sendMessage(CommonTool.getPrefix() + "You need to be a player to do that!");
+            sender.sendMessage(LanguageTool.getMessage("playeronly"));
         }
 
         return true;

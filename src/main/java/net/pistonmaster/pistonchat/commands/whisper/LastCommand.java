@@ -1,8 +1,6 @@
-package me.alexprogrammerde.pistonchat.commands;
+package net.pistonmaster.pistonchat.commands.whisper;
 
-import me.alexprogrammerde.pistonchat.utils.CacheTool;
-import me.alexprogrammerde.pistonchat.utils.CommonTool;
-import me.alexprogrammerde.pistonchat.utils.IgnoreTool;
+import net.pistonmaster.pistonchat.utils.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -23,9 +21,13 @@ public class LastCommand implements CommandExecutor, TabExecutor {
 
             if (lastSentTo.isPresent()) {
                 if (IgnoreTool.isIgnored(player, lastSentTo.get())) {
-                    player.sendMessage(CommonTool.getPrefix() + "This person blocked you!");
-                } else if (IgnoreTool.isIgnored(lastSentTo.get(), player)) {
-                    player.sendMessage(CommonTool.getPrefix() + "You block this person!");
+                    if (ConfigTool.getConfig().getBoolean("onlyhidepms")) {
+                        CommonTool.sendSender(player, CommonTool.mergeArgs(args, 0), lastSentTo.get());
+                    } else {
+                        player.sendMessage(CommonTool.getPrefix() + "This person ignores you!");
+                    }
+                } else if (!ConfigTool.getConfig().getBoolean("allowpmignored") && IgnoreTool.isIgnored(lastSentTo.get(), player)) {
+                    player.sendMessage(CommonTool.getPrefix() + "You ignore this person!");
                 } else {
                     if (args.length > 0) {
                         CommonTool.sendWhisperTo(player, CommonTool.mergeArgs(args, 0), lastSentTo.get());
@@ -35,9 +37,13 @@ public class LastCommand implements CommandExecutor, TabExecutor {
                 }
             } else if (lastMessagedOf.isPresent()) {
                 if (IgnoreTool.isIgnored(player, lastMessagedOf.get())) {
-                    player.sendMessage(CommonTool.getPrefix() + "This person blocked you!");
-                } else if (IgnoreTool.isIgnored(lastMessagedOf.get(), player)) {
-                    player.sendMessage(CommonTool.getPrefix() + "You block this person!");
+                    if (ConfigTool.getConfig().getBoolean("onlyhidepms")) {
+                        CommonTool.sendSender(player, CommonTool.mergeArgs(args, 0), lastMessagedOf.get());
+                    } else {
+                        player.sendMessage(CommonTool.getPrefix() + "This person ignores you!");
+                    }
+                } else if (!ConfigTool.getConfig().getBoolean("allowpmignored") && IgnoreTool.isIgnored(lastMessagedOf.get(), player)) {
+                    player.sendMessage(CommonTool.getPrefix() + "You ignore this person!");
                 } else {
                     if (args.length > 0) {
                         CommonTool.sendWhisperTo(player, CommonTool.mergeArgs(args, 0), lastMessagedOf.get());
@@ -46,10 +52,10 @@ public class LastCommand implements CommandExecutor, TabExecutor {
                     }
                 }
             } else {
-                player.sendMessage(CommonTool.getPrefix() + "Player not found/online!");
+                player.sendMessage(LanguageTool.getMessage("notonline"));
             }
         } else {
-            sender.sendMessage(CommonTool.getPrefix() + "You need to be a player to do this!");
+            sender.sendMessage(LanguageTool.getMessage("playeronly"));
         }
 
         return true;

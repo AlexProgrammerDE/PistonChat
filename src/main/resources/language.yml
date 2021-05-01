@@ -1,0 +1,13 @@
+# You can find pre translated languages on crowdin:
+# https://crowdin.com/project/pistonchat
+# The prefix can also be set to just "&6"
+prefix: "[&2PistonChat&r] &6"
+playeronly: "You need to be a player to do this."
+notonline: "This player is not online."
+nooneignored: "No players ignored."
+chaton: "Chat messages unhidden."
+chatoff: "Chat messages hidden."
+pmson: "Private messages hidden."
+pmsoff: "Private messages unhidden."
+pmself: "Please do not pm yourself."
+chatisoff: "You have toggled off chat"

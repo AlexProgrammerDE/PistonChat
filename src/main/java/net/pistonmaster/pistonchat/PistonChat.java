@@ -1,21 +1,57 @@
-package me.alexprogrammerde.pistonchat;
+package net.pistonmaster.pistonchat;
 
-import me.alexprogrammerde.pistonchat.commands.*;
-import me.alexprogrammerde.pistonchat.events.ChatEvent;
-import me.alexprogrammerde.pistonchat.utils.ConfigTool;
-import me.alexprogrammerde.pistonutils.PistonLogger;
-import me.alexprogrammerde.pistonutils.UpdateChecker;
-import me.alexprogrammerde.pistonutils.UpdateParser;
-import me.alexprogrammerde.pistonutils.UpdateType;
+import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
+import net.pistonmaster.pistonchat.commands.MainCommand;
+import net.pistonmaster.pistonchat.commands.ignore.HardIgnoreCommand;
+import net.pistonmaster.pistonchat.commands.ignore.IgnoreListCommand;
+import net.pistonmaster.pistonchat.commands.ignore.SoftIgnoreCommand;
+import net.pistonmaster.pistonchat.commands.toggle.ToggleChatCommand;
+import net.pistonmaster.pistonchat.commands.toggle.ToggleWhisperingCommand;
+import net.pistonmaster.pistonchat.commands.whisper.LastCommand;
+import net.pistonmaster.pistonchat.commands.whisper.ReplyCommand;
+import net.pistonmaster.pistonchat.commands.whisper.WhisperCommand;
+import net.pistonmaster.pistonchat.events.ChatEvent;
+import net.pistonmaster.pistonchat.utils.ConfigManager;
+import net.pistonmaster.pistonchat.utils.ConfigTool;
+import net.pistonmaster.pistonchat.utils.TempDataTool;
+import net.pistonmaster.pistonutils.logging.PistonLogger;
+import net.pistonmaster.pistonutils.update.UpdateChecker;
+import net.pistonmaster.pistonutils.update.UpdateParser;
+import net.pistonmaster.pistonutils.update.UpdateType;
 import org.bstats.bukkit.Metrics;
+import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.logging.Logger;
 
 public final class PistonChat extends JavaPlugin {
+    private final ConfigManager config = new ConfigManager(this, "config.yml");
+    private final ConfigManager language = new ConfigManager(this, "language.yml");
+    @Getter
+    private final TempDataTool tempDataTool = new TempDataTool();
+    @Getter
+    private boolean unitTest = false;
+
+    public PistonChat()
+    {
+        super();
+    }
+
+    protected PistonChat(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file)
+    {
+        super(loader, description, dataFolder, file);
+
+        unitTest = true;
+    }
+
     @Override
     public void onEnable() {
         Logger log = getLogger();
@@ -30,9 +66,13 @@ public final class PistonChat extends JavaPlugin {
         log.info("                                                             ");
 
         log.info(ChatColor.DARK_GREEN + "Loading config");
-        saveDefaultConfig();
-        getConfig().options().copyDefaults(true);
-        saveConfig();
+        try {
+            config.create();
+            language.create();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Bukkit.getPluginManager().disablePlugin(this);
+        }
         ConfigTool.setupTool(this);
 
         log.info(ChatColor.DARK_GREEN + "Registering commands");
@@ -77,13 +117,13 @@ public final class PistonChat extends JavaPlugin {
         }
 
         if (toggleWhispering != null) {
-            toggleWhispering.setExecutor(new ToggleWhisperingCommand());
-            toggleWhispering.setTabCompleter(new ToggleWhisperingCommand());
+            toggleWhispering.setExecutor(new ToggleWhisperingCommand(this));
+            toggleWhispering.setTabCompleter(new ToggleWhisperingCommand(this));
         }
 
         if (toggleChat != null) {
-            toggleChat.setExecutor(new ToggleChatCommand());
-            toggleChat.setTabCompleter(new ToggleChatCommand());
+            toggleChat.setExecutor(new ToggleChatCommand(this));
+            toggleChat.setTabCompleter(new ToggleChatCommand(this));
         }
 
         if (main != null) {
@@ -92,7 +132,7 @@ public final class PistonChat extends JavaPlugin {
         }
 
         log.info(ChatColor.DARK_GREEN + "Registering listeners");
-        server.getPluginManager().registerEvents(new ChatEvent(), this);
+        server.getPluginManager().registerEvents(new ChatEvent(this), this);
 
         log.info(ChatColor.DARK_GREEN + "Checking for a newer version");
         new UpdateChecker(new PistonLogger(getLogger())).getVersion("https://www.pistonmaster.net/PistonChat/VERSION.txt", version -> new UpdateParser(getDescription().getVersion(), version).parseUpdate(updateType -> {
@@ -112,9 +152,20 @@ public final class PistonChat extends JavaPlugin {
             }
         }));
 
-        log.info(ChatColor.DARK_GREEN + "Loading metrics");
-        new Metrics(this, 9630);
+        if (!unitTest) {
+            log.info(ChatColor.DARK_GREEN + "Loading metrics");
+            new Metrics(this, 9630);
+        }
 
         log.info(ChatColor.DARK_GREEN + "Done! :D");
+    }
+
+    @Override
+    public FileConfiguration getConfig() {
+        return config.get();
+    }
+
+    public FileConfiguration getLanguage() {
+        return language.get();
     }
 }
