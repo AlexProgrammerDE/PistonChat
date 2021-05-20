@@ -1,5 +1,6 @@
 package net.pistonmaster.pistonchat.utils;
 
+import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
 import net.pistonmaster.pistonchat.PistonChat;
 import org.bukkit.Bukkit;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class ConfigTool {
+    @Getter
     private static PistonChat plugin;
     private static FileConfiguration dataConfig;
     private static File dataFile;
@@ -41,7 +43,7 @@ public class ConfigTool {
         }
     }
 
-    protected static boolean isHardIgnored(Player chatter, Player receiver) {
+    protected static boolean isHardIgnored(UniqueSender chatter, UniqueSender receiver) {
         return dataConfig.getStringList(receiver.getUniqueId().toString()).contains(chatter.getUniqueId().toString());
     }
 

@@ -36,9 +36,9 @@ public class ChatEvent implements Listener {
         if (!pistonChatEvent.isCancelled()) {
             String message = pistonChatEvent.getMessage();
 
-            if (plugin.getTempDataTool().isChatEnabled(chatter)) {
+            if (plugin.getTempDataTool().isChatEnabled(new UniqueSender(chatter))) {
                 for (Player receiver : Bukkit.getOnlinePlayers()) {
-                    if (!IgnoreTool.isIgnored(chatter, receiver) && plugin.getTempDataTool().isChatEnabled(receiver)) {
+                    if (!IgnoreTool.isIgnored(new UniqueSender(chatter), new UniqueSender(receiver)) && plugin.getTempDataTool().isChatEnabled(new UniqueSender(receiver))) {
                         PistonChatReceiveEvent perPlayerEvent = new PistonChatReceiveEvent(chatter, receiver, message);
 
                         Bukkit.getPluginManager().callEvent(perPlayerEvent);

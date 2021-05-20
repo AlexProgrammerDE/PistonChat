@@ -1,38 +1,36 @@
 package net.pistonmaster.pistonchat.utils;
 
-import org.bukkit.entity.Player;
-
 import java.util.HashMap;
 import java.util.Map;
 
 public class TempDataTool {
-    private final Map<Player, TempData> map = new HashMap<>();
+    private final Map<UniqueSender, TempData> map = new HashMap<>();
 
-    public void setWhisperingEnabled(Player player, boolean value) {
+    public void setWhisperingEnabled(UniqueSender player, boolean value) {
         indexPlayer(player);
 
         map.get(player).whispering = value;
     }
 
-    public void setChatEnabled(Player player, boolean value) {
+    public void setChatEnabled(UniqueSender player, boolean value) {
         indexPlayer(player);
 
         map.get(player).chat = value;
     }
 
-    public boolean isWhisperingEnabled(Player player) {
+    public boolean isWhisperingEnabled(UniqueSender player) {
         indexPlayer(player);
 
         return map.get(player).whispering;
     }
 
-    public boolean isChatEnabled(Player player) {
+    public boolean isChatEnabled(UniqueSender player) {
         indexPlayer(player);
 
         return map.get(player).chat;
     }
 
-    private void indexPlayer(Player player) {
+    private void indexPlayer(UniqueSender player) {
         map.putIfAbsent(player, new TempData());
     }
 

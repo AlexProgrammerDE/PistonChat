@@ -13,8 +13,8 @@ public class SoftIgnoreTool {
     private static final HashMap<UUID, List<UUID>> map = new HashMap<>();
 
     public static SoftReturn softIgnorePlayer(Player player, Player ignored) {
-        indexPlayer(player);
-        indexPlayer(ignored);
+        indexPlayer(new UniqueSender(player));
+        indexPlayer(new UniqueSender(ignored));
 
         List<UUID> list = map.get(player.getUniqueId());
 
@@ -29,7 +29,7 @@ public class SoftIgnoreTool {
         }
     }
 
-    protected static boolean isSoftIgnored(Player chatter, Player receiver) {
+    protected static boolean isSoftIgnored(UniqueSender chatter, UniqueSender receiver) {
         indexPlayer(receiver);
         indexPlayer(chatter);
 
@@ -37,7 +37,7 @@ public class SoftIgnoreTool {
     }
 
     protected static List<OfflinePlayer> getSoftIgnoredPlayers(Player player) {
-        indexPlayer(player);
+        indexPlayer(new UniqueSender(player));
 
         List<UUID> listUUID = map.get(player.getUniqueId());
 
@@ -50,7 +50,7 @@ public class SoftIgnoreTool {
         return returnedPlayers;
     }
 
-    private static void indexPlayer(Player player) {
+    private static void indexPlayer(UniqueSender player) {
         if (!map.containsKey(player.getUniqueId())) {
             map.put(player.getUniqueId(), new ArrayList<>());
         }

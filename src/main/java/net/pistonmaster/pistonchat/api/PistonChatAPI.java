@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import net.pistonmaster.pistonchat.utils.CommonTool;
 import net.pistonmaster.pistonchat.utils.ConfigTool;
 import net.pistonmaster.pistonchat.utils.IgnoreTool;
+import net.pistonmaster.pistonchat.utils.UniqueSender;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -55,6 +56,6 @@ public final class PistonChatAPI {
         Preconditions.checkNotNull(sender, "Sender can not be null!");
         Preconditions.checkNotNull(receiver, "Receiver can not be null!");
 
-        CommonTool.sendWhisperTo(sender, message, receiver);
+        CommonTool.sendWhisperTo(new UniqueSender(sender), message, new UniqueSender(receiver));
     }
 }

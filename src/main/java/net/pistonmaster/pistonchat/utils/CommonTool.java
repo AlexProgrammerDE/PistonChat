@@ -7,6 +7,8 @@ import net.pistonmaster.pistonchat.PistonChat;
 import net.pistonmaster.pistonchat.api.PistonWhisperEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
@@ -21,7 +23,7 @@ public class CommonTool {
         return Optional.ofNullable(Bukkit.getPlayer(name));
     }
 
-    public static void sendWhisperTo(Player sender, String message, Player receiver) {
+    public static void sendWhisperTo(UniqueSender sender, String message, UniqueSender receiver) {
         if (!ConfigTool.getConfig().getBoolean("allowpmself") && sender == receiver) {
             sender.sendMessage(LanguageTool.getMessage("pmself"));
             return;
@@ -51,7 +53,7 @@ public class CommonTool {
         CacheTool.sendMessage(sender, receiver);
     }
 
-    public static void sendSender(Player sender, String message, Player receiver) {
+    public static void sendSender(UniqueSender sender, String message, UniqueSender receiver) {
         String senderString = ChatColor.translateAlternateColorCodes('&', ConfigTool.getConfig().getString("whisper.to")
                 .replace("%player%", ChatColor.stripColor(receiver.getDisplayName()))
                 .replace("%message%", message));
@@ -59,7 +61,7 @@ public class CommonTool {
         sender.spigot().sendMessage(new TextComponent(TextComponent.fromLegacyText(senderString)));
     }
 
-    private static void sendReceiver(Player sender, String message, Player receiver) {
+    private static void sendReceiver(UniqueSender sender, String message, UniqueSender receiver) {
         String receiverString = ChatColor.translateAlternateColorCodes('&', ConfigTool.getConfig().getString("whisper.from")
                 .replace("%player%", ChatColor.stripColor(sender.getDisplayName()))
                 .replace("%message%", message));
@@ -91,23 +93,29 @@ public class CommonTool {
         return ChatColor.WHITE;
     }
 
-    public static String getFormat(Player player) {
-        String str = ChatColor.translateAlternateColorCodes('&', ConfigTool.getConfig().getString("chatformat").replace("%player%", getName(player)));
+    public static String getFormat(CommandSender sender) {
+        String str = ChatColor.translateAlternateColorCodes('&', ConfigTool.getConfig().getString("chatformat").replace("%player%", getName(sender)));
 
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            str = parse(player, str);
+        if (sender instanceof Player && Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            str = parse((OfflinePlayer) sender, str);
         }
 
         return str;
     }
 
-    private static String getName(Player player) {
-        FileConfiguration config = ConfigTool.getConfig();
+    private static String getName(CommandSender sender) {
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
 
-        if (config.getBoolean("stripnamecolor")) {
-            return ChatColor.stripColor(player.getDisplayName());
+            if (ConfigTool.getConfig().getBoolean("stripnamecolor")) {
+                return ChatColor.stripColor(player.getDisplayName());
+            } else {
+                return player.getDisplayName();
+            }
+        } else if (sender instanceof ConsoleCommandSender) {
+            return ChatColor.translateAlternateColorCodes('&', ConfigTool.getConfig().getString("consolename"));
         } else {
-            return player.getDisplayName();
+            return sender.getName();
         }
     }
 

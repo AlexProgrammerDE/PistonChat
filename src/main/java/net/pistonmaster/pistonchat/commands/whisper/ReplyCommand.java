@@ -5,7 +5,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,31 +13,26 @@ import java.util.Optional;
 public class ReplyCommand implements CommandExecutor, TabExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-            Optional<Player> lastMessagedOf = CacheTool.getLastMessagedOf(player);
+        Optional<CommandSender> lastMessagedOf = CacheTool.getLastMessagedOf(new UniqueSender(sender));
 
-            if (lastMessagedOf.isPresent()) {
-                if (IgnoreTool.isIgnored(player, lastMessagedOf.get())) {
-                    if (ConfigTool.getConfig().getBoolean("onlyhidepms")) {
-                        CommonTool.sendSender(player, CommonTool.mergeArgs(args, 0), lastMessagedOf.get());
-                    } else {
-                        player.sendMessage(CommonTool.getPrefix() + "This person ignores you!");
-                    }
-                } else if (!ConfigTool.getConfig().getBoolean("allowpmignored") && IgnoreTool.isIgnored(lastMessagedOf.get(), player)) {
-                    player.sendMessage(CommonTool.getPrefix() + "You ignore this person!");
+        if (lastMessagedOf.isPresent()) {
+            if (IgnoreTool.isIgnored(new UniqueSender(sender), new UniqueSender(lastMessagedOf.get()))) {
+                if (ConfigTool.getConfig().getBoolean("onlyhidepms")) {
+                    CommonTool.sendSender(new UniqueSender(sender), CommonTool.mergeArgs(args, 0), new UniqueSender(lastMessagedOf.get()));
                 } else {
-                    if (args.length > 0) {
-                        CommonTool.sendWhisperTo(player, CommonTool.mergeArgs(args, 0), lastMessagedOf.get());
-                    } else {
-                        return false;
-                    }
+                    sender.sendMessage(CommonTool.getPrefix() + "This person ignores you!");
                 }
+            } else if (!ConfigTool.getConfig().getBoolean("allowpmignored") && IgnoreTool.isIgnored(new UniqueSender(lastMessagedOf.get()), new UniqueSender(sender))) {
+                sender.sendMessage(CommonTool.getPrefix() + "You ignore this person!");
             } else {
-                player.sendMessage(LanguageTool.getMessage("notonline"));
+                if (args.length > 0) {
+                    CommonTool.sendWhisperTo(new UniqueSender(sender), CommonTool.mergeArgs(args, 0), new UniqueSender(lastMessagedOf.get()));
+                } else {
+                    return false;
+                }
             }
         } else {
-            sender.sendMessage(LanguageTool.getMessage("playeronly"));
+            sender.sendMessage(LanguageTool.getMessage("notonline"));
         }
 
         return true;

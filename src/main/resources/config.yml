@@ -2,7 +2,7 @@
 # / indicates disabled!
 # This config is configured to be what 2b2t.org has.
 whisper:
-  from: "&d%player% whispers: %message%"
+  from: "&d%player%&d whispers: %message%"
   to: "&dYou whisper to %player%: %message%"
 hovertext: "&6Message &3%player%"
 
@@ -13,6 +13,8 @@ unignorehard: "&6No longer permanently ignoring &3%player%"
 
 chatformat: "<%player%&r>"
 stripnamecolor: false
+
+consolename: "&b[console]&d"
 
 allowpmself: true
 allowpmignored: true

@@ -1,6 +1,6 @@
 package net.pistonmaster.pistonchat.api;
 
-import org.bukkit.entity.Player;
+import net.pistonmaster.pistonchat.utils.UniqueSender;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -8,13 +8,13 @@ import org.bukkit.event.HandlerList;
 @SuppressWarnings("unused")
 public class PistonWhisperEvent extends Event implements Cancellable {
     private static final HandlerList HANDLERS = new HandlerList();
-    private final Player sender;
-    private final Player receiver;
+    private final UniqueSender sender;
+    private final UniqueSender receiver;
     private boolean isCancelled;
     private String message;
 
-    public PistonWhisperEvent(Player sender, Player receiver, String message) {
-        super(true);
+    public PistonWhisperEvent(UniqueSender sender, UniqueSender receiver, String message) {
+        super(false);
 
         this.sender = sender;
         this.receiver = receiver;
@@ -58,7 +58,7 @@ public class PistonWhisperEvent extends Event implements Cancellable {
      *
      * @return the player who sends the message
      */
-    public Player getSender() {
+    public UniqueSender getSender() {
         return sender;
     }
 
@@ -67,7 +67,7 @@ public class PistonWhisperEvent extends Event implements Cancellable {
      *
      * @return the player who receives the message
      */
-    public Player getReceiver() {
+    public UniqueSender getReceiver() {
         return receiver;
     }
 

@@ -10,7 +10,7 @@ import java.util.Map;
  * Parent for both soft and hard banning!
  */
 public class IgnoreTool {
-    public static boolean isIgnored(Player chatter, Player receiver) {
+    public static boolean isIgnored(UniqueSender chatter, UniqueSender receiver) {
         if (SoftIgnoreTool.isSoftIgnored(chatter, receiver)) {
             return true;
         } else return ConfigTool.isHardIgnored(chatter, receiver);

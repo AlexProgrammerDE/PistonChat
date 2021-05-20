@@ -40,13 +40,11 @@ public final class PistonChat extends JavaPlugin {
     @Getter
     private boolean unitTest = false;
 
-    public PistonChat()
-    {
+    public PistonChat() {
         super();
     }
 
-    protected PistonChat(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file)
-    {
+    protected PistonChat(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
         super(loader, description, dataFolder, file);
 
         unitTest = true;

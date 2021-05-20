@@ -1,6 +1,7 @@
 package net.pistonmaster.pistonchat.utils;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
@@ -14,9 +15,9 @@ public class CacheTool {
     private CacheTool() {
     }
 
-    public static void sendMessage(Player sender, Player receiver) {
-        indexPlayer(sender);
-        indexPlayer(receiver);
+    public static void sendMessage(UniqueSender sender, UniqueSender receiver) {
+        index(sender);
+        index(receiver);
 
         map.get(sender.getUniqueId()).sentTo = receiver.getUniqueId();
         map.get(receiver.getUniqueId()).messagedOf = sender.getUniqueId();
@@ -28,10 +29,16 @@ public class CacheTool {
      * @param player The player to get data from.
      * @return The last person the player sent a message to.
      */
-    public static Optional<Player> getLastSentTo(Player player) {
-        indexPlayer(player);
+    public static Optional<CommandSender> getLastSentTo(UniqueSender player) {
+        index(player);
+        UUID sentTo = map.get(player.getUniqueId()).sentTo;
+        Player nullablePlayer = Bukkit.getPlayer(sentTo);
 
-        return Optional.ofNullable(Bukkit.getPlayer(map.get(player.getUniqueId()).sentTo));
+        if (nullablePlayer == null) {
+            return Optional.ofNullable(UniqueSender.byUUID(sentTo));
+        } else {
+            return Optional.of(nullablePlayer);
+        }
     }
 
     /**
@@ -40,22 +47,28 @@ public class CacheTool {
      * @param player The player to get data from.
      * @return The last person the player was messaged from.
      */
-    public static Optional<Player> getLastMessagedOf(Player player) {
-        indexPlayer(player);
+    public static Optional<CommandSender> getLastMessagedOf(UniqueSender player) {
+        index(player);
+        UUID messagedOf = map.get(player.getUniqueId()).messagedOf;
+        Player nullablePlayer = Bukkit.getPlayer(messagedOf);
 
-        return Optional.ofNullable(Bukkit.getPlayer(map.get(player.getUniqueId()).messagedOf));
+        if (nullablePlayer == null) {
+            return Optional.ofNullable(UniqueSender.byUUID(messagedOf));
+        } else {
+            return Optional.of(nullablePlayer);
+        }
     }
 
-    private static void indexPlayer(Player player) {
-        if (!map.containsKey(player.getUniqueId())) {
-            map.put(player.getUniqueId(), new PlayerData());
+    private static void index(UniqueSender sender) {
+        if (!map.containsKey(sender.getUniqueId())) {
+            map.put(sender.getUniqueId(), new PlayerData());
         }
     }
 
     private static class PlayerData {
-        public @Nullable
-        UUID sentTo = null;
-        public @Nullable
-        UUID messagedOf = null;
+        @Nullable
+        public UUID sentTo = null;
+        @Nullable
+        public UUID messagedOf = null;
     }
 }
