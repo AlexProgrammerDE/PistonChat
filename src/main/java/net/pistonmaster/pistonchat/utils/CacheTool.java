@@ -1,5 +1,7 @@
 package net.pistonmaster.pistonchat.utils;
 
+import lombok.RequiredArgsConstructor;
+import net.pistonmaster.pistonchat.PistonChat;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -9,13 +11,12 @@ import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 public class CacheTool {
-    private static final HashMap<UUID, PlayerData> map = new HashMap<>();
+    private final HashMap<UUID, PlayerData> map = new HashMap<>();
+    private final PistonChat plugin;
 
-    private CacheTool() {
-    }
-
-    public static void sendMessage(UniqueSender sender, UniqueSender receiver) {
+    public void sendMessage(UniqueSender sender, UniqueSender receiver) {
         index(sender);
         index(receiver);
 
@@ -29,7 +30,7 @@ public class CacheTool {
      * @param player The player to get data from.
      * @return The last person the player sent a message to.
      */
-    public static Optional<CommandSender> getLastSentTo(UniqueSender player) {
+    public Optional<CommandSender> getLastSentTo(UniqueSender player) {
         index(player);
         UUID sentTo = map.get(player.getUniqueId()).sentTo;
         Player nullablePlayer = Bukkit.getPlayer(sentTo);
@@ -47,7 +48,7 @@ public class CacheTool {
      * @param player The player to get data from.
      * @return The last person the player was messaged from.
      */
-    public static Optional<CommandSender> getLastMessagedOf(UniqueSender player) {
+    public Optional<CommandSender> getLastMessagedOf(UniqueSender player) {
         index(player);
         UUID messagedOf = map.get(player.getUniqueId()).messagedOf;
         Player nullablePlayer = Bukkit.getPlayer(messagedOf);
@@ -59,7 +60,7 @@ public class CacheTool {
         }
     }
 
-    private static void index(UniqueSender sender) {
+    private void index(UniqueSender sender) {
         if (!map.containsKey(sender.getUniqueId())) {
             map.put(sender.getUniqueId(), new PlayerData());
         }

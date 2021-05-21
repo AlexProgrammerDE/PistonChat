@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.UUID;
 
 public class SoftIgnoreTool {
-    private static final HashMap<UUID, List<UUID>> map = new HashMap<>();
+    private final HashMap<UUID, List<UUID>> map = new HashMap<>();
 
-    public static SoftReturn softIgnorePlayer(Player player, Player ignored) {
+    public SoftReturn softIgnorePlayer(Player player, Player ignored) {
         indexPlayer(new UniqueSender(player));
         indexPlayer(new UniqueSender(ignored));
 
@@ -29,14 +29,14 @@ public class SoftIgnoreTool {
         }
     }
 
-    protected static boolean isSoftIgnored(UniqueSender chatter, UniqueSender receiver) {
+    protected boolean isSoftIgnored(UniqueSender chatter, UniqueSender receiver) {
         indexPlayer(receiver);
         indexPlayer(chatter);
 
         return map.get(receiver.getUniqueId()).contains(chatter.getUniqueId());
     }
 
-    protected static List<OfflinePlayer> getSoftIgnoredPlayers(Player player) {
+    protected List<OfflinePlayer> getSoftIgnoredPlayers(Player player) {
         indexPlayer(new UniqueSender(player));
 
         List<UUID> listUUID = map.get(player.getUniqueId());
@@ -50,7 +50,7 @@ public class SoftIgnoreTool {
         return returnedPlayers;
     }
 
-    private static void indexPlayer(UniqueSender player) {
+    private void indexPlayer(UniqueSender player) {
         if (!map.containsKey(player.getUniqueId())) {
             map.put(player.getUniqueId(), new ArrayList<>());
         }

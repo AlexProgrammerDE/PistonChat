@@ -1,12 +1,13 @@
 package net.pistonmaster.pistonchat.commands.ignore;
 
 import com.google.common.math.IntMath;
+import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
+import net.pistonmaster.pistonchat.PistonChat;
 import net.pistonmaster.pistonchat.utils.CommonTool;
-import net.pistonmaster.pistonchat.utils.ConfigTool;
 import net.pistonmaster.pistonchat.utils.IgnoreTool;
 import net.pistonmaster.pistonchat.utils.LanguageTool;
 import org.bukkit.OfflinePlayer;
@@ -21,7 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@RequiredArgsConstructor
 public class IgnoreListCommand implements CommandExecutor, TabExecutor {
+    private final PistonChat plugin;
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
@@ -29,7 +33,7 @@ public class IgnoreListCommand implements CommandExecutor, TabExecutor {
 
             List<String> list = new ArrayList<>();
 
-            for (OfflinePlayer offlinePlayer : IgnoreTool.getIgnoredPlayers(player).keySet()) {
+            for (OfflinePlayer offlinePlayer : plugin.getIgnoreTool().getIgnoredPlayers(player).keySet()) {
                 list.add(offlinePlayer.getName());
             }
 
@@ -39,7 +43,7 @@ public class IgnoreListCommand implements CommandExecutor, TabExecutor {
                 if (args.length > 0) {
                     int page = Integer.parseInt(args[0]);
 
-                    if (page < IgnoreTool.getIgnoredPlayers(player).size()) {
+                    if (page < plugin.getIgnoreTool().getIgnoredPlayers(player).size()) {
                         showList(page, player);
                     } else {
                         player.sendMessage(CommonTool.getPrefix() + "This page doesn't exist!");
@@ -61,12 +65,12 @@ public class IgnoreListCommand implements CommandExecutor, TabExecutor {
     }
 
     private void showList(int page, Player player) {
-        int maxValue = page * ConfigTool.getPageSize();
-        int minValue = maxValue - ConfigTool.getPageSize();
+        int maxValue = page * plugin.getConfig().getInt("ignorelistsize");
+        int minValue = maxValue - plugin.getConfig().getInt("ignorelistsize");
 
-        Map<OfflinePlayer, IgnoreTool.IgnoreType> map = IgnoreTool.getIgnoredPlayers(player);
+        Map<OfflinePlayer, IgnoreTool.IgnoreType> map = plugin.getIgnoreTool().getIgnoredPlayers(player);
 
-        int allPages = IntMath.divide(map.size(), ConfigTool.getPageSize(), RoundingMode.CEILING);
+        int allPages = IntMath.divide(map.size(), plugin.getConfig().getInt("ignorelistsize"), RoundingMode.CEILING);
 
         ComponentBuilder navigation = new ComponentBuilder("[ Ignored players ").color(ChatColor.GOLD);
 

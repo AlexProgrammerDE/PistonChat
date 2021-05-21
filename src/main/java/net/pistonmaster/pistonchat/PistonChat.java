@@ -2,6 +2,7 @@ package net.pistonmaster.pistonchat;
 
 import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
+import net.pistonmaster.pistonchat.api.PistonChatAPI;
 import net.pistonmaster.pistonchat.commands.MainCommand;
 import net.pistonmaster.pistonchat.commands.ignore.HardIgnoreCommand;
 import net.pistonmaster.pistonchat.commands.ignore.IgnoreListCommand;
@@ -12,9 +13,7 @@ import net.pistonmaster.pistonchat.commands.whisper.LastCommand;
 import net.pistonmaster.pistonchat.commands.whisper.ReplyCommand;
 import net.pistonmaster.pistonchat.commands.whisper.WhisperCommand;
 import net.pistonmaster.pistonchat.events.ChatEvent;
-import net.pistonmaster.pistonchat.utils.ConfigManager;
-import net.pistonmaster.pistonchat.utils.ConfigTool;
-import net.pistonmaster.pistonchat.utils.TempDataTool;
+import net.pistonmaster.pistonchat.utils.*;
 import net.pistonmaster.pistonutils.logging.PistonLogger;
 import net.pistonmaster.pistonutils.update.UpdateChecker;
 import net.pistonmaster.pistonutils.update.UpdateParser;
@@ -32,12 +31,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+@Getter
 public final class PistonChat extends JavaPlugin {
     private final ConfigManager config = new ConfigManager(this, "config.yml");
     private final ConfigManager language = new ConfigManager(this, "language.yml");
-    @Getter
     private final TempDataTool tempDataTool = new TempDataTool();
-    @Getter
+    private final SoftIgnoreTool softignoreTool = new SoftIgnoreTool();
+    private final CacheTool cacheTool = new CacheTool(this);
+    private final IgnoreTool ignoreTool = new IgnoreTool(this);
+    private final ConfigTool configTool = new ConfigTool(this);
+
     private boolean unitTest = false;
 
     public PistonChat() {
@@ -52,6 +55,8 @@ public final class PistonChat extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        PistonChatAPI.setInstance(this);
+
         Logger log = getLogger();
         Server server = getServer();
 
@@ -71,7 +76,6 @@ public final class PistonChat extends JavaPlugin {
             e.printStackTrace();
             Bukkit.getPluginManager().disablePlugin(this);
         }
-        ConfigTool.setupTool(this);
 
         log.info(ChatColor.DARK_GREEN + "Registering commands");
         PluginCommand ignorehard = server.getPluginCommand("ignorehard");
@@ -85,33 +89,33 @@ public final class PistonChat extends JavaPlugin {
         PluginCommand main = server.getPluginCommand("pistonchat");
 
         if (ignorehard != null) {
-            ignorehard.setExecutor(new HardIgnoreCommand());
-            ignorehard.setTabCompleter(new HardIgnoreCommand());
+            ignorehard.setExecutor(new HardIgnoreCommand(this));
+            ignorehard.setTabCompleter(new HardIgnoreCommand(this));
         }
 
         if (ignore != null) {
-            ignore.setExecutor(new SoftIgnoreCommand());
-            ignore.setTabCompleter(new SoftIgnoreCommand());
+            ignore.setExecutor(new SoftIgnoreCommand(this));
+            ignore.setTabCompleter(new SoftIgnoreCommand(this));
         }
 
         if (whisper != null) {
-            whisper.setExecutor(new WhisperCommand());
-            whisper.setTabCompleter(new WhisperCommand());
+            whisper.setExecutor(new WhisperCommand(this));
+            whisper.setTabCompleter(new WhisperCommand(this));
         }
 
         if (reply != null) {
-            reply.setExecutor(new ReplyCommand());
-            reply.setTabCompleter(new ReplyCommand());
+            reply.setExecutor(new ReplyCommand(this));
+            reply.setTabCompleter(new ReplyCommand(this));
         }
 
         if (last != null) {
-            last.setExecutor(new LastCommand());
-            last.setTabCompleter(new LastCommand());
+            last.setExecutor(new LastCommand(this));
+            last.setTabCompleter(new LastCommand(this));
         }
 
         if (ignorelist != null) {
-            ignorelist.setExecutor(new IgnoreListCommand());
-            ignorelist.setTabCompleter(new IgnoreListCommand());
+            ignorelist.setExecutor(new IgnoreListCommand(this));
+            ignorelist.setTabCompleter(new IgnoreListCommand(this));
         }
 
         if (toggleWhispering != null) {

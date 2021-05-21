@@ -1,11 +1,12 @@
 package net.pistonmaster.pistonchat.api;
 
 import com.google.common.base.Preconditions;
+import net.pistonmaster.pistonchat.PistonChat;
 import net.pistonmaster.pistonchat.utils.CommonTool;
-import net.pistonmaster.pistonchat.utils.ConfigTool;
 import net.pistonmaster.pistonchat.utils.IgnoreTool;
 import net.pistonmaster.pistonchat.utils.UniqueSender;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
@@ -16,7 +17,14 @@ import java.util.Map;
  */
 @SuppressWarnings({"unused"})
 public final class PistonChatAPI {
+    private static PistonChat plugin = null;
+
     private PistonChatAPI() {
+    }
+
+    public static void setInstance(PistonChat plugin) {
+        if (plugin != null && PistonChatAPI.plugin == null)
+            PistonChatAPI.plugin = plugin;
     }
 
     /**
@@ -29,7 +37,7 @@ public final class PistonChatAPI {
         Preconditions.checkNotNull(ignorer, "Ignorer can not be null!");
         Preconditions.checkNotNull(ignored, "Ignored can not be null!");
 
-        ConfigTool.hardIgnorePlayer(ignorer, ignored);
+        plugin.getConfigTool().hardIgnorePlayer(ignorer, ignored);
     }
 
     /**
@@ -42,7 +50,7 @@ public final class PistonChatAPI {
     public static Map<OfflinePlayer, IgnoreTool.IgnoreType> getIgnoreList(@Nonnull Player player) {
         Preconditions.checkNotNull(player, "Player can not be null!");
 
-        return IgnoreTool.getIgnoredPlayers(player);
+        return plugin.getIgnoreTool().getIgnoredPlayers(player);
     }
 
     /**
@@ -52,7 +60,7 @@ public final class PistonChatAPI {
      * @param message  Whisper to send!
      * @param receiver The person who receives the whisper!
      */
-    public static void whisperPlayer(@Nonnull Player sender, @Nonnull String message, @Nonnull Player receiver) {
+    public static void whisperPlayer(@Nonnull CommandSender sender, @Nonnull String message, @Nonnull CommandSender receiver) {
         Preconditions.checkNotNull(sender, "Sender can not be null!");
         Preconditions.checkNotNull(receiver, "Receiver can not be null!");
 

@@ -1,7 +1,8 @@
 package net.pistonmaster.pistonchat.commands.ignore;
 
+import lombok.RequiredArgsConstructor;
+import net.pistonmaster.pistonchat.PistonChat;
 import net.pistonmaster.pistonchat.utils.CommonTool;
-import net.pistonmaster.pistonchat.utils.ConfigTool;
 import net.pistonmaster.pistonchat.utils.LanguageTool;
 import net.pistonmaster.pistonchat.utils.SoftIgnoreTool;
 import org.bukkit.command.Command;
@@ -14,7 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 public class SoftIgnoreCommand implements CommandExecutor, TabExecutor {
+    private final PistonChat plugin;
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
@@ -24,12 +28,12 @@ public class SoftIgnoreCommand implements CommandExecutor, TabExecutor {
                 Optional<Player> ignored = CommonTool.getPlayer(args[0]);
 
                 if (ignored.isPresent()) {
-                    SoftIgnoreTool.SoftReturn type = SoftIgnoreTool.softIgnorePlayer(player, ignored.get());
+                    SoftIgnoreTool.SoftReturn type = plugin.getSoftignoreTool().softIgnorePlayer(player, ignored.get());
 
                     if (type == SoftIgnoreTool.SoftReturn.IGNORE) {
-                        player.sendMessage(ConfigTool.getPreparedString("ignore", ignored.get()));
+                        player.sendMessage(plugin.getConfigTool().getPreparedString("ignore", ignored.get()));
                     } else if (type == SoftIgnoreTool.SoftReturn.UNIGNORE) {
-                        player.sendMessage(ConfigTool.getPreparedString("unignore", ignored.get()));
+                        player.sendMessage(plugin.getConfigTool().getPreparedString("unignore", ignored.get()));
                     }
                 } else {
                     player.sendMessage(LanguageTool.getMessage("notonline"));

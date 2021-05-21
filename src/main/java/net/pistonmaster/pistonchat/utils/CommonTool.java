@@ -16,21 +16,18 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public class CommonTool {
-    private CommonTool() {
-    }
-
     public static Optional<Player> getPlayer(String name) {
         return Optional.ofNullable(Bukkit.getPlayer(name));
     }
 
     public static void sendWhisperTo(UniqueSender sender, String message, UniqueSender receiver) {
-        if (!ConfigTool.getConfig().getBoolean("allowpmself") && sender == receiver) {
+        if (!PistonChat.getPlugin(PistonChat.class).getConfig().getBoolean("allowpmself") && sender == receiver) {
             sender.sendMessage(LanguageTool.getMessage("pmself"));
             return;
         }
 
         if (!PistonChat.getPlugin(PistonChat.class).getTempDataTool().isWhisperingEnabled(receiver)) {
-            if (ConfigTool.getConfig().getBoolean("onlyhidepms")) {
+            if (PistonChat.getPlugin(PistonChat.class).getConfig().getBoolean("onlyhidepms")) {
                 sendSender(sender, message, receiver);
             } else {
                 sender.sendMessage(CommonTool.getPrefix() + "This person has whispering disabled!");
@@ -38,7 +35,7 @@ public class CommonTool {
             return;
         }
 
-        PistonWhisperEvent pistonWhisperEvent = new PistonWhisperEvent(sender, receiver, message);
+        PistonWhisperEvent pistonWhisperEvent = new PistonWhisperEvent(sender.getSender(), receiver.getSender(), message);
 
         Bukkit.getPluginManager().callEvent(pistonWhisperEvent);
 
@@ -50,11 +47,11 @@ public class CommonTool {
         sendSender(sender, message, receiver);
         sendReceiver(sender, message, receiver);
 
-        CacheTool.sendMessage(sender, receiver);
+        PistonChat.getPlugin(PistonChat.class).getCacheTool().sendMessage(sender, receiver);
     }
 
     public static void sendSender(UniqueSender sender, String message, UniqueSender receiver) {
-        String senderString = ChatColor.translateAlternateColorCodes('&', ConfigTool.getConfig().getString("whisper.to")
+        String senderString = ChatColor.translateAlternateColorCodes('&', PistonChat.getPlugin(PistonChat.class).getConfig().getString("whisper.to")
                 .replace("%player%", ChatColor.stripColor(receiver.getDisplayName()))
                 .replace("%message%", message));
 
@@ -62,7 +59,7 @@ public class CommonTool {
     }
 
     private static void sendReceiver(UniqueSender sender, String message, UniqueSender receiver) {
-        String receiverString = ChatColor.translateAlternateColorCodes('&', ConfigTool.getConfig().getString("whisper.from")
+        String receiverString = ChatColor.translateAlternateColorCodes('&', PistonChat.getPlugin(PistonChat.class).getConfig().getString("whisper.from")
                 .replace("%player%", ChatColor.stripColor(sender.getDisplayName()))
                 .replace("%message%", message));
 
@@ -74,11 +71,11 @@ public class CommonTool {
     }
 
     public static String getPrefix() {
-        return ChatColor.translateAlternateColorCodes('&', ConfigTool.getLanguage().getString("prefix"));
+        return ChatColor.translateAlternateColorCodes('&', PistonChat.getPlugin(PistonChat.class).getLanguage().getString("prefix"));
     }
 
     public static ChatColor getChatColorFor(String message, Player player) {
-        FileConfiguration config = ConfigTool.getConfig();
+        FileConfiguration config = PistonChat.getPlugin(PistonChat.class).getConfig();
 
         for (String str : config.getConfigurationSection("prefixes").getKeys(false)) {
             if (!config.getString("prefixes." + str).equalsIgnoreCase("/") && message.toLowerCase().startsWith(config.getString("prefixes." + str))) {
@@ -94,7 +91,7 @@ public class CommonTool {
     }
 
     public static String getFormat(CommandSender sender) {
-        String str = ChatColor.translateAlternateColorCodes('&', ConfigTool.getConfig().getString("chatformat").replace("%player%", getName(sender)));
+        String str = ChatColor.translateAlternateColorCodes('&', PistonChat.getPlugin(PistonChat.class).getConfig().getString("chatformat").replace("%player%", getName(sender)));
 
         if (sender instanceof Player && Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             str = parse((OfflinePlayer) sender, str);
@@ -107,13 +104,13 @@ public class CommonTool {
         if (sender instanceof Player) {
             Player player = (Player) sender;
 
-            if (ConfigTool.getConfig().getBoolean("stripnamecolor")) {
+            if (PistonChat.getPlugin(PistonChat.class).getConfig().getBoolean("stripnamecolor")) {
                 return ChatColor.stripColor(player.getDisplayName());
             } else {
                 return player.getDisplayName();
             }
         } else if (sender instanceof ConsoleCommandSender) {
-            return ChatColor.translateAlternateColorCodes('&', ConfigTool.getConfig().getString("consolename"));
+            return ChatColor.translateAlternateColorCodes('&', PistonChat.getPlugin(PistonChat.class).getConfig().getString("consolename"));
         } else {
             return sender.getName();
         }

@@ -9,7 +9,9 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.pistonmaster.pistonchat.PistonChat;
 import net.pistonmaster.pistonchat.api.PistonChatEvent;
 import net.pistonmaster.pistonchat.api.PistonChatReceiveEvent;
-import net.pistonmaster.pistonchat.utils.*;
+import net.pistonmaster.pistonchat.utils.CommonTool;
+import net.pistonmaster.pistonchat.utils.LanguageTool;
+import net.pistonmaster.pistonchat.utils.UniqueSender;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -38,7 +40,7 @@ public class ChatEvent implements Listener {
 
             if (plugin.getTempDataTool().isChatEnabled(new UniqueSender(chatter))) {
                 for (Player receiver : Bukkit.getOnlinePlayers()) {
-                    if (!IgnoreTool.isIgnored(new UniqueSender(chatter), new UniqueSender(receiver)) && plugin.getTempDataTool().isChatEnabled(new UniqueSender(receiver))) {
+                    if (!plugin.getIgnoreTool().isIgnored(new UniqueSender(chatter), new UniqueSender(receiver)) && plugin.getTempDataTool().isChatEnabled(new UniqueSender(receiver))) {
                         PistonChatReceiveEvent perPlayerEvent = new PistonChatReceiveEvent(chatter, receiver, message);
 
                         Bukkit.getPluginManager().callEvent(perPlayerEvent);
@@ -53,7 +55,7 @@ public class ChatEvent implements Listener {
                         if (receiver.hasPermission("pistonchat.playernamereply")) {
                             builder.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/w " + ChatColor.stripColor(chatter.getDisplayName()) + " "));
 
-                            String hoverText = ConfigTool.getConfig().getString("hovertext");
+                            String hoverText = plugin.getConfig().getString("hovertext");
 
                             builder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                                     new ComponentBuilder(
