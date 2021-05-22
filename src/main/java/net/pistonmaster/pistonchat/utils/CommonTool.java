@@ -16,6 +16,9 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public class CommonTool {
+    private CommonTool() {
+    }
+
     public static Optional<Player> getPlayer(String name) {
         return Optional.ofNullable(Bukkit.getPlayer(name));
     }
