@@ -3,6 +3,7 @@ package net.pistonmaster.pistonchat.utils;
 import lombok.RequiredArgsConstructor;
 import net.pistonmaster.pistonchat.PistonChat;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -15,7 +16,7 @@ import java.util.Map;
 public class IgnoreTool {
     private final PistonChat plugin;
 
-    public boolean isIgnored(UniqueSender chatter, UniqueSender receiver) {
+    public boolean isIgnored(CommandSender chatter, CommandSender receiver) {
         if (plugin.getSoftignoreTool().isSoftIgnored(chatter, receiver)) {
             return true;
         } else return plugin.getConfigTool().isHardIgnored(chatter, receiver);

@@ -23,7 +23,7 @@ public class CommonTool {
         return Optional.ofNullable(Bukkit.getPlayer(name));
     }
 
-    public static void sendWhisperTo(UniqueSender sender, String message, UniqueSender receiver) {
+    public static void sendWhisperTo(CommandSender sender, String message, CommandSender receiver) {
         if (!PistonChat.getPlugin(PistonChat.class).getConfig().getBoolean("allowpmself") && sender == receiver) {
             sender.sendMessage(LanguageTool.getMessage("pmself"));
             return;
@@ -38,7 +38,7 @@ public class CommonTool {
             return;
         }
 
-        PistonWhisperEvent pistonWhisperEvent = new PistonWhisperEvent(sender.getSender(), receiver.getSender(), message);
+        PistonWhisperEvent pistonWhisperEvent = new PistonWhisperEvent(sender, receiver, message);
 
         Bukkit.getPluginManager().callEvent(pistonWhisperEvent);
 
@@ -53,17 +53,17 @@ public class CommonTool {
         PistonChat.getPlugin(PistonChat.class).getCacheTool().sendMessage(sender, receiver);
     }
 
-    public static void sendSender(UniqueSender sender, String message, UniqueSender receiver) {
+    public static void sendSender(CommandSender sender, String message, CommandSender receiver) {
         String senderString = ChatColor.translateAlternateColorCodes('&', PistonChat.getPlugin(PistonChat.class).getConfig().getString("whisper.to")
-                .replace("%player%", ChatColor.stripColor(receiver.getDisplayName()))
+                .replace("%player%", ChatColor.stripColor(new UniqueSender(receiver).getDisplayName()))
                 .replace("%message%", message));
 
         sender.spigot().sendMessage(new TextComponent(TextComponent.fromLegacyText(senderString)));
     }
 
-    private static void sendReceiver(UniqueSender sender, String message, UniqueSender receiver) {
+    private static void sendReceiver(CommandSender sender, String message, CommandSender receiver) {
         String receiverString = ChatColor.translateAlternateColorCodes('&', PistonChat.getPlugin(PistonChat.class).getConfig().getString("whisper.from")
-                .replace("%player%", ChatColor.stripColor(sender.getDisplayName()))
+                .replace("%player%", ChatColor.stripColor(new UniqueSender(sender).getDisplayName()))
                 .replace("%message%", message));
 
         receiver.spigot().sendMessage(new TextComponent(TextComponent.fromLegacyText(receiverString)));

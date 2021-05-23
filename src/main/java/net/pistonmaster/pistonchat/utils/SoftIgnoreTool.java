@@ -2,6 +2,7 @@ package net.pistonmaster.pistonchat.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -13,8 +14,8 @@ public class SoftIgnoreTool {
     private final HashMap<UUID, List<UUID>> map = new HashMap<>();
 
     public SoftReturn softIgnorePlayer(Player player, Player ignored) {
-        indexPlayer(new UniqueSender(player));
-        indexPlayer(new UniqueSender(ignored));
+        indexPlayer(player);
+        indexPlayer(ignored);
 
         List<UUID> list = map.get(player.getUniqueId());
 
@@ -29,15 +30,15 @@ public class SoftIgnoreTool {
         }
     }
 
-    protected boolean isSoftIgnored(UniqueSender chatter, UniqueSender receiver) {
+    protected boolean isSoftIgnored(CommandSender chatter, CommandSender receiver) {
         indexPlayer(receiver);
         indexPlayer(chatter);
 
-        return map.get(receiver.getUniqueId()).contains(chatter.getUniqueId());
+        return map.get(new UniqueSender(receiver).getUniqueId()).contains(new UniqueSender(chatter).getUniqueId());
     }
 
     protected List<OfflinePlayer> getSoftIgnoredPlayers(Player player) {
-        indexPlayer(new UniqueSender(player));
+        indexPlayer(player);
 
         List<UUID> listUUID = map.get(player.getUniqueId());
 
@@ -50,9 +51,9 @@ public class SoftIgnoreTool {
         return returnedPlayers;
     }
 
-    private void indexPlayer(UniqueSender player) {
-        if (!map.containsKey(player.getUniqueId())) {
-            map.put(player.getUniqueId(), new ArrayList<>());
+    private void indexPlayer(CommandSender player) {
+        if (!map.containsKey(new UniqueSender(player).getUniqueId())) {
+            map.put(new UniqueSender(player).getUniqueId(), new ArrayList<>());
         }
     }
 

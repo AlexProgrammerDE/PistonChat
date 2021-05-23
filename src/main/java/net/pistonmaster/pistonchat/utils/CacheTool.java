@@ -16,23 +16,23 @@ public class CacheTool {
     private final HashMap<UUID, PlayerData> map = new HashMap<>();
     private final PistonChat plugin;
 
-    public void sendMessage(UniqueSender sender, UniqueSender receiver) {
+    public void sendMessage(CommandSender sender, CommandSender receiver) {
         index(sender);
         index(receiver);
 
-        map.get(sender.getUniqueId()).sentTo = receiver.getUniqueId();
-        map.get(receiver.getUniqueId()).messagedOf = sender.getUniqueId();
+        map.get(new UniqueSender(sender).getUniqueId()).sentTo = new UniqueSender(receiver).getUniqueId();
+        map.get(new UniqueSender(receiver).getUniqueId()).messagedOf = new UniqueSender(sender).getUniqueId();
     }
 
     /**
      * Get the last person a player sent a message to.
      *
-     * @param player The player to get data from.
+     * @param sender The player to get data from.
      * @return The last person the player sent a message to.
      */
-    public Optional<CommandSender> getLastSentTo(UniqueSender player) {
-        index(player);
-        UUID sentTo = map.get(player.getUniqueId()).sentTo;
+    public Optional<CommandSender> getLastSentTo(CommandSender sender) {
+        index(sender);
+        UUID sentTo = map.get(new UniqueSender(sender).getUniqueId()).sentTo;
         Player nullablePlayer = Bukkit.getPlayer(sentTo);
 
         if (nullablePlayer == null) {
@@ -45,12 +45,12 @@ public class CacheTool {
     /**
      * Get the last person a player was messaged from.
      *
-     * @param player The player to get data from.
+     * @param sender The player to get data from.
      * @return The last person the player was messaged from.
      */
-    public Optional<CommandSender> getLastMessagedOf(UniqueSender player) {
-        index(player);
-        UUID messagedOf = map.get(player.getUniqueId()).messagedOf;
+    public Optional<CommandSender> getLastMessagedOf(CommandSender sender) {
+        index(sender);
+        UUID messagedOf = map.get(new UniqueSender(sender).getUniqueId()).messagedOf;
         Player nullablePlayer = Bukkit.getPlayer(messagedOf);
 
         if (nullablePlayer == null) {
@@ -60,9 +60,9 @@ public class CacheTool {
         }
     }
 
-    private void index(UniqueSender sender) {
-        if (!map.containsKey(sender.getUniqueId())) {
-            map.put(sender.getUniqueId(), new PlayerData());
+    private void index(CommandSender sender) {
+        if (!map.containsKey(new UniqueSender(sender).getUniqueId())) {
+            map.put(new UniqueSender(sender).getUniqueId(), new PlayerData());
         }
     }
 

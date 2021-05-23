@@ -3,7 +3,6 @@ package net.pistonmaster.pistonchat.commands.toggle;
 import lombok.RequiredArgsConstructor;
 import net.pistonmaster.pistonchat.PistonChat;
 import net.pistonmaster.pistonchat.utils.LanguageTool;
-import net.pistonmaster.pistonchat.utils.UniqueSender;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -22,9 +21,9 @@ public class ToggleWhisperingCommand implements CommandExecutor, TabExecutor {
         if (sender instanceof Player) {
             Player player = (Player) sender;
 
-            plugin.getTempDataTool().setWhisperingEnabled(new UniqueSender(player), !plugin.getTempDataTool().isWhisperingEnabled(new UniqueSender(player)));
+            plugin.getTempDataTool().setWhisperingEnabled(player, !plugin.getTempDataTool().isWhisperingEnabled(player));
 
-            if (plugin.getTempDataTool().isWhisperingEnabled(new UniqueSender(player))) {
+            if (plugin.getTempDataTool().isWhisperingEnabled(player)) {
                 player.sendMessage(LanguageTool.getMessage("pmson"));
             } else {
                 player.sendMessage(LanguageTool.getMessage("pmsoff"));

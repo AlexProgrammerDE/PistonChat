@@ -11,7 +11,6 @@ import net.pistonmaster.pistonchat.api.PistonChatEvent;
 import net.pistonmaster.pistonchat.api.PistonChatReceiveEvent;
 import net.pistonmaster.pistonchat.utils.CommonTool;
 import net.pistonmaster.pistonchat.utils.LanguageTool;
-import net.pistonmaster.pistonchat.utils.UniqueSender;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -38,9 +37,9 @@ public class ChatEvent implements Listener {
         if (!pistonChatEvent.isCancelled()) {
             String message = pistonChatEvent.getMessage();
 
-            if (plugin.getTempDataTool().isChatEnabled(new UniqueSender(chatter))) {
+            if (plugin.getTempDataTool().isChatEnabled(chatter)) {
                 for (Player receiver : Bukkit.getOnlinePlayers()) {
-                    if (!plugin.getIgnoreTool().isIgnored(new UniqueSender(chatter), new UniqueSender(receiver)) && plugin.getTempDataTool().isChatEnabled(new UniqueSender(receiver))) {
+                    if (!plugin.getIgnoreTool().isIgnored(chatter, receiver) && plugin.getTempDataTool().isChatEnabled(receiver)) {
                         PistonChatReceiveEvent perPlayerEvent = new PistonChatReceiveEvent(chatter, receiver, message);
 
                         Bukkit.getPluginManager().callEvent(perPlayerEvent);

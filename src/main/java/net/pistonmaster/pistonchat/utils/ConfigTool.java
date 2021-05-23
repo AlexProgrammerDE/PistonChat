@@ -5,6 +5,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.pistonmaster.pistonchat.PistonChat;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -50,8 +51,8 @@ public class ConfigTool {
         }
     }
 
-    protected boolean isHardIgnored(UniqueSender chatter, UniqueSender receiver) {
-        return dataConfig.getStringList(receiver.getUniqueId().toString()).contains(chatter.getUniqueId().toString());
+    protected boolean isHardIgnored(CommandSender chatter, CommandSender receiver) {
+        return dataConfig.getStringList(new UniqueSender(receiver).getUniqueId().toString()).contains(new UniqueSender(chatter).getUniqueId().toString());
     }
 
     protected List<OfflinePlayer> getHardIgnoredPlayers(Player player) {

@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import net.pistonmaster.pistonchat.PistonChat;
 import net.pistonmaster.pistonchat.utils.CommonTool;
 import net.pistonmaster.pistonchat.utils.LanguageTool;
-import net.pistonmaster.pistonchat.utils.UniqueSender;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -25,17 +24,17 @@ public class WhisperCommand implements CommandExecutor, TabExecutor {
             Optional<Player> receiver = CommonTool.getPlayer(args[0]);
 
             if (receiver.isPresent()) {
-                if (plugin.getIgnoreTool().isIgnored(new UniqueSender(sender), new UniqueSender(receiver.get()))) {
+                if (plugin.getIgnoreTool().isIgnored(sender, receiver.get())) {
                     if (plugin.getConfig().getBoolean("onlyhidepms")) {
-                        CommonTool.sendSender(new UniqueSender(sender), CommonTool.mergeArgs(args, 0), new UniqueSender(receiver.get()));
+                        CommonTool.sendSender(sender, CommonTool.mergeArgs(args, 0), receiver.get());
                     } else {
                         sender.sendMessage(CommonTool.getPrefix() + "This person ignores you!");
                     }
-                } else if (!plugin.getConfig().getBoolean("allowpmignored") && plugin.getIgnoreTool().isIgnored(new UniqueSender(receiver.get()), new UniqueSender(sender))) {
+                } else if (!plugin.getConfig().getBoolean("allowpmignored") && plugin.getIgnoreTool().isIgnored(receiver.get(), sender)) {
                     sender.sendMessage(CommonTool.getPrefix() + "You ignore this person!");
                 } else {
                     if (args.length > 1) {
-                        CommonTool.sendWhisperTo(new UniqueSender(sender), CommonTool.mergeArgs(args, 1), new UniqueSender(receiver.get()));
+                        CommonTool.sendWhisperTo(sender, CommonTool.mergeArgs(args, 1), receiver.get());
                     } else {
                         return false;
                     }

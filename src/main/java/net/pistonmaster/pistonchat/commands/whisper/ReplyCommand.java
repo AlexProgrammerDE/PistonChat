@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import net.pistonmaster.pistonchat.PistonChat;
 import net.pistonmaster.pistonchat.utils.CommonTool;
 import net.pistonmaster.pistonchat.utils.LanguageTool;
-import net.pistonmaster.pistonchat.utils.UniqueSender;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -20,20 +19,20 @@ public class ReplyCommand implements CommandExecutor, TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        Optional<CommandSender> lastMessagedOf = plugin.getCacheTool().getLastMessagedOf(new UniqueSender(sender));
+        Optional<CommandSender> lastMessagedOf = plugin.getCacheTool().getLastMessagedOf(sender);
 
         if (lastMessagedOf.isPresent()) {
-            if (plugin.getIgnoreTool().isIgnored(new UniqueSender(sender), new UniqueSender(lastMessagedOf.get()))) {
+            if (plugin.getIgnoreTool().isIgnored(sender, lastMessagedOf.get())) {
                 if (plugin.getConfig().getBoolean("onlyhidepms")) {
-                    CommonTool.sendSender(new UniqueSender(sender), CommonTool.mergeArgs(args, 0), new UniqueSender(lastMessagedOf.get()));
+                    CommonTool.sendSender(sender, CommonTool.mergeArgs(args, 0), lastMessagedOf.get());
                 } else {
                     sender.sendMessage(CommonTool.getPrefix() + "This person ignores you!");
                 }
-            } else if (!plugin.getConfig().getBoolean("allowpmignored") && plugin.getIgnoreTool().isIgnored(new UniqueSender(lastMessagedOf.get()), new UniqueSender(sender))) {
+            } else if (!plugin.getConfig().getBoolean("allowpmignored") && plugin.getIgnoreTool().isIgnored(lastMessagedOf.get(), sender)) {
                 sender.sendMessage(CommonTool.getPrefix() + "You ignore this person!");
             } else {
                 if (args.length > 0) {
-                    CommonTool.sendWhisperTo(new UniqueSender(sender), CommonTool.mergeArgs(args, 0), new UniqueSender(lastMessagedOf.get()));
+                    CommonTool.sendWhisperTo(sender, CommonTool.mergeArgs(args, 0), lastMessagedOf.get());
                 } else {
                     return false;
                 }
