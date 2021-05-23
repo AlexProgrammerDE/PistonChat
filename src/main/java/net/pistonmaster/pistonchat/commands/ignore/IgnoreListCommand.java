@@ -41,12 +41,16 @@ public class IgnoreListCommand implements CommandExecutor, TabExecutor {
                 player.sendMessage(LanguageTool.getMessage("nooneignored"));
             } else {
                 if (args.length > 0) {
-                    int page = Integer.parseInt(args[0]);
+                    try {
+                        int page = Integer.parseInt(args[0]);
 
-                    if (page < plugin.getIgnoreTool().getIgnoredPlayers(player).size()) {
-                        showList(page, player);
-                    } else {
-                        player.sendMessage(CommonTool.getPrefix() + "This page doesn't exist!");
+                        if (page < plugin.getIgnoreTool().getIgnoredPlayers(player).size()) {
+                            showList(page, player);
+                        } else {
+                            player.sendMessage(CommonTool.getPrefix() + "This page doesn't exist!");
+                        }
+                    } catch (NumberFormatException e) {
+                        player.sendMessage(CommonTool.getPrefix() + "Not a number!");
                     }
                 } else {
                     showList(1, player);
