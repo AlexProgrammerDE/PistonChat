@@ -49,31 +49,7 @@ public class ChatEvent implements Listener {
 
                         message = perPlayerEvent.getMessage();
 
-                        ComponentBuilder builder = new ComponentBuilder(CommonTool.getFormat(chatter));
-
-                        if (receiver.hasPermission("pistonchat.playernamereply")) {
-                            builder.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/w " + ChatColor.stripColor(chatter.getDisplayName()) + " "));
-
-                            String hoverText = plugin.getConfig().getString("hovertext");
-
-                            builder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                    new ComponentBuilder(
-                                            ChatColor.translateAlternateColorCodes('&',
-                                                    hoverText.replace("%player%",
-                                                            ChatColor.stripColor(chatter.getDisplayName())
-                                                    )
-                                            )
-                                    ).create()
-                            ));
-                        }
-
-                        builder.append(" ").reset();
-
-                        builder.append(new TextComponent(TextComponent.fromLegacyText(message)));
-
-                        builder.color(CommonTool.getChatColorFor(message, chatter));
-
-                        receiver.spigot().sendMessage(builder.create());
+                        CommonTool.sendChatMessage(chatter, message, receiver);
                     }
                 }
             } else {

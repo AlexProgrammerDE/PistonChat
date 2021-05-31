@@ -2,7 +2,7 @@ package net.pistonmaster.pistonchat.utils;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.*;
 import net.pistonmaster.pistonchat.PistonChat;
 import net.pistonmaster.pistonchat.api.PistonWhisperEvent;
 import org.bukkit.Bukkit;
@@ -101,6 +101,34 @@ public class CommonTool {
         }
 
         return str;
+    }
+
+    public static void sendChatMessage(Player chatter, String message, Player receiver) {
+        ComponentBuilder builder = new ComponentBuilder(CommonTool.getFormat(chatter));
+
+        if (receiver.hasPermission("pistonchat.playernamereply")) {
+            builder.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/w " + ChatColor.stripColor(chatter.getDisplayName()) + " "));
+
+            String hoverText = PistonChat.getPlugin(PistonChat.class).getConfig().getString("hovertext");
+
+            builder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                    new ComponentBuilder(
+                            ChatColor.translateAlternateColorCodes('&',
+                                    hoverText.replace("%player%",
+                                            ChatColor.stripColor(chatter.getDisplayName())
+                                    )
+                            )
+                    ).create()
+            ));
+        }
+
+        builder.append(" ").reset();
+
+        builder.append(new TextComponent(TextComponent.fromLegacyText(message)));
+
+        builder.color(CommonTool.getChatColorFor(message, chatter));
+
+        receiver.spigot().sendMessage(builder.create());
     }
 
     private static String getName(CommandSender sender) {
