@@ -11,6 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.MetadataValue;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -29,13 +30,20 @@ public class CommonTool {
             return;
         }
 
-        if (!PistonChat.getPlugin(PistonChat.class).getTempDataTool().isWhisperingEnabled(receiver)) {
-            if (PistonChat.getPlugin(PistonChat.class).getConfig().getBoolean("onlyhidepms")) {
-                sendSender(sender, message, receiver);
-            } else {
-                sender.sendMessage(CommonTool.getPrefix() + "This person has whispering disabled!");
+        if (!sender.hasPermission("pistonchat.bypass")) {
+            if (!PistonChat.getPlugin(PistonChat.class).getTempDataTool().isWhisperingEnabled(receiver)) {
+                if (PistonChat.getPlugin(PistonChat.class).getConfig().getBoolean("onlyhidepms")) {
+                    sendSender(sender, message, receiver);
+                } else {
+                    sender.sendMessage(CommonTool.getPrefix() + "This person has whispering disabled!");
+                }
+                return;
             }
-            return;
+
+            if (receiver instanceof Player && isVanished((Player) receiver)) {
+                sender.sendMessage(LanguageTool.getMessage("notonline"));
+                return;
+            }
         }
 
         PistonWhisperEvent pistonWhisperEvent = new PistonWhisperEvent(sender, receiver, message);
@@ -149,5 +157,12 @@ public class CommonTool {
 
     public static String parse(OfflinePlayer player, String str) {
         return PlaceholderAPI.setPlaceholders(player, str);
+    }
+
+    private static boolean isVanished(Player player) {
+        for (MetadataValue meta : player.getMetadata("vanished")) {
+            if (meta.asBoolean()) return true;
+        }
+        return false;
     }
 }
