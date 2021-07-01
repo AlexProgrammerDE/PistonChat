@@ -1,0 +1,13 @@
+---
+#You can find pre translated languages on crowdin:
+#https://crowdin.com/project/pistonchat
+#The prefix can also be set to just "&6"
+prefix: "[&2PistonChat&r] &6"
+playeronly: "%prefix%Bạn phải là người chơi để sử dụng lệnh này."
+notonline: "%prefix%người chơi này không online."
+nooneignored: "%prefix%bạn chưa làm ngơ ai cả."
+chaton: "%prefix%Chat đã được bật."
+chatoff: "%prefix%Chat đã được ẩn."
+pmson: "%prefix%Tin nhắn riêng đã được ẩn."
+pmsoff: "%prefix%Tin nhắn riêng đã được bật."
+pmself: "%prefix%Làm ơn đừng nhắn tin cho bản thân."
