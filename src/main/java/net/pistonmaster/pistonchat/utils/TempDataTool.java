@@ -36,6 +36,10 @@ public class TempDataTool {
         map.putIfAbsent(player, new TempData());
     }
 
+    public void onPlayerQuit(CommandSender player) {
+        this.map.remove(player);
+    }
+
     private static class TempData {
         private boolean whispering = true;
         private boolean chat = true;
