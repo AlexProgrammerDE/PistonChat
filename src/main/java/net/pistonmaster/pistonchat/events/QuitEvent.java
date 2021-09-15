@@ -14,5 +14,6 @@ public class QuitEvent implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerQuit(PlayerQuitEvent event) {
         this.plugin.getTempDataTool().onPlayerQuit(event.getPlayer());
+        this.plugin.getSoftignoreTool().onPlayerQuit(event.getPlayer());
     }
 }

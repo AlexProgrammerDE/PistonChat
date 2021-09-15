@@ -57,6 +57,10 @@ public class SoftIgnoreTool {
         }
     }
 
+    public void onPlayerQuit(CommandSender player) {
+        this.map.remove(new UniqueSender(player).getUniqueId());
+    }
+
     public enum SoftReturn {
         IGNORE, UNIGNORE
     }
