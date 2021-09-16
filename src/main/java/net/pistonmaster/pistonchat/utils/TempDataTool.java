@@ -9,31 +9,23 @@ public class TempDataTool {
     private final Map<CommandSender, TempData> map = new HashMap<>();
 
     public void setWhisperingEnabled(CommandSender player, boolean value) {
-        indexPlayer(player);
+        map.putIfAbsent(player, new TempData());
 
         map.get(player).whispering = value;
     }
 
     public void setChatEnabled(CommandSender player, boolean value) {
-        indexPlayer(player);
+        map.putIfAbsent(player, new TempData());
 
         map.get(player).chat = value;
     }
 
     public boolean isWhisperingEnabled(CommandSender player) {
-        indexPlayer(player);
-
-        return map.get(player).whispering;
+        return !map.containsKey(player) || map.get(player).whispering;
     }
 
     public boolean isChatEnabled(CommandSender player) {
-        indexPlayer(player);
-
-        return map.get(player).chat;
-    }
-
-    private void indexPlayer(CommandSender player) {
-        map.putIfAbsent(player, new TempData());
+        return !map.containsKey(player) || map.get(player).chat;
     }
 
     private static class TempData {

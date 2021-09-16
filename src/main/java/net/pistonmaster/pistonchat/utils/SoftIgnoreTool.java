@@ -5,24 +5,20 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class SoftIgnoreTool {
-    private final HashMap<UUID, List<UUID>> map = new HashMap<>();
+    private final Map<UUID, List<UUID>> map = new HashMap<>();
 
     public SoftReturn softIgnorePlayer(Player player, Player ignored) {
-        indexPlayer(player);
-        indexPlayer(ignored);
+        map.putIfAbsent(player.getUniqueId(), new ArrayList<>());
 
         List<UUID> list = map.get(player.getUniqueId());
 
         if (list.contains(ignored.getUniqueId())) {
             list.remove(ignored.getUniqueId());
 
-            return SoftReturn.UNIGNORE;
+            return SoftReturn.UN_IGNORE;
         } else {
             list.add(ignored.getUniqueId());
 
@@ -31,16 +27,11 @@ public class SoftIgnoreTool {
     }
 
     protected boolean isSoftIgnored(CommandSender chatter, CommandSender receiver) {
-        indexPlayer(receiver);
-        indexPlayer(chatter);
-
-        return map.get(new UniqueSender(receiver).getUniqueId()).contains(new UniqueSender(chatter).getUniqueId());
+        return map.containsKey(new UniqueSender(receiver).getUniqueId()) && map.get(new UniqueSender(receiver).getUniqueId()).contains(new UniqueSender(chatter).getUniqueId());
     }
 
     protected List<OfflinePlayer> getSoftIgnoredPlayers(Player player) {
-        indexPlayer(player);
-
-        List<UUID> listUUID = map.get(player.getUniqueId());
+        List<UUID> listUUID = map.getOrDefault(player.getUniqueId(), Collections.emptyList());
 
         List<OfflinePlayer> returnedPlayers = new ArrayList<>();
 
@@ -51,13 +42,7 @@ public class SoftIgnoreTool {
         return returnedPlayers;
     }
 
-    private void indexPlayer(CommandSender player) {
-        if (!map.containsKey(new UniqueSender(player).getUniqueId())) {
-            map.put(new UniqueSender(player).getUniqueId(), new ArrayList<>());
-        }
-    }
-
     public enum SoftReturn {
-        IGNORE, UNIGNORE
+        IGNORE, UN_IGNORE
     }
 }

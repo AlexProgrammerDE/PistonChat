@@ -39,7 +39,7 @@ public class ConfigTool {
 
             saveData();
 
-            return HardReturn.UNIGNORE;
+            return HardReturn.UN_IGNORE;
         } else {
             list.add(ignored.getUniqueId().toString());
 
@@ -103,6 +103,6 @@ public class ConfigTool {
     }
 
     public enum HardReturn {
-        IGNORE, UNIGNORE
+        IGNORE, UN_IGNORE
     }
 }

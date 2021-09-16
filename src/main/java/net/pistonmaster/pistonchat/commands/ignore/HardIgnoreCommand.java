@@ -32,7 +32,7 @@ public class HardIgnoreCommand implements CommandExecutor, TabExecutor {
 
                     if (type == ConfigTool.HardReturn.IGNORE) {
                         player.sendMessage(plugin.getConfigTool().getPreparedString("ignorehard", ignored.get()));
-                    } else if (type == ConfigTool.HardReturn.UNIGNORE) {
+                    } else if (type == ConfigTool.HardReturn.UN_IGNORE) {
                         player.sendMessage(plugin.getConfigTool().getPreparedString("unignorehard", ignored.get()));
                     }
                 } else {

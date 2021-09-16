@@ -32,7 +32,7 @@ public class SoftIgnoreCommand implements CommandExecutor, TabExecutor {
 
                     if (type == SoftIgnoreTool.SoftReturn.IGNORE) {
                         player.sendMessage(plugin.getConfigTool().getPreparedString("ignore", ignored.get()));
-                    } else if (type == SoftIgnoreTool.SoftReturn.UNIGNORE) {
+                    } else if (type == SoftIgnoreTool.SoftReturn.UN_IGNORE) {
                         player.sendMessage(plugin.getConfigTool().getPreparedString("unignore", ignored.get()));
                     }
                 } else {
