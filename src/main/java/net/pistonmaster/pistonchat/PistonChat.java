@@ -13,6 +13,7 @@ import net.pistonmaster.pistonchat.commands.whisper.LastCommand;
 import net.pistonmaster.pistonchat.commands.whisper.ReplyCommand;
 import net.pistonmaster.pistonchat.commands.whisper.WhisperCommand;
 import net.pistonmaster.pistonchat.events.ChatEvent;
+import net.pistonmaster.pistonchat.events.QuitEvent;
 import net.pistonmaster.pistonchat.utils.*;
 import net.pistonmaster.pistonutils.logging.PistonLogger;
 import net.pistonmaster.pistonutils.update.UpdateChecker;
@@ -73,71 +74,65 @@ public final class PistonChat extends JavaPlugin {
         PluginCommand toggleChat = server.getPluginCommand("togglechat");
         PluginCommand main = server.getPluginCommand("pistonchat");
 
-        if (ignorehard != null) {
-            ignorehard.setExecutor(new HardIgnoreCommand(this));
-            ignorehard.setTabCompleter(new HardIgnoreCommand(this));
-        }
+        assert ignorehard != null;
+        assert ignore != null;
+        assert whisper != null;
+        assert reply != null;
+        assert last != null;
+        assert ignorelist != null;
+        assert toggleWhispering != null;
+        assert toggleChat != null;
+        assert main != null;
 
-        if (ignore != null) {
-            ignore.setExecutor(new SoftIgnoreCommand(this));
-            ignore.setTabCompleter(new SoftIgnoreCommand(this));
-        }
+        ignorehard.setExecutor(new HardIgnoreCommand(this));
+        ignorehard.setTabCompleter(new HardIgnoreCommand(this));
 
-        if (whisper != null) {
-            whisper.setExecutor(new WhisperCommand(this));
-            whisper.setTabCompleter(new WhisperCommand(this));
-        }
+        ignore.setExecutor(new SoftIgnoreCommand(this));
+        ignore.setTabCompleter(new SoftIgnoreCommand(this));
 
-        if (reply != null) {
-            reply.setExecutor(new ReplyCommand(this));
-            reply.setTabCompleter(new ReplyCommand(this));
-        }
+        whisper.setExecutor(new WhisperCommand(this));
+        whisper.setTabCompleter(new WhisperCommand(this));
 
-        if (last != null) {
-            last.setExecutor(new LastCommand(this));
-            last.setTabCompleter(new LastCommand(this));
-        }
+        reply.setExecutor(new ReplyCommand(this));
+        reply.setTabCompleter(new ReplyCommand(this));
 
-        if (ignorelist != null) {
-            ignorelist.setExecutor(new IgnoreListCommand(this));
-            ignorelist.setTabCompleter(new IgnoreListCommand(this));
-        }
+        last.setExecutor(new LastCommand(this));
+        last.setTabCompleter(new LastCommand(this));
 
-        if (toggleWhispering != null) {
-            toggleWhispering.setExecutor(new ToggleWhisperingCommand(this));
-            toggleWhispering.setTabCompleter(new ToggleWhisperingCommand(this));
-        }
+        ignorelist.setExecutor(new IgnoreListCommand(this));
+        ignorelist.setTabCompleter(new IgnoreListCommand(this));
 
-        if (toggleChat != null) {
-            toggleChat.setExecutor(new ToggleChatCommand(this));
-            toggleChat.setTabCompleter(new ToggleChatCommand(this));
-        }
+        toggleWhispering.setExecutor(new ToggleWhisperingCommand(this));
+        toggleWhispering.setTabCompleter(new ToggleWhisperingCommand(this));
 
-        if (main != null) {
-            main.setExecutor(new MainCommand(this));
-            main.setTabCompleter(new MainCommand(this));
-        }
+        toggleChat.setExecutor(new ToggleChatCommand(this));
+        toggleChat.setTabCompleter(new ToggleChatCommand(this));
+
+        main.setExecutor(new MainCommand(this));
+        main.setTabCompleter(new MainCommand(this));
 
         log.info(ChatColor.DARK_GREEN + "Registering listeners");
         server.getPluginManager().registerEvents(new ChatEvent(this), this);
+        server.getPluginManager().registerEvents(new QuitEvent(this), this);
 
         log.info(ChatColor.DARK_GREEN + "Checking for a newer version");
-        new UpdateChecker(new PistonLogger(getLogger())).getVersion("https://www.pistonmaster.net/PistonChat/VERSION.txt", version -> new UpdateParser(getDescription().getVersion(), version).parseUpdate(updateType -> {
-            if (updateType == UpdateType.NONE || updateType == UpdateType.AHEAD) {
-                log.info(ChatColor.DARK_GREEN + "You're up to date!");
-            } else {
-                if (updateType == UpdateType.MAJOR) {
-                    log.info(ChatColor.RED + "There is a MAJOR update available!");
-                } else if (updateType == UpdateType.MINOR) {
-                    log.info(ChatColor.RED + "There is a MINOR update available!");
-                } else if (updateType == UpdateType.PATCH) {
-                    log.info(ChatColor.RED + "There is a PATCH update available!");
-                }
+        new UpdateChecker(new PistonLogger(getLogger())).getVersion("https://www.pistonmaster.net/PistonChat/VERSION.txt", version ->
+                new UpdateParser(getDescription().getVersion(), version).parseUpdate(updateType -> {
+                    if (updateType == UpdateType.NONE || updateType == UpdateType.AHEAD) {
+                        log.info(ChatColor.DARK_GREEN + "You're up to date!");
+                    } else {
+                        if (updateType == UpdateType.MAJOR) {
+                            log.info(ChatColor.RED + "There is a MAJOR update available!");
+                        } else if (updateType == UpdateType.MINOR) {
+                            log.info(ChatColor.RED + "There is a MINOR update available!");
+                        } else if (updateType == UpdateType.PATCH) {
+                            log.info(ChatColor.RED + "There is a PATCH update available!");
+                        }
 
-                log.info(ChatColor.RED + "Current version: " + this.getDescription().getVersion() + " New version: " + version);
-                log.info(ChatColor.RED + "Download it at: https://github.com/AlexProgrammerDE/PistonChat/releases");
-            }
-        }));
+                        log.info(ChatColor.RED + "Current version: " + this.getDescription().getVersion() + " New version: " + version);
+                        log.info(ChatColor.RED + "Download it at: https://github.com/AlexProgrammerDE/PistonChat/releases");
+                    }
+                }));
 
         log.info(ChatColor.DARK_GREEN + "Loading metrics");
         new Metrics(this, 9630);

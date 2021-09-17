@@ -59,7 +59,9 @@ public class ConfigManager {
         }
 
         if (!configFile.exists()) {
-            Files.copy(getDefaultInput(), configFile.toPath());
+            try (InputStream is = getDefaultInput()) {
+                Files.copy(is, configFile.toPath());
+            }
         }
     }
 
