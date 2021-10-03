@@ -21,7 +21,7 @@ public class ChatEvent implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onChat(AsyncPlayerChatEvent event) {
         Player chatter = event.getPlayer();
-        PistonChatEvent pistonChatEvent = new PistonChatEvent(chatter, event.getMessage());
+        PistonChatEvent pistonChatEvent = new PistonChatEvent(chatter, event.getMessage(), event.isAsynchronous());
 
         event.getRecipients().clear();
 
