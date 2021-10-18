@@ -16,8 +16,8 @@ public class PistonChatReceiveEvent extends Event implements Cancellable {
     private boolean isCancelled;
     private String message;
 
-    public PistonChatReceiveEvent(Player sender, Player receiver, String message) {
-        super(true);
+    public PistonChatReceiveEvent(Player sender, Player receiver, String message, boolean isAsync) {
+        super(isAsync);
 
         this.sender = sender;
         this.receiver = receiver;
