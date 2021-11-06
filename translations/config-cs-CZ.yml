@@ -3,13 +3,13 @@
 #/ indicates disabled!
 #This config is configured to be what 2b2t.org has.
 whisper:
-  from: "&d%player%&d whispers: %message%"
-  to: "&dYou whisper to %player%&d: %message%"
-hovertext: "&6Message &3%player%"
-ignore: "&6Now ignoring &3%player%"
-unignore: "&6No longer ignoring &3%player%"
-ignorehard: "&6Permanently ignoring %player%&6. This is saved in &4/ignorelist."
-unignorehard: "&6No longer permanently ignoring &3%player%"
+  from: "&d%player%&d ti zašeptal: %message%"
+  to: "&dZašeptal jsi hráči %player%: %message%"
+hovertext: "&6Napsat hráči &3%player%"
+ignore: "&6Nyní ignorujete hráče &3%player%"
+unignore: "&6Již neignorujete hráče &3%player%"
+ignorehard: "&6Permanentně ignorujete hráče %player%. To je uloženo v &4/ignorelist."
+unignorehard: "&6Již permanentně neignorujete hráče &3%player%"
 chatformat: "<%player%&r>"
 stripnamecolor: false
 consolename: "[console]"
