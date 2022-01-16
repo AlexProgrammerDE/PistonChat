@@ -6,7 +6,7 @@
 
     <groupId>net.pistonmaster</groupId>
     <artifactId>PistonChat</artifactId>
-    <version>1.5.2</version>
+    <version>1.5.3</version>
     <packaging>jar</packaging>
 
     <name>PistonChat</name>
@@ -155,7 +155,7 @@
         <dependency>
             <groupId>net.pistonmaster</groupId>
             <artifactId>PistonUtils</artifactId>
-            <version>1.2.1</version>
+            <version>1.3.1</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -171,7 +171,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.20</version>
+            <version>1.18.22</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

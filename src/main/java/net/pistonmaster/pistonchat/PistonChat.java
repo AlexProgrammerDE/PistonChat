@@ -116,7 +116,7 @@ public final class PistonChat extends JavaPlugin {
         server.getPluginManager().registerEvents(new QuitEvent(this), this);
 
         log.info(ChatColor.DARK_GREEN + "Checking for a newer version");
-        new UpdateChecker(new PistonLogger(getLogger())).getVersion("https://www.pistonmaster.net/PistonChat/VERSION.txt", version ->
+        new UpdateChecker(new PistonLogger(getLogger()::info, getLogger()::warning)).getVersion("https://www.pistonmaster.net/PistonChat/VERSION.txt", version ->
                 new UpdateParser(getDescription().getVersion(), version).parseUpdate(updateType -> {
                     if (updateType == UpdateType.NONE || updateType == UpdateType.AHEAD) {
                         log.info(ChatColor.DARK_GREEN + "You're up to date!");
