@@ -73,6 +73,10 @@
                             <pattern>net.pistonmaster.pistonutils</pattern>
                             <shadedPattern>net.pistonmaster.pistonchat.shade.pistonutils</shadedPattern>
                         </relocation>
+                        <relocation>
+                            <pattern>com.github.puregero.multilib</pattern>
+                            <shadedPattern>net.pistonmaster.pistonchat.shade.multilib</shadedPattern>
+                        </relocation>
                     </relocations>
                 </configuration>
                 <executions>
@@ -133,6 +137,10 @@
             <id>placeholderapi</id>
             <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
+        <repository>
+            <id>clojars</id>
+            <url>https://repo.clojars.org</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -168,6 +176,12 @@
             <artifactId>lombok</artifactId>
             <version>1.18.22</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.puregero</groupId>
+            <artifactId>multilib</artifactId>
+            <version>1.1.2</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>
