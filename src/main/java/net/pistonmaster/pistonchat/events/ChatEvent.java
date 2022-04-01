@@ -30,10 +30,6 @@ public class ChatEvent implements Listener {
 
         event.setCancelled(pistonChatEvent.isCancelled());
 
-        if (PlatformUtils.isMultiPaper()) {
-            event.setCancelled(true);
-        }
-
         if (!pistonChatEvent.isCancelled()) {
             String message = pistonChatEvent.getMessage();
 
