@@ -33,7 +33,7 @@ public class CacheTool {
     public Optional<CommandSender> getLastSentTo(CommandSender sender) {
         index(sender);
         UUID sentTo = map.get(new UniqueSender(sender).getUniqueId()).sentTo;
-        Player nullablePlayer = Bukkit.getPlayer(sentTo);
+        Player nullablePlayer = PlatformUtils.getPlayer(sentTo);
 
         if (nullablePlayer == null) {
             return Optional.ofNullable(UniqueSender.byUUID(sentTo));
@@ -51,7 +51,7 @@ public class CacheTool {
     public Optional<CommandSender> getLastMessagedOf(CommandSender sender) {
         index(sender);
         UUID messagedOf = map.get(new UniqueSender(sender).getUniqueId()).messagedOf;
-        Player nullablePlayer = Bukkit.getPlayer(messagedOf);
+        Player nullablePlayer = PlatformUtils.getPlayer(messagedOf);
 
         if (nullablePlayer == null) {
             return Optional.ofNullable(UniqueSender.byUUID(messagedOf));

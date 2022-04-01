@@ -24,7 +24,7 @@ public class CommonTool {
     }
 
     public static Optional<Player> getPlayer(String name) {
-        return Optional.ofNullable(Bukkit.getPlayer(name));
+        return Optional.ofNullable(PlatformUtils.getPlayer(name));
     }
 
     public static void sendWhisperTo(CommandSender sender, String message, CommandSender receiver) {

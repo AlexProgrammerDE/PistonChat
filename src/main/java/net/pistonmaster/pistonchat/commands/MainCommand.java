@@ -31,18 +31,23 @@ public class MainCommand implements CommandExecutor, TabExecutor {
                     if (sender.hasPermission("pistonchat.help")) {
                         ComponentBuilder builder = new ComponentBuilder("---" + CommonTool.getPrefix() + "---").color(ChatColor.GOLD);
 
-                        plugin.getDescription().getCommands().forEach((name, info) ->
-                                builder.append("\n/" + name)
-                                        .color(ChatColor.GOLD)
-                                        .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/" + name + " "))
-                                        .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                                new ComponentBuilder("Click me!")
-                                                        .color(ChatColor.GOLD)
-                                                        .create()
-                                        ))
-                                        .append(" - ")
-                                        .color(ChatColor.GOLD)
-                                        .append(info.get("description").toString()));
+                        plugin.getDescription().getCommands().forEach((name, info) -> {
+                            if (!sender.hasPermission(info.get("permission").toString())) {
+                                return;
+                            }
+
+                            builder.append("\n/" + name)
+                                    .color(ChatColor.GOLD)
+                                    .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/" + name + " "))
+                                    .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                            new ComponentBuilder("Click me!")
+                                                    .color(ChatColor.GOLD)
+                                                    .create()
+                                    ))
+                                    .append(" - ")
+                                    .color(ChatColor.GOLD)
+                                    .append(info.get("description").toString());
+                        });
 
                         sender.spigot().sendMessage(builder.create());
                     } else {

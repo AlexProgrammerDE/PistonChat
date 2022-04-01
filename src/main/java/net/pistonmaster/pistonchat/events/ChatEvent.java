@@ -6,6 +6,7 @@ import net.pistonmaster.pistonchat.api.PistonChatEvent;
 import net.pistonmaster.pistonchat.api.PistonChatReceiveEvent;
 import net.pistonmaster.pistonchat.utils.CommonTool;
 import net.pistonmaster.pistonchat.utils.LanguageTool;
+import net.pistonmaster.pistonchat.utils.PlatformUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -33,7 +34,7 @@ public class ChatEvent implements Listener {
             String message = pistonChatEvent.getMessage();
 
             if (plugin.getTempDataTool().isChatEnabled(chatter)) {
-                for (Player receiver : Bukkit.getOnlinePlayers()) {
+                for (Player receiver : PlatformUtils.getOnlinePlayers()) {
                     if (!plugin.getIgnoreTool().isIgnored(chatter, receiver) && plugin.getTempDataTool().isChatEnabled(receiver)) {
                         PistonChatReceiveEvent perPlayerEvent = new PistonChatReceiveEvent(chatter, receiver, message, event.isAsynchronous());
 
