@@ -32,17 +32,6 @@ public class SoftIgnoreTool {
         return getStoredList(receiver).contains(chatterUUID.toString());
     }
 
-    protected List<OfflinePlayer> getSoftIgnoredPlayers(Player player) {
-        List<String> listUUID = getStoredList(player);
-        List<OfflinePlayer> returnedPlayers = new ArrayList<>();
-
-        for (String str : listUUID) {
-            returnedPlayers.add(Bukkit.getOfflinePlayer(UUID.fromString(str)));
-        }
-
-        return returnedPlayers;
-    }
-
     protected List<String> getStoredList(Player player) {
         String listData = MultiLib.getData(player, "pistonchat_softignore");
         return listData == null ? new ArrayList<>() : gson.<List<String>>fromJson(listData, List.class);

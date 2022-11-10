@@ -17,13 +17,13 @@ public class CacheTool {
         UUID senderUUID = new UniqueSender(sender).getUniqueId();
         UUID receiverUUID = new UniqueSender(receiver).getUniqueId();
         if (sender instanceof Player) {
-            MultiLib.setData((Player) sender, "sentTo", receiverUUID.toString());
+            MultiLib.setData((Player) sender, "pistonchat_sentTo", receiverUUID.toString());
         } else {
             indexConsole(sender);
             customMap.get(sender).sentTo = receiverUUID;
         }
         if (receiver instanceof Player) {
-            MultiLib.setData((Player) receiver, "messagedOf", senderUUID.toString());
+            MultiLib.setData((Player) receiver, "pistonchat_messagedOf", senderUUID.toString());
         } else {
             indexConsole(receiver);
             customMap.get(receiver).messagedOf = senderUUID;
@@ -39,7 +39,7 @@ public class CacheTool {
     public Optional<CommandSender> getLastSentTo(CommandSender sender) {
         UUID sentTo;
         if (sender instanceof Player) {
-            String sentToUUID = MultiLib.getData((Player) sender, "sentTo");
+            String sentToUUID = MultiLib.getData((Player) sender, "pistonchat_sentTo");
             if (sentToUUID == null) {
                 return Optional.empty();
             } else {
@@ -68,7 +68,7 @@ public class CacheTool {
     public Optional<CommandSender> getLastMessagedOf(CommandSender sender) {
         UUID messagedOf;
         if (sender instanceof Player) {
-            String messagedOfUUID = MultiLib.getData((Player) sender, "messagedOf");
+            String messagedOfUUID = MultiLib.getData((Player) sender, "pistonchat_messagedOf");
             if (messagedOfUUID == null) {
                 return Optional.empty();
             } else {

@@ -37,17 +37,6 @@ public class HardIgnoreTool {
         return getStoredList(receiver).contains(chatterUUID.toString());
     }
 
-    protected Collection<OfflinePlayer> getHardIgnoredPlayers(Player player) {
-        List<String> listUUID = getStoredList(player);
-        List<OfflinePlayer> returnedPlayers = new ArrayList<>();
-
-        for (String str : listUUID) {
-            returnedPlayers.add(Bukkit.getOfflinePlayer(UUID.fromString(str)));
-        }
-
-        return returnedPlayers;
-    }
-
     public String getPreparedString(String str, Player player) {
         return ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString(str)
                 .replace("%player%", ChatColor.stripColor(player.getDisplayName())));
