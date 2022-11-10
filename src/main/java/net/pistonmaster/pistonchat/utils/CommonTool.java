@@ -10,6 +10,7 @@ import net.pistonmaster.pistonchat.api.PistonWhisperEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
@@ -85,12 +86,12 @@ public class CommonTool {
         FileConfiguration config = PistonChat.getPlugin(PistonChat.class).getConfig();
 
         for (String str : config.getConfigurationSection("prefixes").getKeys(false)) {
-            if (!config.getString("prefixes." + str).equalsIgnoreCase("/") && message.toLowerCase().startsWith(config.getString("prefixes." + str))) {
-                if (player.hasPermission("pistonchat." + str)) {
-                    return ChatColor.valueOf(str);
-                } else {
-                    return ChatColor.WHITE;
-                }
+            ConfigurationSection section = config.getConfigurationSection("prefixes." + str);
+            String prefix = section.getString("prefix");
+            if (!prefix.equalsIgnoreCase("/")
+                    && message.toLowerCase().startsWith(prefix)
+                    && player.hasPermission(section.getString("permission"))) {
+                return ChatColor.valueOf(section.getString("color").toUpperCase());
             }
         }
 

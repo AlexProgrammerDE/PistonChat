@@ -101,44 +101,6 @@ permissions:
     description: Permission for /pistonchat reload!
     children:
       pistonchat.command: true
-  pistonchat.GREEN:
-    description: Just another chat color!
-  pistonchat.BLUE:
-    description: Just another chat color!
-  pistonchat.RED:
-    description: Just another chat color!
-  pistonchat.AQUA:
-    description: Just another chat color!
-  pistonchat.GOLD:
-    description: Just another chat color!
-  pistonchat.YELLOW:
-    description: Just another chat color!
-  pistonchat.GRAY:
-    description: Just another chat color!
-  pistonchat.BLACK:
-    description: Just another chat color!
-  pistonchat.DARK_GREEN:
-    description: Just another chat color!
-  pistonchat.DARK_RED:
-    description: Just another chat color!
-  pistonchat.DARK_GRAY:
-    description: Just another chat color!
-  pistonchat.DARK_BLUE:
-    description: Just another chat color!
-  pistonchat.DARK_AQUA:
-    description: Just another chat color!
-  pistonchat.DARK_PURPLE:
-    description: Just another chat color!
-  pistonchat.LIGHT_PURPLE:
-    description: Just another chat color!
-  pistonchat.ITALIC:
-    description: Just another chat color!
-  pistonchat.UNDERLINE:
-   description: Just another chat color!
-  pistonchat.BOLD:
-    description: Just another chat color!
-  pistonchat.STRIKETHROUGH:
-    description: Just another chat color!
   pistonchat.version:
     description: Permission for /pistonchat version
   pistonchat.bypass:

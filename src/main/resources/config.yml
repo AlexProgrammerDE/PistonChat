@@ -1,6 +1,7 @@
 # To use these prefixes you need additionally the pistonchat.<COLORCODE>
 # / indicates disabled!
 # This config is configured to be what 2b2t.org has.
+# https://hub.spigotmc.org/javadocs/spigot/org/bukkit/ChatColor.html
 whisper:
   from: "&d%player%&d whispers: %message%"
   to: "&dYou whisper to %player%&d: %message%"
@@ -22,22 +23,7 @@ onlyhidepms: true
 
 ignorelistsize: 9
 prefixes:
-  GREEN: ">"
-  BLUE: '/'
-  RED: '/'
-  AQUA: '/'
-  GOLD: '/'
-  YELLOW: '/'
-  GRAY: '/'
-  BLACK: '/'
-  DARK_GREEN: '/'
-  DARK_RED: '/'
-  DARK_GRAY: '/'
-  DARK_BLUE: '/'
-  DARK_AQUA: '/'
-  DARK_PURPLE: '/'
-  LIGHT_PURPLE: '/'
-  ITALIC: '/'
-  UNDERLINE: '/'
-  BOLD: '/'
-  STRIKETHROUGH: '/'
+  GREEN:
+    prefix: ">"
+    color: "GREEN"
+    permission: "pistonchat.GREEN"
