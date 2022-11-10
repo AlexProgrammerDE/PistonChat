@@ -5,15 +5,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.UUID;
 
 public class PlatformUtils {
-    public static Player getPlayer(String name) {
-        return Bukkit.getPlayer(name);
+    public static Optional<Player> getPlayer(String name) {
+        return Optional.ofNullable(Bukkit.getPlayer(name));
     }
 
-    public static Player getPlayer(UUID uuid) {
-        return Bukkit.getPlayer(uuid);
+    public static Optional<Player> getPlayer(UUID uuid) {
+        return Optional.ofNullable(Bukkit.getPlayer(uuid));
     }
 
     public static Collection<? extends Player> getOnlinePlayers() {

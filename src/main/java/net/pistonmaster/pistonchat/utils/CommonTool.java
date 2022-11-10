@@ -1,6 +1,5 @@
 package net.pistonmaster.pistonchat.utils;
 
-import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -11,20 +10,14 @@ import net.pistonmaster.pistonchat.api.PistonWhisperEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 public class CommonTool {
     private CommonTool() {
-    }
-
-    public static Optional<Player> getPlayer(String name) {
-        return Optional.ofNullable(PlatformUtils.getPlayer(name));
     }
 
     public static void sendWhisperTo(CommandSender sender, String message, CommandSender receiver) {
@@ -34,7 +27,7 @@ public class CommonTool {
         }
 
         if (!sender.hasPermission("pistonchat.bypass")) {
-            if (!PistonChat.getPlugin(PistonChat.class).getTempDataTool().isWhisperingEnabled(receiver)) {
+            if (receiver instanceof Player && !PistonChat.getPlugin(PistonChat.class).getTempDataTool().isWhisperingEnabled((Player) receiver)) {
                 if (PistonChat.getPlugin(PistonChat.class).getConfig().getBoolean("onlyhidepms")) {
                     sendSender(sender, message, receiver);
                 } else {
@@ -143,23 +136,11 @@ public class CommonTool {
     }
 
     private static String getName(CommandSender sender) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-
-            if (PistonChat.getPlugin(PistonChat.class).getConfig().getBoolean("stripnamecolor")) {
-                return ChatColor.stripColor(player.getDisplayName());
-            } else {
-                return player.getDisplayName();
-            }
-        } else if (sender instanceof ConsoleCommandSender) {
-            return ChatColor.translateAlternateColorCodes('&', PistonChat.getPlugin(PistonChat.class).getConfig().getString("consolename"));
-        } else {
-            return sender.getName();
-        }
+        return new UniqueSender(sender).getDisplayName();
     }
 
     public static String parse(OfflinePlayer player, String str) {
-        return PlaceholderAPI.setPlaceholders(player, str);
+        return me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, str);
     }
 
     private static boolean isVanished(Player player) {

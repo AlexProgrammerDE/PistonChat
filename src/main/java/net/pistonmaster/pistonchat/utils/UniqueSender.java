@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -18,32 +19,22 @@ public class UniqueSender {
     @Getter
     private final CommandSender sender;
 
-    public static CommandSender byUUID(UUID uuid) {
+    public static Optional<CommandSender> byUUID(UUID uuid) {
         for (Map.Entry<CommandSender, UUID> entry : customUUID.entrySet()) {
             if (entry.getValue().equals(uuid)) {
-                return entry.getKey();
+                return Optional.of(entry.getKey());
             }
         }
 
-        return null;
+        return Optional.empty();
     }
 
     public UUID getUniqueId() {
         if (sender instanceof Player) {
             return ((Player) sender).getUniqueId();
         } else {
-            customUUID.computeIfAbsent(sender, sender2 -> UUID.randomUUID());
-
-            return customUUID.get(sender);
+            return customUUID.computeIfAbsent(sender, sender2 -> UUID.randomUUID());
         }
-    }
-
-    public void sendMessage(String message) {
-        sender.sendMessage(message);
-    }
-
-    public CommandSender.Spigot spigot() {
-        return sender.spigot();
     }
 
     public String getDisplayName() {

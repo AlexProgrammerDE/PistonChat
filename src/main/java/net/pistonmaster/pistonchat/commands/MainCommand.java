@@ -1,5 +1,6 @@
 package net.pistonmaster.pistonchat.commands;
 
+import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -16,12 +17,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@RequiredArgsConstructor
 public class MainCommand implements CommandExecutor, TabExecutor {
     private final PistonChat plugin;
-
-    public MainCommand(PistonChat plugin) {
-        this.plugin = plugin;
-    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -101,7 +99,7 @@ public class MainCommand implements CommandExecutor, TabExecutor {
 
             return completions;
         } else {
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
     }
 }

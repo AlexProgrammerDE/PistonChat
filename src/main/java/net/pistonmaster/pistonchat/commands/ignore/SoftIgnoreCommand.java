@@ -2,8 +2,8 @@ package net.pistonmaster.pistonchat.commands.ignore;
 
 import lombok.RequiredArgsConstructor;
 import net.pistonmaster.pistonchat.PistonChat;
-import net.pistonmaster.pistonchat.utils.CommonTool;
 import net.pistonmaster.pistonchat.utils.LanguageTool;
+import net.pistonmaster.pistonchat.utils.PlatformUtils;
 import net.pistonmaster.pistonchat.utils.SoftIgnoreTool;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -11,7 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,15 +25,15 @@ public class SoftIgnoreCommand implements CommandExecutor, TabExecutor {
             Player player = (Player) sender;
 
             if (args.length > 0) {
-                Optional<Player> ignored = CommonTool.getPlayer(args[0]);
+                Optional<Player> ignored = PlatformUtils.getPlayer(args[0]);
 
                 if (ignored.isPresent()) {
                     SoftIgnoreTool.SoftReturn type = plugin.getSoftignoreTool().softIgnorePlayer(player, ignored.get());
 
                     if (type == SoftIgnoreTool.SoftReturn.IGNORE) {
-                        player.sendMessage(plugin.getConfigTool().getPreparedString("ignore", ignored.get()));
+                        player.sendMessage(plugin.getHardIgnoreTool().getPreparedString("ignore", ignored.get()));
                     } else if (type == SoftIgnoreTool.SoftReturn.UN_IGNORE) {
-                        player.sendMessage(plugin.getConfigTool().getPreparedString("unignore", ignored.get()));
+                        player.sendMessage(plugin.getHardIgnoreTool().getPreparedString("unignore", ignored.get()));
                     }
                 } else {
                     player.sendMessage(LanguageTool.getMessage("notonline"));
@@ -53,7 +53,7 @@ public class SoftIgnoreCommand implements CommandExecutor, TabExecutor {
         if (args.length == 1) {
             return null;
         } else {
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
     }
 }

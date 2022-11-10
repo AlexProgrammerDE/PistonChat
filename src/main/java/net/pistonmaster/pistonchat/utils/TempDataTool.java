@@ -1,5 +1,6 @@
 package net.pistonmaster.pistonchat.utils;
 
+import com.github.puregero.multilib.MultiLib;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -7,34 +8,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TempDataTool {
-    private final Map<CommandSender, TempData> map = new HashMap<>();
-
-    public void onQuit(Player player) {
-        map.remove(player);
+    public void setWhisperingEnabled(Player player, boolean value) {
+        MultiLib.setData(player, "pistonchat_whispering", String.valueOf(value));
     }
 
-    public void setWhisperingEnabled(CommandSender player, boolean value) {
-        map.putIfAbsent(player, new TempData());
-
-        map.get(player).whispering = value;
+    public void setChatEnabled(Player player, boolean value) {
+        MultiLib.setData(player, "pistonchat_chat", String.valueOf(value));
     }
 
-    public void setChatEnabled(CommandSender player, boolean value) {
-        map.putIfAbsent(player, new TempData());
-
-        map.get(player).chat = value;
+    public boolean isWhisperingEnabled(Player player) {
+        String value = MultiLib.getData(player, "pistonchat_whispering");
+        return value == null || Boolean.parseBoolean(value);
     }
 
-    public boolean isWhisperingEnabled(CommandSender player) {
-        return !map.containsKey(player) || map.get(player).whispering;
-    }
-
-    public boolean isChatEnabled(CommandSender player) {
-        return !map.containsKey(player) || map.get(player).chat;
-    }
-
-    private static class TempData {
-        private boolean whispering = true;
-        private boolean chat = true;
+    public boolean isChatEnabled(Player player) {
+        String value = MultiLib.getData(player, "pistonchat_chat");
+        return value == null || Boolean.parseBoolean(value);
     }
 }

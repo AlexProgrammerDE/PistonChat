@@ -1,27 +1,33 @@
 package net.pistonmaster.pistonchat.utils;
 
+import com.github.puregero.multilib.MultiLib;
 import lombok.RequiredArgsConstructor;
-import net.pistonmaster.pistonchat.PistonChat;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-@RequiredArgsConstructor
 public class CacheTool {
-    private final HashMap<UUID, PlayerData> map = new HashMap<>();
-    private final PistonChat plugin;
+    private final Map<CommandSender, MessageData> customMap = new HashMap<>();
 
     public void sendMessage(CommandSender sender, CommandSender receiver) {
-        index(sender);
-        index(receiver);
-
-        map.get(new UniqueSender(sender).getUniqueId()).sentTo = new UniqueSender(receiver).getUniqueId();
-        map.get(new UniqueSender(receiver).getUniqueId()).messagedOf = new UniqueSender(sender).getUniqueId();
+        UUID senderUUID = new UniqueSender(sender).getUniqueId();
+        UUID receiverUUID = new UniqueSender(receiver).getUniqueId();
+        if (sender instanceof Player) {
+            MultiLib.setData((Player) sender, "sentTo", receiverUUID.toString());
+        } else {
+            indexConsole(sender);
+            customMap.get(sender).sentTo = receiverUUID;
+        }
+        if (receiver instanceof Player) {
+            MultiLib.setData((Player) receiver, "messagedOf", senderUUID.toString());
+        } else {
+            indexConsole(receiver);
+            customMap.get(receiver).messagedOf = senderUUID;
+        }
     }
 
     /**
@@ -31,15 +37,26 @@ public class CacheTool {
      * @return The last person the player sent a message to.
      */
     public Optional<CommandSender> getLastSentTo(CommandSender sender) {
-        index(sender);
-        UUID sentTo = map.get(new UniqueSender(sender).getUniqueId()).sentTo;
-        Player nullablePlayer = PlatformUtils.getPlayer(sentTo);
-
-        if (nullablePlayer == null) {
-            return Optional.ofNullable(UniqueSender.byUUID(sentTo));
+        UUID sentTo;
+        if (sender instanceof Player) {
+            String sentToUUID = MultiLib.getData((Player) sender, "sentTo");
+            if (sentToUUID == null) {
+                return Optional.empty();
+            } else {
+                sentTo = UUID.fromString(sentToUUID);
+            }
         } else {
-            return Optional.of(nullablePlayer);
+            indexConsole(sender);
+            sentTo = customMap.get(sender).sentTo;
         }
+
+        if (sentTo == null) {
+            return Optional.empty();
+        }
+
+        Optional<Player> optionalPlayer = PlatformUtils.getPlayer(sentTo);
+
+        return optionalPlayer.<Optional<CommandSender>>map(Optional::of).orElseGet(() -> UniqueSender.byUUID(sentTo));
     }
 
     /**
@@ -49,27 +66,35 @@ public class CacheTool {
      * @return The last person the player was messaged from.
      */
     public Optional<CommandSender> getLastMessagedOf(CommandSender sender) {
-        index(sender);
-        UUID messagedOf = map.get(new UniqueSender(sender).getUniqueId()).messagedOf;
-        Player nullablePlayer = PlatformUtils.getPlayer(messagedOf);
-
-        if (nullablePlayer == null) {
-            return Optional.ofNullable(UniqueSender.byUUID(messagedOf));
+        UUID messagedOf;
+        if (sender instanceof Player) {
+            String messagedOfUUID = MultiLib.getData((Player) sender, "messagedOf");
+            if (messagedOfUUID == null) {
+                return Optional.empty();
+            } else {
+                messagedOf = UUID.fromString(messagedOfUUID);
+            }
         } else {
-            return Optional.of(nullablePlayer);
+            indexConsole(sender);
+            messagedOf = customMap.get(sender).messagedOf;
         }
+
+        if (messagedOf == null) {
+            return Optional.empty();
+        }
+
+        Optional<Player> optionalPlayer = PlatformUtils.getPlayer(messagedOf);
+
+        return optionalPlayer.<Optional<CommandSender>>map(Optional::of).orElseGet(() -> UniqueSender.byUUID(messagedOf));
     }
 
-    private void index(CommandSender sender) {
-        if (!map.containsKey(new UniqueSender(sender).getUniqueId())) {
-            map.put(new UniqueSender(sender).getUniqueId(), new PlayerData());
-        }
+    private void indexConsole(CommandSender sender) {
+        customMap.computeIfAbsent(sender, k -> new MessageData());
     }
 
-    private static class PlayerData {
-        @Nullable
+    @RequiredArgsConstructor
+    private static class MessageData {
         public UUID sentTo = null;
-        @Nullable
         public UUID messagedOf = null;
     }
 }

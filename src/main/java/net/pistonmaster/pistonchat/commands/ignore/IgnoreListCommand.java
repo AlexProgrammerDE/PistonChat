@@ -19,6 +19,7 @@ import org.bukkit.entity.Player;
 
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -65,7 +66,7 @@ public class IgnoreListCommand implements CommandExecutor, TabExecutor {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 
     private void showList(int page, Player player) {

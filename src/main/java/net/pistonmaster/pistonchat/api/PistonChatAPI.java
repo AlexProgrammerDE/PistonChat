@@ -36,7 +36,7 @@ public final class PistonChatAPI {
         Preconditions.checkNotNull(ignorer, "Ignorer can not be null!");
         Preconditions.checkNotNull(ignored, "Ignored can not be null!");
 
-        plugin.getConfigTool().hardIgnorePlayer(ignorer, ignored);
+        plugin.getHardIgnoreTool().hardIgnorePlayer(ignorer, ignored);
     }
 
     /**

@@ -13,7 +13,6 @@ import net.pistonmaster.pistonchat.commands.whisper.LastCommand;
 import net.pistonmaster.pistonchat.commands.whisper.ReplyCommand;
 import net.pistonmaster.pistonchat.commands.whisper.WhisperCommand;
 import net.pistonmaster.pistonchat.events.ChatEvent;
-import net.pistonmaster.pistonchat.events.QuitEvent;
 import net.pistonmaster.pistonchat.utils.*;
 import net.pistonmaster.pistonutils.logging.PistonLogger;
 import net.pistonmaster.pistonutils.update.UpdateChecker;
@@ -35,9 +34,9 @@ public final class PistonChat extends JavaPlugin {
     private final ConfigManager language = new ConfigManager(this, "language.yml");
     private final TempDataTool tempDataTool = new TempDataTool();
     private final SoftIgnoreTool softignoreTool = new SoftIgnoreTool();
-    private final CacheTool cacheTool = new CacheTool(this);
+    private final CacheTool cacheTool = new CacheTool();
     private final IgnoreTool ignoreTool = new IgnoreTool(this);
-    private final ConfigTool configTool = new ConfigTool(this);
+    private final HardIgnoreTool hardIgnoreTool = new HardIgnoreTool(this);
 
     @Override
     public void onEnable() {
@@ -113,7 +112,6 @@ public final class PistonChat extends JavaPlugin {
 
         log.info(ChatColor.DARK_GREEN + "Registering listeners");
         server.getPluginManager().registerEvents(new ChatEvent(this), this);
-        server.getPluginManager().registerEvents(new QuitEvent(this), this);
 
         log.info(ChatColor.DARK_GREEN + "Checking for a newer version");
         new UpdateChecker(new PistonLogger(getLogger()::info, getLogger()::warning)).getVersion("https://www.pistonmaster.net/PistonChat/VERSION.txt", version ->

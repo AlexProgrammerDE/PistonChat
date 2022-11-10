@@ -1,5 +1,6 @@
 package net.pistonmaster.pistonchat.utils;
 
+import lombok.RequiredArgsConstructor;
 import net.pistonmaster.pistonchat.PistonChat;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -11,16 +12,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 
-@SuppressWarnings("unused")
+@RequiredArgsConstructor
 public class ConfigManager {
     private final PistonChat plugin;
     private final String fileName;
     private FileConfiguration config;
-
-    public ConfigManager(PistonChat plugin, String fileName) {
-        this.plugin = plugin;
-        this.fileName = fileName;
-    }
 
     public void create() throws IOException {
         createIfAbsent();
