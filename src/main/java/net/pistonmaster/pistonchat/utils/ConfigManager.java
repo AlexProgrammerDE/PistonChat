@@ -27,8 +27,6 @@ public class ConfigManager {
         config.options().copyHeader();
 
         saveConfig(config);
-
-        plugin.reloadConfig();
     }
 
     public FileConfiguration get() {

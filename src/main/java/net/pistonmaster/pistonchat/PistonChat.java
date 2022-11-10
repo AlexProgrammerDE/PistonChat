@@ -30,8 +30,8 @@ import java.util.logging.Logger;
 
 @Getter
 public final class PistonChat extends JavaPlugin {
-    private final ConfigManager config = new ConfigManager(this, "config.yml");
-    private final ConfigManager language = new ConfigManager(this, "language.yml");
+    private final ConfigManager configManager = new ConfigManager(this, "config.yml");
+    private final ConfigManager languageManager = new ConfigManager(this, "language.yml");
     private final TempDataTool tempDataTool = new TempDataTool();
     private final SoftIgnoreTool softignoreTool = new SoftIgnoreTool();
     private final CacheTool cacheTool = new CacheTool();
@@ -55,8 +55,8 @@ public final class PistonChat extends JavaPlugin {
 
         log.info(ChatColor.DARK_GREEN + "Loading config");
         try {
-            config.create();
-            language.create();
+            configManager.create();
+            languageManager.create();
         } catch (IOException e) {
             e.printStackTrace();
             Bukkit.getPluginManager().disablePlugin(this);
@@ -140,10 +140,10 @@ public final class PistonChat extends JavaPlugin {
 
     @Override
     public FileConfiguration getConfig() {
-        return config.get();
+        return configManager.get();
     }
 
     public FileConfiguration getLanguage() {
-        return language.get();
+        return languageManager.get();
     }
 }

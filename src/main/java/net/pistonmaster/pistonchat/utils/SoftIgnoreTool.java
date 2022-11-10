@@ -2,12 +2,12 @@ package net.pistonmaster.pistonchat.utils;
 
 import com.github.puregero.multilib.MultiLib;
 import com.google.gson.Gson;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class SoftIgnoreTool {
     private final Gson gson = new Gson();

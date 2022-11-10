@@ -13,6 +13,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.util.StringUtil;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -63,7 +64,12 @@ public class MainCommand implements CommandExecutor, TabExecutor {
                     break;
                 case "reload":
                     if (sender.hasPermission("pistonchat.reload")) {
-                        plugin.reloadConfig();
+                        try {
+                            plugin.getConfigManager().create();
+                            plugin.getLanguageManager().create();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                         sender.sendMessage("Reloaded the config!");
                     } else {
                         sender.sendMessage(command.getPermissionMessage());

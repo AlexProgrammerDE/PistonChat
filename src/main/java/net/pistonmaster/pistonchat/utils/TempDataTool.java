@@ -1,11 +1,7 @@
 package net.pistonmaster.pistonchat.utils;
 
 import com.github.puregero.multilib.MultiLib;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class TempDataTool {
     public void setWhisperingEnabled(Player player, boolean value) {
