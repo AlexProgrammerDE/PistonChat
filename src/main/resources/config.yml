@@ -2,6 +2,7 @@
 # / indicates disabled!
 # This config is configured to be what 2b2t.org has.
 # https://hub.spigotmc.org/javadocs/spigot/org/bukkit/ChatColor.html
+# pistonchat.prefix.green and pistonchat.chatformat.default are given by default.
 whisper:
   from: "&d%player%&d whispers: %message%"
   to: "&dYou whisper to %player%&d: %message%"
@@ -12,7 +13,10 @@ unignore: "&6No longer ignoring &3%player%"
 ignorehard: "&6Permanently ignoring %player%&6. This is saved in &4/ignorelist."
 unignorehard: "&6No longer permanently ignoring &3%player%"
 
-chatformat: "<%player%&r>"
+chatformats:
+  special: "%player%&r »"
+  default: "<%player%&r>"
+resetafterformat: true
 stripnamecolor: false
 
 consolename: "[console]"
@@ -22,8 +26,8 @@ allowpmignored: true
 onlyhidepms: true
 
 ignorelistsize: 9
+forcewhiteifnoprefix: true
 prefixes:
-  GREEN:
+  green:
     prefix: ">"
     color: "GREEN"
-    permission: "pistonchat.GREEN"

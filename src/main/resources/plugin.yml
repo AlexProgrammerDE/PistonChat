@@ -115,7 +115,8 @@ permissions:
       pistonchat.ignorehard: true
       pistonchat.togglechat: true
       pistonchat.help: true
-      pistonchat.GREEN: true
+      pistonchat.prefix.green: true
+      pistonchat.chatformat.default: true
     default: true
   pistonchat.admin:
     description: Default permissions for admins!

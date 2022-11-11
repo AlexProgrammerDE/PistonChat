@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 public class CommonTool {
     private CommonTool() {
@@ -82,7 +83,7 @@ public class CommonTool {
         return ChatColor.translateAlternateColorCodes('&', PistonChat.getPlugin(PistonChat.class).getLanguage().getString("prefix"));
     }
 
-    public static ChatColor getChatColorFor(String message, Player player) {
+    public static Optional<ChatColor> getChatColorFor(String message, Player player) {
         FileConfiguration config = PistonChat.getPlugin(PistonChat.class).getConfig();
 
         for (String str : config.getConfigurationSection("prefixes").getKeys(false)) {
@@ -90,16 +91,27 @@ public class CommonTool {
             String prefix = section.getString("prefix");
             if (!prefix.equalsIgnoreCase("/")
                     && message.toLowerCase().startsWith(prefix)
-                    && player.hasPermission(section.getString("permission"))) {
-                return ChatColor.valueOf(section.getString("color").toUpperCase());
+                    && player.hasPermission("pistonchat.prefix." + str.toLowerCase())) {
+                return Optional.of(ChatColor.valueOf(section.getString("color").toUpperCase()));
             }
         }
 
-        return ChatColor.WHITE;
+        return Optional.empty();
     }
 
     public static String getFormat(CommandSender sender) {
-        String str = ChatColor.translateAlternateColorCodes('&', PistonChat.getPlugin(PistonChat.class).getConfig().getString("chatformat").replace("%player%", getName(sender)));
+        String str = null;
+        for (String s : PistonChat.getPlugin(PistonChat.class).getConfig().getConfigurationSection("chatformats").getKeys(false)) {
+            if (sender.hasPermission("pistonchat.chatformat." + s.toLowerCase())) {
+                str = s;
+                break;
+            }
+        }
+
+        if (str == null)
+            str = "%player%";
+
+        str = ChatColor.translateAlternateColorCodes('&', str.replace("%player%", getName(sender)));
 
         if (sender instanceof Player && Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             str = parse((OfflinePlayer) sender, str);
@@ -127,11 +139,19 @@ public class CommonTool {
             ));
         }
 
-        builder.append(" ").reset();
+        builder.append(" ");
+
+        if (PistonChat.getPlugin(PistonChat.class).getConfig().getBoolean("resetafterformat")) {
+            builder.reset();
+        }
 
         builder.append(new TextComponent(TextComponent.fromLegacyText(message)));
 
-        builder.color(CommonTool.getChatColorFor(message, chatter));
+        Optional<ChatColor> messagePrefixColor = CommonTool.getChatColorFor(message, chatter);
+        messagePrefixColor.ifPresent(builder::color);
+        if (!messagePrefixColor.isPresent() && PistonChat.getPlugin(PistonChat.class).getConfig().getBoolean("forcewhiteifnoprefix")) {
+            builder.color(ChatColor.WHITE);
+        }
 
         receiver.spigot().sendMessage(builder.create());
     }
