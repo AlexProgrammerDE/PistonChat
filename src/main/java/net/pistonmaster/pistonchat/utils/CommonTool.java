@@ -111,11 +111,13 @@ public class CommonTool {
         if (str == null)
             str = "%player%";
 
-        str = ChatColor.translateAlternateColorCodes('&', str.replace("%player%", getName(sender)));
+        str = str.replace("%player%", getName(sender));
 
         if (sender instanceof Player && Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             str = parse((OfflinePlayer) sender, str);
         }
+
+        str = ChatColor.translateAlternateColorCodes('&', str);
 
         return str;
     }
