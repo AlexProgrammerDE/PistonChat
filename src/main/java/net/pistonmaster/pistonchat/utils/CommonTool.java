@@ -103,7 +103,7 @@ public class CommonTool {
         String str = null;
         for (String s : PistonChat.getPlugin(PistonChat.class).getConfig().getConfigurationSection("chatformats").getKeys(false)) {
             if (sender.hasPermission("pistonchat.chatformat." + s.toLowerCase())) {
-                str = s;
+                str = PistonChat.getPlugin(PistonChat.class).getConfig().getString("chatformats." + s);
                 break;
             }
         }
@@ -149,7 +149,7 @@ public class CommonTool {
 
         Optional<ChatColor> messagePrefixColor = CommonTool.getChatColorFor(message, chatter);
         messagePrefixColor.ifPresent(builder::color);
-        if (!messagePrefixColor.isPresent() && PistonChat.getPlugin(PistonChat.class).getConfig().getBoolean("forcewhiteifnoprefix")) {
+        if (messagePrefixColor.isEmpty() && PistonChat.getPlugin(PistonChat.class).getConfig().getBoolean("forcewhiteifnoprefix")) {
             builder.color(ChatColor.WHITE);
         }
 
