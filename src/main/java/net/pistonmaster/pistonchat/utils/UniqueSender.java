@@ -30,17 +30,15 @@ public class UniqueSender {
     }
 
     public UUID getUniqueId() {
-        if (sender instanceof Player) {
-            return ((Player) sender).getUniqueId();
+        if (sender instanceof Player player) {
+            return player.getUniqueId();
         } else {
             return customUUID.computeIfAbsent(sender, sender2 -> UUID.randomUUID());
         }
     }
 
     public String getDisplayName() {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
-
+        if (sender instanceof Player player) {
             if (PistonChat.getPlugin(PistonChat.class).getConfig().getBoolean("stripnamecolor")) {
                 return ChatColor.stripColor(player.getDisplayName());
             } else {
