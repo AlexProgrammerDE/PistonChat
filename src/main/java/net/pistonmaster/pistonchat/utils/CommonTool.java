@@ -99,7 +99,7 @@ public class CommonTool {
         return Optional.empty();
     }
 
-    public static String getFormat(CommandSender sender) {
+    public static String getFormat(Player sender) {
         String str = null;
         for (String s : PistonChat.getPlugin(PistonChat.class).getConfig().getConfigurationSection("chatformats").getKeys(false)) {
             if (sender.hasPermission("pistonchat.chatformat." + s.toLowerCase())) {
@@ -111,10 +111,10 @@ public class CommonTool {
         if (str == null)
             str = "%player%";
 
-        str = str.replace("%player%", getName(sender));
+        str = str.replace("%player%", sender.getDisplayName());
 
-        if (sender instanceof Player && Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            str = parse((OfflinePlayer) sender, str);
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            str = parse(sender, str);
         }
 
         str = ChatColor.translateAlternateColorCodes('&', str);
@@ -126,7 +126,7 @@ public class CommonTool {
         ComponentBuilder builder = new ComponentBuilder(CommonTool.getFormat(chatter));
 
         if (receiver.hasPermission("pistonchat.playernamereply")) {
-            builder.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/w " + ChatColor.stripColor(chatter.getDisplayName()) + " "));
+            builder.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, String.format("/w %s ", chatter.getName())));
 
             String hoverText = PistonChat.getPlugin(PistonChat.class).getConfig().getString("hovertext");
 
@@ -156,10 +156,6 @@ public class CommonTool {
         }
 
         receiver.spigot().sendMessage(builder.create());
-    }
-
-    private static String getName(CommandSender sender) {
-        return new UniqueSender(sender).getDisplayName();
     }
 
     public static String parse(OfflinePlayer player, String str) {

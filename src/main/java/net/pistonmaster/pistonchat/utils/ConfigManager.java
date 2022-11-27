@@ -23,7 +23,6 @@ public class ConfigManager {
 
         config = getConfig();
         config.setDefaults(getDefaultConfig());
-        config.options().copyDefaults(true);
         config.options().copyHeader();
 
         saveConfig(config);
