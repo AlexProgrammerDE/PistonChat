@@ -30,28 +30,26 @@ public class ChatEvent implements Listener {
 
         event.setCancelled(pistonChatEvent.isCancelled());
 
-        if (!pistonChatEvent.isCancelled()) {
-            String message = pistonChatEvent.getMessage();
+        if (pistonChatEvent.isCancelled()) {
+            return;
+        }
 
-            if (plugin.getTempDataTool().isChatEnabled(chatter)) {
-                for (Player receiver : PlatformUtils.getOnlinePlayers()) {
-                    if (!plugin.getIgnoreTool().isIgnored(chatter, receiver) && plugin.getTempDataTool().isChatEnabled(receiver)) {
-                        PistonChatReceiveEvent perPlayerEvent = new PistonChatReceiveEvent(chatter, receiver, message, event.isAsynchronous());
+        if (plugin.getTempDataTool().isChatEnabled(chatter)) {
+            for (Player receiver : PlatformUtils.getOnlinePlayers()) {
+                if (!plugin.getIgnoreTool().isIgnored(chatter, receiver) && plugin.getTempDataTool().isChatEnabled(receiver)) {
+                    PistonChatReceiveEvent perPlayerEvent = new PistonChatReceiveEvent(chatter, receiver, pistonChatEvent.getMessage(), event.isAsynchronous());
 
-                        Bukkit.getPluginManager().callEvent(perPlayerEvent);
+                    Bukkit.getPluginManager().callEvent(perPlayerEvent);
 
-                        if (perPlayerEvent.isCancelled())
-                            continue;
+                    if (perPlayerEvent.isCancelled())
+                        continue;
 
-                        message = perPlayerEvent.getMessage();
-
-                        CommonTool.sendChatMessage(chatter, message, receiver);
-                    }
+                    CommonTool.sendChatMessage(chatter, perPlayerEvent.getMessage(), receiver);
                 }
-            } else {
-                chatter.sendMessage(LanguageTool.getMessage("chatisoff"));
-                event.setCancelled(true);
             }
+        } else {
+            chatter.sendMessage(LanguageTool.getMessage("chatisoff"));
+            event.setCancelled(true);
         }
     }
 }

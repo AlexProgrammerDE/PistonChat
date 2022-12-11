@@ -29,7 +29,7 @@ public class CommonTool {
         }
 
         if (!sender.hasPermission("pistonchat.bypass")) {
-            if (receiver instanceof Player && !PistonChat.getPlugin(PistonChat.class).getTempDataTool().isWhisperingEnabled((Player) receiver)) {
+            if (receiver instanceof Player player && !PistonChat.getPlugin(PistonChat.class).getTempDataTool().isWhisperingEnabled(player)) {
                 if (PistonChat.getPlugin(PistonChat.class).getConfig().getBoolean("onlyhidepms")) {
                     sendSender(sender, message, receiver);
                 } else {
@@ -38,7 +38,7 @@ public class CommonTool {
                 return;
             }
 
-            if (receiver instanceof Player && isVanished((Player) receiver)) {
+            if (receiver instanceof Player player && isVanished(player)) {
                 sender.sendMessage(LanguageTool.getMessage("notonline"));
                 return;
             }
@@ -60,17 +60,17 @@ public class CommonTool {
     }
 
     public static void sendSender(CommandSender sender, String message, CommandSender receiver) {
-        String senderString = ChatColor.translateAlternateColorCodes('&', PistonChat.getPlugin(PistonChat.class).getConfig().getString("whisper.to")
-                .replace("%player%", ChatColor.stripColor(new UniqueSender(receiver).getDisplayName()))
-                .replace("%message%", message));
+        String senderString = convertAmpersand(PistonChat.getPlugin(PistonChat.class).getConfig().getString("whisper.to"))
+                .replace("%player%", new UniqueSender(receiver).getDisplayName())
+                .replace("%message%", message);
 
         sender.spigot().sendMessage(new TextComponent(TextComponent.fromLegacyText(senderString)));
     }
 
     private static void sendReceiver(CommandSender sender, String message, CommandSender receiver) {
-        String receiverString = ChatColor.translateAlternateColorCodes('&', PistonChat.getPlugin(PistonChat.class).getConfig().getString("whisper.from")
-                .replace("%player%", ChatColor.stripColor(new UniqueSender(sender).getDisplayName()))
-                .replace("%message%", message));
+        String receiverString = convertAmpersand(PistonChat.getPlugin(PistonChat.class).getConfig().getString("whisper.from"))
+                .replace("%player%", new UniqueSender(sender).getDisplayName())
+                .replace("%message%", message);
 
         receiver.spigot().sendMessage(new TextComponent(TextComponent.fromLegacyText(receiverString)));
     }
@@ -113,9 +113,7 @@ public class CommonTool {
 
         str = str.replace("%player%", sender.getDisplayName());
 
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            str = parse(sender, str);
-        }
+        str = parsePlaceholders(sender, str);
 
         str = ChatColor.translateAlternateColorCodes('&', str);
 
@@ -132,7 +130,7 @@ public class CommonTool {
 
             builder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                     new ComponentBuilder(
-                            ChatColor.translateAlternateColorCodes('&',
+                            convertAmpersand(
                                     hoverText.replace("%player%",
                                             ChatColor.stripColor(chatter.getDisplayName())
                                     )
@@ -147,7 +145,8 @@ public class CommonTool {
             builder.reset();
         }
 
-        builder.append(new TextComponent(TextComponent.fromLegacyText(message)));
+        String messageFormat = PistonChat.getPlugin(PistonChat.class).getConfig().getString("message-format");
+        builder.append(TextComponent.fromLegacyText(parsePlaceholders(chatter, messageFormat).replace("%message%", message)));
 
         Optional<ChatColor> messagePrefixColor = CommonTool.getChatColorFor(message, chatter);
         messagePrefixColor.ifPresent(builder::color);
@@ -158,8 +157,12 @@ public class CommonTool {
         receiver.spigot().sendMessage(builder.create());
     }
 
-    public static String parse(OfflinePlayer player, String str) {
-        return me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, str);
+    public static String parsePlaceholders(OfflinePlayer player, String str) {
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") == null) {
+            return str;
+        } else {
+            return me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, str);
+        }
     }
 
     private static boolean isVanished(Player player) {
@@ -167,5 +170,9 @@ public class CommonTool {
             if (meta.asBoolean()) return true;
         }
         return false;
+    }
+
+    private static String convertAmpersand(String str) {
+        return ChatColor.translateAlternateColorCodes('&', str);
     }
 }
