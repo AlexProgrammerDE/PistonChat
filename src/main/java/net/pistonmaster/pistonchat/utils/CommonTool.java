@@ -146,7 +146,8 @@ public class CommonTool {
         }
 
         String messageFormat = PistonChat.getPlugin(PistonChat.class).getConfig().getString("message-format");
-        builder.append(TextComponent.fromLegacyText(parsePlaceholders(chatter, messageFormat).replace("%message%", message)));
+        String finalMessage = convertAmpersand(parsePlaceholders(chatter, messageFormat)).replace("%message%", message);
+        builder.append(new TextComponent(finalMessage));
 
         Optional<ChatColor> messagePrefixColor = CommonTool.getChatColorFor(message, chatter);
         messagePrefixColor.ifPresent(builder::color);
