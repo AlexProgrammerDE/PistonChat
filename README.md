@@ -20,6 +20,7 @@ PistonChat will always get updates and contributing is welcome!
 * Lots of features that 2b2t's chat plugin has.
 
 ## Servers that use PistonChat
+* [6b6t.org](https://www.6b6t.org)
 * [2b2t.com.au](https://namemc.com/server/2b2t.com.au)
 
 **Do you use PistonChat and want to add your server here? Create a pull request!**
