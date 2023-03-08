@@ -22,6 +22,7 @@ PistonChat will always get updates and contributing is welcome!
 ## Servers that use PistonChat
 * [6b6t.org](https://www.6b6t.org)
 * [2b2t.com.au](https://namemc.com/server/2b2t.com.au)
+* [4b4t.me](https://namemc.com/server/4b4t.me)
 
 **Do you use PistonChat and want to add your server here? Create a pull request!**
 
