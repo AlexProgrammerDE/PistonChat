@@ -1,7 +1,5 @@
 package net.pistonmaster.pistonchat.utils;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.ChatColor;
 import net.pistonmaster.pistonchat.PistonChat;
 import org.bukkit.command.CommandSender;
@@ -13,11 +11,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-@RequiredArgsConstructor
-public class UniqueSender {
+public record UniqueSender(CommandSender sender) {
     private static final Map<CommandSender, UUID> customUUID = new HashMap<>();
-    @Getter
-    private final CommandSender sender;
 
     public static Optional<CommandSender> byUUID(UUID uuid) {
         for (Map.Entry<CommandSender, UUID> entry : customUUID.entrySet()) {
@@ -39,13 +34,13 @@ public class UniqueSender {
 
     public String getDisplayName() {
         if (sender instanceof Player player) {
-            if (PistonChat.getPlugin(PistonChat.class).getConfig().getBoolean("stripnamecolor")) {
+            if (PistonChat.getInstance().getConfig().getBoolean("stripnamecolor")) {
                 return ChatColor.stripColor(player.getDisplayName());
             } else {
                 return player.getDisplayName();
             }
         } else if (sender instanceof ConsoleCommandSender) {
-            return ChatColor.translateAlternateColorCodes('&', PistonChat.getPlugin(PistonChat.class).getConfig().getString("consolename"));
+            return ChatColor.translateAlternateColorCodes('&', PistonChat.getInstance().getConfig().getString("consolename"));
         } else {
             return sender.getName();
         }

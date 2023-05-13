@@ -1,6 +1,5 @@
 package net.pistonmaster.pistonchat.utils;
 
-import com.github.puregero.multilib.MultiLib;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -18,6 +17,6 @@ public class PlatformUtils {
     }
 
     public static Collection<? extends Player> getOnlinePlayers() {
-        return MultiLib.getAllOnlinePlayers();
+        return Bukkit.getOnlinePlayers();
     }
 }

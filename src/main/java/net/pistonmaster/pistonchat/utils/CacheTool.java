@@ -1,14 +1,13 @@
 package net.pistonmaster.pistonchat.utils;
 
-import com.github.puregero.multilib.MultiLib;
 import lombok.RequiredArgsConstructor;
+import net.pistonmaster.pistonchat.PistonChat;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class CacheTool {
     private final Map<CommandSender, MessageData> customMap = new HashMap<>();
@@ -16,14 +15,15 @@ public class CacheTool {
     public void sendMessage(CommandSender sender, CommandSender receiver) {
         UUID senderUUID = new UniqueSender(sender).getUniqueId();
         UUID receiverUUID = new UniqueSender(receiver).getUniqueId();
-        if (sender instanceof Player) {
-            MultiLib.setData((Player) sender, "pistonchat_sentTo", receiverUUID.toString());
+        if (sender instanceof Player senderPlayer) {
+            senderPlayer.setMetadata("pistonchat_sentTo", new FixedMetadataValue(PistonChat.getInstance(), receiverUUID.toString()));
         } else {
             indexConsole(sender);
             customMap.get(sender).sentTo = receiverUUID;
         }
-        if (receiver instanceof Player) {
-            MultiLib.setData((Player) receiver, "pistonchat_messagedOf", senderUUID.toString());
+
+        if (receiver instanceof Player receiverPlayer) {
+            receiverPlayer.setMetadata("pistonchat_messagedOf", new FixedMetadataValue(PistonChat.getInstance(), senderUUID.toString()));
         } else {
             indexConsole(receiver);
             customMap.get(receiver).messagedOf = senderUUID;
@@ -38,13 +38,13 @@ public class CacheTool {
      */
     public Optional<CommandSender> getLastSentTo(CommandSender sender) {
         UUID sentTo;
-        if (sender instanceof Player) {
-            String sentToUUID = MultiLib.getData((Player) sender, "pistonchat_sentTo");
-            if (sentToUUID == null) {
+        if (sender instanceof Player player) {
+            List<MetadataValue> values = player.getMetadata("pistonchat_sentTo");
+            if (values.isEmpty()) {
                 return Optional.empty();
-            } else {
-                sentTo = UUID.fromString(sentToUUID);
             }
+
+            sentTo = UUID.fromString(values.get(0).asString());
         } else {
             indexConsole(sender);
             sentTo = customMap.get(sender).sentTo;
@@ -67,13 +67,13 @@ public class CacheTool {
      */
     public Optional<CommandSender> getLastMessagedOf(CommandSender sender) {
         UUID messagedOf;
-        if (sender instanceof Player) {
-            String messagedOfUUID = MultiLib.getData((Player) sender, "pistonchat_messagedOf");
-            if (messagedOfUUID == null) {
+        if (sender instanceof Player player) {
+            List<MetadataValue> values = player.getMetadata("pistonchat_messagedOf");
+            if (values.isEmpty()) {
                 return Optional.empty();
-            } else {
-                messagedOf = UUID.fromString(messagedOfUUID);
             }
+
+            messagedOf = UUID.fromString(values.get(0).asString());
         } else {
             indexConsole(sender);
             messagedOf = customMap.get(sender).messagedOf;
@@ -83,9 +83,8 @@ public class CacheTool {
             return Optional.empty();
         }
 
-        Optional<Player> optionalPlayer = PlatformUtils.getPlayer(messagedOf);
-
-        return optionalPlayer.<Optional<CommandSender>>map(Optional::of).orElseGet(() -> UniqueSender.byUUID(messagedOf));
+        Optional<CommandSender> optionalPlayer = PlatformUtils.getPlayer(messagedOf).map(p -> p); // Map to bypass type inference error
+        return optionalPlayer.or(() -> UniqueSender.byUUID(messagedOf));
     }
 
     private void indexConsole(CommandSender sender) {

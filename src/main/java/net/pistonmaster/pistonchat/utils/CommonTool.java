@@ -23,14 +23,14 @@ public class CommonTool {
     }
 
     public static void sendWhisperTo(CommandSender sender, String message, CommandSender receiver) {
-        if (!PistonChat.getPlugin(PistonChat.class).getConfig().getBoolean("allowpmself") && sender == receiver) {
+        if (!PistonChat.getInstance().getConfig().getBoolean("allowpmself") && sender == receiver) {
             sender.sendMessage(LanguageTool.getMessage("pmself"));
             return;
         }
 
         if (!sender.hasPermission("pistonchat.bypass")) {
-            if (receiver instanceof Player player && !PistonChat.getPlugin(PistonChat.class).getTempDataTool().isWhisperingEnabled(player)) {
-                if (PistonChat.getPlugin(PistonChat.class).getConfig().getBoolean("onlyhidepms")) {
+            if (receiver instanceof Player player && !PistonChat.getInstance().getTempDataTool().isWhisperingEnabled(player)) {
+                if (PistonChat.getInstance().getConfig().getBoolean("onlyhidepms")) {
                     sendSender(sender, message, receiver);
                 } else {
                     sender.sendMessage(CommonTool.getPrefix() + "This person has whispering disabled!");
@@ -56,11 +56,11 @@ public class CommonTool {
         sendSender(sender, message, receiver);
         sendReceiver(sender, message, receiver);
 
-        PistonChat.getPlugin(PistonChat.class).getCacheTool().sendMessage(sender, receiver);
+        PistonChat.getInstance().getCacheTool().sendMessage(sender, receiver);
     }
 
     public static void sendSender(CommandSender sender, String message, CommandSender receiver) {
-        String senderString = convertAmpersand(PistonChat.getPlugin(PistonChat.class).getConfig().getString("whisper.to"))
+        String senderString = convertAmpersand(PistonChat.getInstance().getConfig().getString("whisper.to"))
                 .replace("%player%", new UniqueSender(receiver).getDisplayName())
                 .replace("%message%", message);
 
@@ -68,7 +68,7 @@ public class CommonTool {
     }
 
     private static void sendReceiver(CommandSender sender, String message, CommandSender receiver) {
-        String receiverString = convertAmpersand(PistonChat.getPlugin(PistonChat.class).getConfig().getString("whisper.from"))
+        String receiverString = convertAmpersand(PistonChat.getInstance().getConfig().getString("whisper.from"))
                 .replace("%player%", new UniqueSender(sender).getDisplayName())
                 .replace("%message%", message);
 
@@ -80,11 +80,11 @@ public class CommonTool {
     }
 
     public static String getPrefix() {
-        return ChatColor.translateAlternateColorCodes('&', PistonChat.getPlugin(PistonChat.class).getLanguage().getString("prefix"));
+        return ChatColor.translateAlternateColorCodes('&', PistonChat.getInstance().getLanguage().getString("prefix"));
     }
 
     public static Optional<ChatColor> getChatColorFor(String message, Player player) {
-        FileConfiguration config = PistonChat.getPlugin(PistonChat.class).getConfig();
+        FileConfiguration config = PistonChat.getInstance().getConfig();
 
         for (String str : config.getConfigurationSection("prefixes").getKeys(false)) {
             ConfigurationSection section = config.getConfigurationSection("prefixes." + str);
@@ -101,9 +101,9 @@ public class CommonTool {
 
     public static String getFormat(Player sender) {
         String str = null;
-        for (String s : PistonChat.getPlugin(PistonChat.class).getConfig().getConfigurationSection("chatformats").getKeys(false)) {
+        for (String s : PistonChat.getInstance().getConfig().getConfigurationSection("chatformats").getKeys(false)) {
             if (sender.hasPermission("pistonchat.chatformat." + s.toLowerCase())) {
-                str = PistonChat.getPlugin(PistonChat.class).getConfig().getString("chatformats." + s);
+                str = PistonChat.getInstance().getConfig().getString("chatformats." + s);
                 break;
             }
         }
@@ -126,7 +126,7 @@ public class CommonTool {
         if (receiver.hasPermission("pistonchat.playernamereply")) {
             builder.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, String.format("/w %s ", chatter.getName())));
 
-            String hoverText = PistonChat.getPlugin(PistonChat.class).getConfig().getString("hovertext");
+            String hoverText = PistonChat.getInstance().getConfig().getString("hovertext");
 
             builder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                     new ComponentBuilder(
@@ -141,17 +141,17 @@ public class CommonTool {
 
         builder.append(" ");
 
-        if (PistonChat.getPlugin(PistonChat.class).getConfig().getBoolean("resetafterformat")) {
+        if (PistonChat.getInstance().getConfig().getBoolean("resetafterformat")) {
             builder.reset();
         }
 
-        String messageFormat = PistonChat.getPlugin(PistonChat.class).getConfig().getString("message-format");
+        String messageFormat = PistonChat.getInstance().getConfig().getString("message-format");
         String finalMessage = convertAmpersand(parsePlaceholders(chatter, messageFormat)).replace("%message%", message);
         builder.append(new TextComponent(finalMessage));
 
         Optional<ChatColor> messagePrefixColor = CommonTool.getChatColorFor(message, chatter);
         messagePrefixColor.ifPresent(builder::color);
-        if (messagePrefixColor.isEmpty() && PistonChat.getPlugin(PistonChat.class).getConfig().getBoolean("forcewhiteifnoprefix")) {
+        if (messagePrefixColor.isEmpty() && PistonChat.getInstance().getConfig().getBoolean("forcewhiteifnoprefix")) {
             builder.color(ChatColor.WHITE);
         }
 

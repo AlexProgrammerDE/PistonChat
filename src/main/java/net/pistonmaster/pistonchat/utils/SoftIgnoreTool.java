@@ -1,9 +1,11 @@
 package net.pistonmaster.pistonchat.utils;
 
-import com.github.puregero.multilib.MultiLib;
 import com.google.gson.Gson;
+import net.pistonmaster.pistonchat.PistonChat;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +24,7 @@ public class SoftIgnoreTool {
             list.add(ignored.getUniqueId().toString());
         }
 
-        MultiLib.setData(player, "pistonchat_softignore", gson.toJson(list));
+        player.setMetadata("pistonchat_softignore", new FixedMetadataValue(PistonChat.getInstance(), gson.toJson(list)));
 
         return contains ? SoftReturn.UN_IGNORE : SoftReturn.IGNORE;
     }
@@ -33,8 +35,12 @@ public class SoftIgnoreTool {
     }
 
     protected List<String> getStoredList(Player player) {
-        String listData = MultiLib.getData(player, "pistonchat_softignore");
-        return listData == null ? new ArrayList<>() : gson.<List<String>>fromJson(listData, List.class);
+        List<MetadataValue> values = player.getMetadata("pistonchat_softignore");
+        if (values.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return gson.<List<String>>fromJson(values.get(0).asString(), List.class);
     }
 
     public enum SoftReturn {

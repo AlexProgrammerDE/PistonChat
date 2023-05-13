@@ -17,8 +17,7 @@ public class IgnoreTool {
     private final PistonChat plugin;
 
     public boolean isIgnored(CommandSender chatter, CommandSender receiver) {
-        if (receiver instanceof Player) {
-            Player player = (Player) receiver;
+        if (receiver instanceof Player player) {
             if (plugin.getSoftignoreTool().isSoftIgnored(chatter, player)) {
                 return true;
             } else return plugin.getHardIgnoreTool().isHardIgnored(chatter, player);

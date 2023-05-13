@@ -6,6 +6,7 @@ authors: [ AlexProgrammerDE ]
 description: An advanced chat plugin for survival/anarchy servers.
 website: https://pistonmaster.net/
 softdepend: ["PlaceholderAPI"]
+folia-supported: true
 
 commands:
   ignore:

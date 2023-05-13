@@ -38,6 +38,10 @@ public final class PistonChat extends JavaPlugin {
     private final IgnoreTool ignoreTool = new IgnoreTool(this);
     private final HardIgnoreTool hardIgnoreTool = new HardIgnoreTool(this);
 
+    public static PistonChat getInstance() {
+        return getPlugin(PistonChat.class);
+    }
+
     @Override
     public void onEnable() {
         PistonChatAPI.setInstance(this);

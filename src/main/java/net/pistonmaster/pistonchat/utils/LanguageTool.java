@@ -9,6 +9,6 @@ public class LanguageTool {
 
     public static String getMessage(String property) {
         return ChatColor.translateAlternateColorCodes('&',
-                CommonTool.getPrefix() + PistonChat.getPlugin(PistonChat.class).getLanguage().getString(property));
+                CommonTool.getPrefix() + PistonChat.getInstance().getLanguage().getString(property));
     }
 }
