@@ -1,4 +1,4 @@
-package net.pistonmaster.pistonchat.utils;
+package net.pistonmaster.pistonchat.tools;
 
 import net.md_5.bungee.api.ChatColor;
 import net.pistonmaster.pistonchat.PistonChat;

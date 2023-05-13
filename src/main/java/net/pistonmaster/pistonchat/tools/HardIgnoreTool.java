@@ -1,12 +1,16 @@
-package net.pistonmaster.pistonchat.utils;
+package net.pistonmaster.pistonchat.tools;
 
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.ChatColor;
 import net.pistonmaster.pistonchat.PistonChat;
+import net.pistonmaster.pistonchat.utils.UniqueSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -26,7 +30,12 @@ public class HardIgnoreTool {
             list.add(ignored.getUniqueId().toString());
         }
 
-        MultiLib.setPersistentData(player, "pistonchat_hardignore", gson.toJson(list));
+        Path hardIgnorePath = plugin.getPlayerDataFolder().resolve(player.getUniqueId() + ".hardignored");
+        try {
+            Files.writeString(hardIgnorePath, gson.toJson(list));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return contains ? HardReturn.UN_IGNORE : HardReturn.IGNORE;
     }
@@ -42,8 +51,16 @@ public class HardIgnoreTool {
     }
 
     protected List<String> getStoredList(Player player) {
-        String listData = MultiLib.getPersistentData(player, "pistonchat_hardignore");
-        return listData == null ? new ArrayList<>() : gson.<List<String>>fromJson(listData, List.class);
+        Path hardIgnorePath = plugin.getPlayerDataFolder().resolve(player.getUniqueId() + ".hardignored");
+        if (!Files.exists(hardIgnorePath)) {
+            return new ArrayList<>();
+        }
+
+        try {
+            return gson.<List<String>>fromJson(Files.readString(hardIgnorePath), List.class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public enum HardReturn {

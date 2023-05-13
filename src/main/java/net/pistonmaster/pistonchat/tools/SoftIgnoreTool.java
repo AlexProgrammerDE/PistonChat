@@ -1,7 +1,8 @@
-package net.pistonmaster.pistonchat.utils;
+package net.pistonmaster.pistonchat.tools;
 
 import com.google.gson.Gson;
 import net.pistonmaster.pistonchat.PistonChat;
+import net.pistonmaster.pistonchat.utils.UniqueSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;

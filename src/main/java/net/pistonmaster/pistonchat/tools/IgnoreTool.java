@@ -1,4 +1,4 @@
-package net.pistonmaster.pistonchat.utils;
+package net.pistonmaster.pistonchat.tools;
 
 import lombok.RequiredArgsConstructor;
 import net.pistonmaster.pistonchat.PistonChat;

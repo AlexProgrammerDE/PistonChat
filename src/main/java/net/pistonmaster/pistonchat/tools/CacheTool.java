@@ -1,7 +1,9 @@
-package net.pistonmaster.pistonchat.utils;
+package net.pistonmaster.pistonchat.tools;
 
 import lombok.RequiredArgsConstructor;
 import net.pistonmaster.pistonchat.PistonChat;
+import net.pistonmaster.pistonchat.utils.PlatformUtils;
+import net.pistonmaster.pistonchat.utils.UniqueSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -54,9 +56,8 @@ public class CacheTool {
             return Optional.empty();
         }
 
-        Optional<Player> optionalPlayer = PlatformUtils.getPlayer(sentTo);
-
-        return optionalPlayer.<Optional<CommandSender>>map(Optional::of).orElseGet(() -> UniqueSender.byUUID(sentTo));
+        Optional<CommandSender> optionalPlayer = PlatformUtils.getPlayer(sentTo).map(p -> p); // Map to bypass type inference error
+        return optionalPlayer.or(() -> UniqueSender.byUUID(sentTo));
     }
 
     /**

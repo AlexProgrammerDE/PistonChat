@@ -13,6 +13,7 @@ import net.pistonmaster.pistonchat.commands.whisper.LastCommand;
 import net.pistonmaster.pistonchat.commands.whisper.ReplyCommand;
 import net.pistonmaster.pistonchat.commands.whisper.WhisperCommand;
 import net.pistonmaster.pistonchat.events.ChatEvent;
+import net.pistonmaster.pistonchat.tools.*;
 import net.pistonmaster.pistonchat.utils.*;
 import net.pistonmaster.pistonutils.logging.PistonLogger;
 import net.pistonmaster.pistonutils.update.UpdateChecker;
@@ -26,17 +27,20 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.logging.Logger;
 
 @Getter
 public final class PistonChat extends JavaPlugin {
     private final ConfigManager configManager = new ConfigManager(this, "config.yml");
     private final ConfigManager languageManager = new ConfigManager(this, "language.yml");
-    private final TempDataTool tempDataTool = new TempDataTool();
+    private final TempDataTool tempDataTool = new TempDataTool(this);
     private final SoftIgnoreTool softignoreTool = new SoftIgnoreTool();
     private final CacheTool cacheTool = new CacheTool();
     private final IgnoreTool ignoreTool = new IgnoreTool(this);
     private final HardIgnoreTool hardIgnoreTool = new HardIgnoreTool(this);
+    private Path playerDataFolder;
 
     public static PistonChat getInstance() {
         return getPlugin(PistonChat.class);
@@ -138,6 +142,14 @@ public final class PistonChat extends JavaPlugin {
 
         log.info(ChatColor.DARK_GREEN + "Loading metrics");
         new Metrics(this, 9630);
+
+        log.info(ChatColor.DARK_GREEN + "Creating player data directory");
+        playerDataFolder = getDataFolder().toPath().resolve("playerdata");
+        try {
+            Files.createDirectories(playerDataFolder);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         log.info(ChatColor.DARK_GREEN + "Done! :D");
     }

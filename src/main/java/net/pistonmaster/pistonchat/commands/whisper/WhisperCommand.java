@@ -2,8 +2,8 @@ package net.pistonmaster.pistonchat.commands.whisper;
 
 import lombok.RequiredArgsConstructor;
 import net.pistonmaster.pistonchat.PistonChat;
-import net.pistonmaster.pistonchat.utils.CommonTool;
-import net.pistonmaster.pistonchat.utils.LanguageTool;
+import net.pistonmaster.pistonchat.tools.CommonTool;
+import net.pistonmaster.pistonchat.tools.LanguageTool;
 import net.pistonmaster.pistonchat.utils.PlatformUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

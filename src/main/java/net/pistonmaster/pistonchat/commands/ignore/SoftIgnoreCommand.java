@@ -2,9 +2,9 @@ package net.pistonmaster.pistonchat.commands.ignore;
 
 import lombok.RequiredArgsConstructor;
 import net.pistonmaster.pistonchat.PistonChat;
-import net.pistonmaster.pistonchat.utils.LanguageTool;
+import net.pistonmaster.pistonchat.tools.LanguageTool;
 import net.pistonmaster.pistonchat.utils.PlatformUtils;
-import net.pistonmaster.pistonchat.utils.SoftIgnoreTool;
+import net.pistonmaster.pistonchat.tools.SoftIgnoreTool;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

@@ -2,7 +2,7 @@ package net.pistonmaster.pistonchat.commands.toggle;
 
 import lombok.RequiredArgsConstructor;
 import net.pistonmaster.pistonchat.PistonChat;
-import net.pistonmaster.pistonchat.utils.LanguageTool;
+import net.pistonmaster.pistonchat.tools.LanguageTool;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
