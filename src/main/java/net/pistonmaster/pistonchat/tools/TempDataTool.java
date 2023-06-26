@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @RequiredArgsConstructor
@@ -40,7 +41,13 @@ public class TempDataTool {
         try (Connection connection = plugin.getDs().getConnection()) {
             PreparedStatement statement = connection.prepareStatement("SELECT `whisper_enabled` FROM `pistonchat_settings_whisper` WHERE `uuid` = ?;");
             statement.setString(1, player.getUniqueId().toString());
-            return statement.executeQuery().getBoolean("whisper_enabled");
+
+            ResultSet resultSet = statement.executeQuery();
+            if (!resultSet.next()) {
+                return true;
+            }
+
+            return resultSet.getBoolean("whisper_enabled");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -50,7 +57,13 @@ public class TempDataTool {
         try (Connection connection = plugin.getDs().getConnection()) {
             PreparedStatement statement = connection.prepareStatement("SELECT `chat_enabled` FROM `pistonchat_settings_chat` WHERE `uuid` = ?;");
             statement.setString(1, player.getUniqueId().toString());
-            return statement.executeQuery().getBoolean("chat_enabled");
+
+            ResultSet resultSet = statement.executeQuery();
+            if (!resultSet.next()) {
+                return true;
+            }
+
+            return resultSet.getBoolean("chat_enabled");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
