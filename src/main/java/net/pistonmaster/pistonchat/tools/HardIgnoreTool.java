@@ -48,8 +48,8 @@ public class HardIgnoreTool {
 
         try (Connection connection = plugin.getDs().getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `pistonchat_hard_ignores` WHERE `uuid`=? AND `ignored_uuid`=?");
-            preparedStatement.setString(1, chatterUUID.toString());
-            preparedStatement.setString(2, receiver.getUniqueId().toString());
+            preparedStatement.setString(1, receiver.getUniqueId().toString());
+            preparedStatement.setString(2, chatterUUID.toString());
             return preparedStatement.executeQuery().next();
         } catch (SQLException e) {
             throw new RuntimeException(e);

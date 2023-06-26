@@ -16,7 +16,7 @@ public class SoftIgnoreTool {
     private final Gson gson = new Gson();
 
     public SoftReturn softIgnorePlayer(Player player, Player ignored) {
-        List<UUID> list = getStoredList(player);
+        List<UUID> list = new ArrayList<>(getStoredList(player));
 
         boolean contains = list.contains(ignored.getUniqueId());
         if (contains) {
