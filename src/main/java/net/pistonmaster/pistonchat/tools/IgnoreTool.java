@@ -40,11 +40,11 @@ public class IgnoreTool {
         return map;
     }
 
-    protected List<OfflinePlayer> convertIgnoredPlayer(List<String> listUUID) {
+    protected List<OfflinePlayer> convertIgnoredPlayer(List<UUID> listUUID) {
         List<OfflinePlayer> returnedPlayers = new ArrayList<>();
 
-        for (String str : listUUID) {
-            returnedPlayers.add(Bukkit.getOfflinePlayer(UUID.fromString(str)));
+        for (UUID str : listUUID) {
+            returnedPlayers.add(Bukkit.getOfflinePlayer(str));
         }
 
         return returnedPlayers;

@@ -1,6 +1,5 @@
 package net.pistonmaster.pistonchat.tools;
 
-import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.ChatColor;
 import net.pistonmaster.pistonchat.PistonChat;
@@ -8,9 +7,10 @@ import net.pistonmaster.pistonchat.utils.UniqueSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -18,31 +18,42 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class HardIgnoreTool {
     private final PistonChat plugin;
-    private final Gson gson = new Gson();
 
     public HardReturn hardIgnorePlayer(Player player, Player ignored) {
-        List<String> list = getStoredList(player);
+        try (Connection connection = plugin.getDs().getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `pistonchat_hard_ignores` WHERE `uuid`=? AND `ignored_uuid`=?");
+            preparedStatement.setString(1, player.getUniqueId().toString());
+            preparedStatement.setString(2, ignored.getUniqueId().toString());
 
-        boolean contains = list.contains(ignored.getUniqueId().toString());
-        if (contains) {
-            list.remove(ignored.getUniqueId().toString());
-        } else {
-            list.add(ignored.getUniqueId().toString());
+            if (preparedStatement.executeQuery().next()) {
+                preparedStatement = connection.prepareStatement("DELETE FROM `pistonchat_hard_ignores` WHERE `uuid`=? AND `ignored_uuid`=?");
+                preparedStatement.setString(1, player.getUniqueId().toString());
+                preparedStatement.setString(2, ignored.getUniqueId().toString());
+                preparedStatement.execute();
+                return HardReturn.UN_IGNORE;
+            } else {
+                preparedStatement = connection.prepareStatement("INSERT INTO `pistonchat_hard_ignores` (`uuid`, `ignored_uuid`) VALUES (?, ?)");
+                preparedStatement.setString(1, player.getUniqueId().toString());
+                preparedStatement.setString(2, ignored.getUniqueId().toString());
+                preparedStatement.execute();
+                return HardReturn.IGNORE;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-
-        Path hardIgnorePath = plugin.getPlayerDataFolder().resolve(player.getUniqueId() + ".hardignored");
-        try {
-            Files.writeString(hardIgnorePath, gson.toJson(list));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return contains ? HardReturn.UN_IGNORE : HardReturn.IGNORE;
     }
 
     protected boolean isHardIgnored(CommandSender chatter, Player receiver) {
         UUID chatterUUID = new UniqueSender(chatter).getUniqueId();
-        return getStoredList(receiver).contains(chatterUUID.toString());
+
+        try (Connection connection = plugin.getDs().getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `pistonchat_hard_ignores` WHERE `uuid`=? AND `ignored_uuid`=?");
+            preparedStatement.setString(1, chatterUUID.toString());
+            preparedStatement.setString(2, receiver.getUniqueId().toString());
+            return preparedStatement.executeQuery().next();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String getPreparedString(String str, Player player) {
@@ -50,15 +61,20 @@ public class HardIgnoreTool {
                 .replace("%player%", ChatColor.stripColor(player.getDisplayName())));
     }
 
-    protected List<String> getStoredList(Player player) {
-        Path hardIgnorePath = plugin.getPlayerDataFolder().resolve(player.getUniqueId() + ".hardignored");
-        if (!Files.exists(hardIgnorePath)) {
-            return new ArrayList<>();
-        }
+    public List<UUID> getStoredList(Player player) {
+        try (Connection connection = plugin.getDs().getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `pistonchat_hard_ignores` WHERE `uuid`=?");
+            preparedStatement.setString(1, player.getUniqueId().toString());
 
-        try {
-            return gson.<List<String>>fromJson(Files.readString(hardIgnorePath), List.class);
-        } catch (IOException e) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            List<UUID> uuids = new ArrayList<>();
+            while (resultSet.next()) {
+                uuids.add(UUID.fromString(resultSet.getString("ignored_uuid")));
+            }
+
+            return uuids;
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }

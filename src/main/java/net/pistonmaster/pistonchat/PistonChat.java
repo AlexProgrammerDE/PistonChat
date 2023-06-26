@@ -30,6 +30,7 @@ import org.mariadb.jdbc.MariaDbPoolDataSource;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
@@ -42,6 +43,7 @@ public final class PistonChat extends JavaPlugin {
     private final CacheTool cacheTool = new CacheTool();
     private final IgnoreTool ignoreTool = new IgnoreTool(this);
     private final HardIgnoreTool hardIgnoreTool = new HardIgnoreTool(this);
+    @Getter
     private MariaDbPoolDataSource ds;
 
     public static PistonChat getInstance() {
@@ -74,7 +76,7 @@ public final class PistonChat extends JavaPlugin {
 
         log.info(ChatColor.DARK_GREEN + "Connecting to database");
         ds = new MariaDbPoolDataSource();
-        FileConfiguration config = configManager.getConfig();
+        FileConfiguration config = configManager.get();
         try {
             ds.setUser(config.getString("mysql.username"));
             ds.setPassword(config.getString("mysql.password"));
@@ -82,6 +84,18 @@ public final class PistonChat extends JavaPlugin {
                     "/" + config.getString("mysql.database")
                     + "?sslMode=disable&serverTimezone=UTC&maxPoolSize=10"
             );
+
+            try (Connection connection = ds.getConnection()) {
+                connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `pistonchat_settings_chat` (`uuid` VARCHAR(36) NOT NULL," +
+                        "`chat_enabled` tinyint(1) NOT NULL," +
+                        "PRIMARY KEY (`uuid`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+                connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `pistonchat_settings_whisper` (`uuid` VARCHAR(36) NOT NULL," +
+                        "`whisper_enabled` tinyint(1) NOT NULL," +
+                        "PRIMARY KEY (`uuid`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+                connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `pistonchat_hard_ignores` (`uuid` VARCHAR(36) NOT NULL," +
+                        "`ignored_uuid` VARCHAR(36) NOT NULL," +
+                        "PRIMARY KEY (`uuid`, `ignored_uuid`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
