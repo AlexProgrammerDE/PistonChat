@@ -25,10 +25,12 @@ import org.bukkit.Server;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mariadb.jdbc.MariaDbPoolDataSource;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.SQLException;
 import java.util.logging.Logger;
 
 @Getter
@@ -40,7 +42,7 @@ public final class PistonChat extends JavaPlugin {
     private final CacheTool cacheTool = new CacheTool();
     private final IgnoreTool ignoreTool = new IgnoreTool(this);
     private final HardIgnoreTool hardIgnoreTool = new HardIgnoreTool(this);
-    private Path playerDataFolder;
+    private MariaDbPoolDataSource ds;
 
     public static PistonChat getInstance() {
         return getPlugin(PistonChat.class);
@@ -68,6 +70,20 @@ public final class PistonChat extends JavaPlugin {
         } catch (IOException e) {
             e.printStackTrace();
             Bukkit.getPluginManager().disablePlugin(this);
+        }
+
+        log.info(ChatColor.DARK_GREEN + "Connecting to database");
+        ds = new MariaDbPoolDataSource();
+        FileConfiguration config = configManager.getConfig();
+        try {
+            ds.setUser(config.getString("mysql.username"));
+            ds.setPassword(config.getString("mysql.password"));
+            ds.setUrl("jdbc:mariadb://" + config.getString("mysql.host") + ":" + config.getInt("mysql.port") +
+                    "/" + config.getString("mysql.database")
+                    + "?sslMode=disable&serverTimezone=UTC&maxPoolSize=10"
+            );
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
         log.info(ChatColor.DARK_GREEN + "Registering commands");
@@ -142,14 +158,6 @@ public final class PistonChat extends JavaPlugin {
 
         log.info(ChatColor.DARK_GREEN + "Loading metrics");
         new Metrics(this, 9630);
-
-        log.info(ChatColor.DARK_GREEN + "Creating player data directory");
-        playerDataFolder = getDataFolder().toPath().resolve("playerdata");
-        try {
-            Files.createDirectories(playerDataFolder);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         log.info(ChatColor.DARK_GREEN + "Done! :D");
     }
