@@ -63,6 +63,6 @@ public final class PistonChatAPI {
         Preconditions.checkNotNull(sender, "Sender can not be null!");
         Preconditions.checkNotNull(receiver, "Receiver can not be null!");
 
-        CommonTool.sendWhisperTo(sender, message, receiver);
+        plugin.getCommonTool().sendWhisperTo(sender, message, receiver);
     }
 }

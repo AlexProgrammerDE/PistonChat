@@ -1,8 +1,10 @@
 package net.pistonmaster.pistonchat.commands.ignore;
 
 import lombok.RequiredArgsConstructor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.md_5.bungee.api.ChatColor;
 import net.pistonmaster.pistonchat.PistonChat;
-import net.pistonmaster.pistonchat.tools.LanguageTool;
+import net.pistonmaster.pistonchat.tools.CommonTool;
 import net.pistonmaster.pistonchat.utils.PlatformUtils;
 import net.pistonmaster.pistonchat.tools.SoftIgnoreTool;
 import org.bukkit.command.Command;
@@ -29,18 +31,20 @@ public class SoftIgnoreCommand implements CommandExecutor, TabExecutor {
                     SoftIgnoreTool.SoftReturn type = plugin.getSoftignoreTool().softIgnorePlayer(player, ignored.get());
 
                     if (type == SoftIgnoreTool.SoftReturn.IGNORE) {
-                        player.sendMessage(plugin.getHardIgnoreTool().getPreparedString("ignore", ignored.get()));
+                        plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), player, "ignore",
+                                Placeholder.unparsed("playername", ChatColor.stripColor(ignored.get().getDisplayName())));
                     } else if (type == SoftIgnoreTool.SoftReturn.UN_IGNORE) {
-                        player.sendMessage(plugin.getHardIgnoreTool().getPreparedString("unignore", ignored.get()));
+                        plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), player, "unignore",
+                                Placeholder.unparsed("playername", ChatColor.stripColor(ignored.get().getDisplayName())));
                     }
                 } else {
-                    player.sendMessage(LanguageTool.getMessage("notonline"));
+                    plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), player, "notonline");
                 }
             } else {
                 return false;
             }
         } else {
-            sender.sendMessage(LanguageTool.getMessage("playeronly"));
+            plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), sender, "playeronly");
         }
 
         return true;

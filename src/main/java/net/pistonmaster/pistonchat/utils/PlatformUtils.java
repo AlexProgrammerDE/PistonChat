@@ -15,8 +15,4 @@ public class PlatformUtils {
     public static Optional<Player> getPlayer(UUID uuid) {
         return Optional.ofNullable(Bukkit.getPlayer(uuid));
     }
-
-    public static Collection<? extends Player> getOnlinePlayers() {
-        return Bukkit.getOnlinePlayers();
-    }
 }

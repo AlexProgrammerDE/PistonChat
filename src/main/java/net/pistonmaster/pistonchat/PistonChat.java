@@ -1,6 +1,7 @@
 package net.pistonmaster.pistonchat;
 
 import lombok.Getter;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.md_5.bungee.api.ChatColor;
 import net.pistonmaster.pistonchat.api.PistonChatAPI;
 import net.pistonmaster.pistonchat.commands.MainCommand;
@@ -14,7 +15,7 @@ import net.pistonmaster.pistonchat.commands.whisper.ReplyCommand;
 import net.pistonmaster.pistonchat.commands.whisper.WhisperCommand;
 import net.pistonmaster.pistonchat.events.ChatEvent;
 import net.pistonmaster.pistonchat.tools.*;
-import net.pistonmaster.pistonchat.utils.*;
+import net.pistonmaster.pistonchat.utils.ConfigManager;
 import net.pistonmaster.pistonutils.logging.PistonLogger;
 import net.pistonmaster.pistonutils.update.UpdateChecker;
 import net.pistonmaster.pistonutils.update.UpdateParser;
@@ -28,8 +29,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.mariadb.jdbc.MariaDbPoolDataSource;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Logger;
@@ -39,19 +38,17 @@ public final class PistonChat extends JavaPlugin {
     private final ConfigManager configManager = new ConfigManager(this, "config.yml");
     private final ConfigManager languageManager = new ConfigManager(this, "language.yml");
     private final TempDataTool tempDataTool = new TempDataTool(this);
-    private final SoftIgnoreTool softignoreTool = new SoftIgnoreTool();
-    private final CacheTool cacheTool = new CacheTool();
+    private final SoftIgnoreTool softignoreTool = new SoftIgnoreTool(this);
+    private final CacheTool cacheTool = new CacheTool(this);
     private final IgnoreTool ignoreTool = new IgnoreTool(this);
     private final HardIgnoreTool hardIgnoreTool = new HardIgnoreTool(this);
-    @Getter
+    private final CommonTool commonTool = new CommonTool(this);
     private MariaDbPoolDataSource ds;
-
-    public static PistonChat getInstance() {
-        return getPlugin(PistonChat.class);
-    }
+    private BukkitAudiences adventure;
 
     @Override
     public void onEnable() {
+        this.adventure = BukkitAudiences.create(this);
         PistonChatAPI.setInstance(this);
 
         Logger log = getLogger();
@@ -174,6 +171,14 @@ public final class PistonChat extends JavaPlugin {
         new Metrics(this, 9630);
 
         log.info(ChatColor.DARK_GREEN + "Done! :D");
+    }
+
+    @Override
+    public void onDisable() {
+        if (this.adventure != null) {
+            this.adventure.close();
+            this.adventure = null;
+        }
     }
 
     @Override

@@ -56,11 +56,6 @@ public class HardIgnoreTool {
         }
     }
 
-    public String getPreparedString(String str, Player player) {
-        return ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString(str)
-                .replace("%player%", ChatColor.stripColor(player.getDisplayName())));
-    }
-
     public List<UUID> getStoredList(Player player) {
         try (Connection connection = plugin.getDs().getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `pistonchat_hard_ignores` WHERE `uuid`=?");

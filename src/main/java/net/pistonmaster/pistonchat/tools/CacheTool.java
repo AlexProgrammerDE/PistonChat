@@ -11,21 +11,23 @@ import org.bukkit.metadata.MetadataValue;
 
 import java.util.*;
 
+@RequiredArgsConstructor
 public class CacheTool {
+    private final PistonChat plugin;
     private final Map<CommandSender, MessageData> customMap = new HashMap<>();
 
     public void sendMessage(CommandSender sender, CommandSender receiver) {
         UUID senderUUID = new UniqueSender(sender).getUniqueId();
         UUID receiverUUID = new UniqueSender(receiver).getUniqueId();
         if (sender instanceof Player senderPlayer) {
-            senderPlayer.setMetadata("pistonchat_sentTo", new FixedMetadataValue(PistonChat.getInstance(), receiverUUID.toString()));
+            senderPlayer.setMetadata("pistonchat_sentTo", new FixedMetadataValue(plugin, receiverUUID.toString()));
         } else {
             indexConsole(sender);
             customMap.get(sender).sentTo = receiverUUID;
         }
 
         if (receiver instanceof Player receiverPlayer) {
-            receiverPlayer.setMetadata("pistonchat_messagedOf", new FixedMetadataValue(PistonChat.getInstance(), senderUUID.toString()));
+            receiverPlayer.setMetadata("pistonchat_messagedOf", new FixedMetadataValue(plugin, senderUUID.toString()));
         } else {
             indexConsole(receiver);
             customMap.get(receiver).messagedOf = senderUUID;

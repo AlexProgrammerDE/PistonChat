@@ -1,6 +1,7 @@
 package net.pistonmaster.pistonchat.commands;
 
 import lombok.RequiredArgsConstructor;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 public class MainCommand implements CommandExecutor, TabExecutor {
@@ -26,13 +28,16 @@ public class MainCommand implements CommandExecutor, TabExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length > 0) {
             switch (args[0].toLowerCase()) {
-                case "help":
+                case "help" -> {
                     if (sender.hasPermission("pistonchat.help")) {
-                        ComponentBuilder builder = new ComponentBuilder("---" + CommonTool.getPrefix() + "---").color(ChatColor.GOLD);
+                        String headerText = LegacyComponentSerializer.legacySection().serialize(plugin.getCommonTool().getLanguageMessage("help-header"));
+                        ComponentBuilder builder = new ComponentBuilder(headerText).color(ChatColor.GOLD);
 
-                        plugin.getDescription().getCommands().forEach((name, info) -> {
+                        for (Map.Entry<String, Map<String, Object>> entry : plugin.getDescription().getCommands().entrySet()) {
+                            String name = entry.getKey();
+                            Map<String, Object> info = entry.getValue();
                             if (!sender.hasPermission(info.get("permission").toString())) {
-                                return;
+                                continue;
                             }
 
                             builder.append("\n/" + name)
@@ -46,38 +51,37 @@ public class MainCommand implements CommandExecutor, TabExecutor {
                                     .append(" - ")
                                     .color(ChatColor.GOLD)
                                     .append(info.get("description").toString());
-                        });
+                        }
 
                         sender.spigot().sendMessage(builder.create());
                     } else {
                         sender.sendMessage(command.getPermissionMessage());
                     }
-
-                    break;
-                case "version":
+                }
+                case "version" -> {
                     if (sender.hasPermission("pistonchat.version")) {
                         sender.sendMessage(ChatColor.GOLD + "Currently running: " + plugin.getDescription().getFullName());
                     } else {
                         sender.sendMessage(command.getPermissionMessage());
                     }
-
-                    break;
-                case "reload":
+                }
+                case "reload" -> {
                     if (sender.hasPermission("pistonchat.reload")) {
                         try {
                             plugin.getConfigManager().create();
                             plugin.getLanguageManager().create();
                         } catch (IOException e) {
+                            plugin.getLogger().severe("Could not create config!");
                             e.printStackTrace();
                         }
                         sender.sendMessage("Reloaded the config!");
                     } else {
                         sender.sendMessage(command.getPermissionMessage());
                     }
-
-                    break;
-                default:
+                }
+                default -> {
                     return false;
+                }
             }
         } else {
             return false;

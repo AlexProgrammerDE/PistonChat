@@ -1,46 +1,52 @@
 package net.pistonmaster.pistonchat.tools;
 
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
+import lombok.RequiredArgsConstructor;
+import net.kyori.adventure.platform.bukkit.BukkitAudiences;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.pistonmaster.pistonchat.PistonChat;
 import net.pistonmaster.pistonchat.api.PistonWhisperEvent;
-import net.pistonmaster.pistonchat.utils.UniqueSender;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
 
-import java.util.Arrays;
-import java.util.Optional;
+import java.util.*;
 
+@RequiredArgsConstructor
 public class CommonTool {
-    private CommonTool() {
-    }
+    private final PistonChat plugin;
 
-    public static void sendWhisperTo(CommandSender sender, String message, CommandSender receiver) {
-        if (!PistonChat.getInstance().getConfig().getBoolean("allowpmself") && sender == receiver) {
-            sender.sendMessage(LanguageTool.getMessage("pmself"));
+    public void sendWhisperTo(CommandSender sender, String message, CommandSender receiver) {
+        if (!plugin.getConfig().getBoolean("allowpmself") && sender == receiver) {
+            sendLanguageMessage(plugin.getAdventure(), sender, "pmself");
             return;
         }
 
         if (!sender.hasPermission("pistonchat.bypass")) {
-            if (receiver instanceof Player player && !PistonChat.getInstance().getTempDataTool().isWhisperingEnabled(player)) {
-                if (PistonChat.getInstance().getConfig().getBoolean("onlyhidepms")) {
+            if (receiver instanceof Player player && !plugin.getTempDataTool().isWhisperingEnabled(player)) {
+                if (plugin.getConfig().getBoolean("onlyhidepms")) {
                     sendSender(sender, message, receiver);
                 } else {
-                    sender.sendMessage(CommonTool.getPrefix() + "This person has whispering disabled!");
+                    sendLanguageMessage(plugin.getAdventure(), sender, "whispering-disabled");
                 }
                 return;
             }
 
             if (receiver instanceof Player player && isVanished(player)) {
-                sender.sendMessage(LanguageTool.getMessage("notonline"));
+                sendLanguageMessage(plugin.getAdventure(), sender, "notonline");
                 return;
             }
         }
@@ -57,35 +63,54 @@ public class CommonTool {
         sendSender(sender, message, receiver);
         sendReceiver(sender, message, receiver);
 
-        PistonChat.getInstance().getCacheTool().sendMessage(sender, receiver);
+        plugin.getCacheTool().sendMessage(sender, receiver);
     }
 
-    public static void sendSender(CommandSender sender, String message, CommandSender receiver) {
-        String senderString = convertAmpersand(PistonChat.getInstance().getConfig().getString("whisper.to"))
-                .replace("%player%", new UniqueSender(receiver).getDisplayName())
-                .replace("%message%", message);
+    public void sendSender(CommandSender sender, String message, CommandSender receiver) {
+        String senderString = plugin.getConfig().getString("whisper.to");
+        TagResolver tagResolver = TagResolver.resolver(
+                Placeholder.unparsed("message", message),
+                Placeholder.component("playername", getDisplayName(receiver))
+        );
 
-        sender.spigot().sendMessage(new TextComponent(TextComponent.fromLegacyText(senderString)));
+        plugin.getAdventure().sender(sender)
+                .sendMessage(MiniMessage.miniMessage().deserialize(senderString, tagResolver));
     }
 
-    private static void sendReceiver(CommandSender sender, String message, CommandSender receiver) {
-        String receiverString = convertAmpersand(PistonChat.getInstance().getConfig().getString("whisper.from"))
-                .replace("%player%", new UniqueSender(sender).getDisplayName())
-                .replace("%message%", message);
+    private void sendReceiver(CommandSender sender, String message, CommandSender receiver) {
+        String senderString = plugin.getConfig().getString("whisper.from");
+        TagResolver tagResolver = TagResolver.resolver(
+                Placeholder.unparsed("message", message),
+                Placeholder.component("playername", getDisplayName(sender))
+        );
 
-        receiver.spigot().sendMessage(new TextComponent(TextComponent.fromLegacyText(receiverString)));
+        plugin.getAdventure().sender(receiver)
+                .sendMessage(MiniMessage.miniMessage().deserialize(senderString, tagResolver));
     }
 
     public static String mergeArgs(String[] args, int start) {
         return String.join(" ", Arrays.copyOfRange(args, start, args.length));
     }
 
-    public static String getPrefix() {
-        return ChatColor.translateAlternateColorCodes('&', PistonChat.getInstance().getLanguage().getString("prefix"));
+    public Component getLanguageMessage(String messageKey, TagResolver... tagResolvers) {
+        String formatString = plugin.getLanguage().getString("format");
+        String messageString = plugin.getLanguage().getString(messageKey);
+
+        Set<TagResolver> tagResolverSet = new HashSet<>();
+        tagResolverSet.add(Placeholder.unparsed("message", messageString));
+        tagResolverSet.addAll(Arrays.asList(tagResolvers));
+
+        TagResolver tagResolver = TagResolver.resolver(tagResolverSet);
+
+        return MiniMessage.miniMessage().deserialize(formatString, tagResolver);
     }
 
-    public static Optional<ChatColor> getChatColorFor(String message, Player player) {
-        FileConfiguration config = PistonChat.getInstance().getConfig();
+    public void sendLanguageMessage(BukkitAudiences audiences, CommandSender sender, String messageKey, TagResolver... tagResolvers) {
+        audiences.sender(sender).sendMessage(getLanguageMessage(messageKey, tagResolvers));
+    }
+
+    public Optional<TextColor> getChatColorFor(String message, Player player) {
+        FileConfiguration config = plugin.getConfig();
 
         for (String str : config.getConfigurationSection("prefixes").getKeys(false)) {
             ConfigurationSection section = config.getConfigurationSection("prefixes." + str);
@@ -93,88 +118,87 @@ public class CommonTool {
             if (!prefix.equalsIgnoreCase("/")
                     && message.toLowerCase().startsWith(prefix)
                     && player.hasPermission("pistonchat.prefix." + str.toLowerCase())) {
-                return Optional.of(ChatColor.valueOf(section.getString("color").toUpperCase()));
+                return Optional.of(NamedTextColor.NAMES.valueOrThrow(section.getString("color").toUpperCase()));
             }
         }
 
         return Optional.empty();
     }
 
-    public static String getFormat(Player sender) {
+    public Component getFormat(Player sender) {
         String str = null;
-        for (String s : PistonChat.getInstance().getConfig().getConfigurationSection("chatformats").getKeys(false)) {
-            if (sender.hasPermission("pistonchat.chatformat." + s.toLowerCase())) {
-                str = PistonChat.getInstance().getConfig().getString("chatformats." + s);
+        for (String s : plugin.getConfig().getConfigurationSection("chatformats").getKeys(false)) {
+            if (sender.hasPermission("pistonchat.chatformat." + s.toLowerCase(Locale.ROOT))) {
+                str = plugin.getConfig().getString("chatformats." + s);
                 break;
             }
         }
 
         if (str == null)
-            str = "%player%";
+            str = "<playername>";
 
-        str = str.replace("%player%", sender.getDisplayName());
+        TagResolver tagResolver = TagResolver.resolver(
+                Placeholder.component("playername", getDisplayName(sender))
+        );
 
-        str = parsePlaceholders(sender, str);
-
-        str = ChatColor.translateAlternateColorCodes('&', str);
-
-        return str;
+        return MiniMessage.miniMessage().deserialize(str, tagResolver);
     }
 
-    public static void sendChatMessage(Player chatter, String message, Player receiver) {
-        ComponentBuilder builder = new ComponentBuilder(CommonTool.getFormat(chatter));
+    public void sendChatMessage(Player chatter, String message, Player receiver) {
+        Component formatComponent = plugin.getCommonTool().getFormat(chatter);
 
         if (receiver.hasPermission("pistonchat.playernamereply")) {
-            builder.event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, String.format("/w %s ", chatter.getName())));
+            formatComponent = formatComponent.clickEvent(ClickEvent.suggestCommand(String.format("/w %s ", chatter.getName())));
 
-            String hoverText = PistonChat.getInstance().getConfig().getString("hovertext");
+            String hoverText = plugin.getConfig().getString("hovertext");
+            TagResolver tagResolver = TagResolver.resolver(
+                    Placeholder.unparsed("playername", ChatColor.stripColor(chatter.getDisplayName()))
+            );
+            Component hoverComponent = MiniMessage.miniMessage().deserialize(hoverText, tagResolver);
 
-            builder.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                    new ComponentBuilder(
-                            convertAmpersand(
-                                    hoverText.replace("%player%",
-                                            ChatColor.stripColor(chatter.getDisplayName())
-                                    )
-                            )
-                    ).create()
-            ));
+            formatComponent = formatComponent.hoverEvent(HoverEvent.showText(hoverComponent));
         }
 
-        builder.append(" ");
-
-        if (PistonChat.getInstance().getConfig().getBoolean("resetafterformat")) {
-            builder.reset();
+        Component messageComponent = Component.text(message);
+        Optional<TextColor> messagePrefixColor = plugin.getCommonTool().getChatColorFor(message, chatter);
+        if (messagePrefixColor.isPresent()) {
+            messageComponent = messageComponent.color(messagePrefixColor.get());
         }
 
-        String messageFormat = PistonChat.getInstance().getConfig().getString("message-format");
-        String finalMessage = convertAmpersand(parsePlaceholders(chatter, messageFormat)).replace("%message%", message);
-        builder.append(new TextComponent(finalMessage));
+        String messageFormat = plugin.getConfig().getString("message-format");
+        TagResolver tagResolver = TagResolver.resolver(
+                Placeholder.component("message", messageComponent),
+                Placeholder.component("format", formatComponent)
+        );
 
-        Optional<ChatColor> messagePrefixColor = CommonTool.getChatColorFor(message, chatter);
-        messagePrefixColor.ifPresent(builder::color);
-        if (messagePrefixColor.isEmpty() && PistonChat.getInstance().getConfig().getBoolean("forcewhiteifnoprefix")) {
-            builder.color(ChatColor.WHITE);
-        }
+        Component finalComponent = MiniMessage.miniMessage().deserialize(messageFormat, tagResolver);
 
-        receiver.spigot().sendMessage(builder.create());
-    }
-
-    public static String parsePlaceholders(OfflinePlayer player, String str) {
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") == null) {
-            return str;
-        } else {
-            return me.clip.placeholderapi.PlaceholderAPI.setPlaceholders(player, str);
-        }
+        plugin.getAdventure().sender(receiver).sendMessage(finalComponent);
     }
 
     private static boolean isVanished(Player player) {
         for (MetadataValue meta : player.getMetadata("vanished")) {
-            if (meta.asBoolean()) return true;
+            if (meta.asBoolean()) {
+                return true;
+            }
         }
+
         return false;
     }
 
-    private static String convertAmpersand(String str) {
-        return ChatColor.translateAlternateColorCodes('&', str);
+    public Component getDisplayName(CommandSender sender) {
+        if (sender instanceof Player player) {
+            if (plugin.getConfig().getBoolean("stripnamecolor")) {
+                return LegacyComponentSerializer.legacyAmpersand().deserialize(
+                        ChatColor.stripColor(player.getDisplayName())
+                );
+            } else {
+                return LegacyComponentSerializer.legacyAmpersand().deserialize(player.getDisplayName());
+            }
+        } else if (sender instanceof ConsoleCommandSender) {
+            return LegacyComponentSerializer.legacyAmpersand().deserialize(plugin.getConfig().getString("consolename"));
+        } else {
+            return Component.text(sender.getName());
+        }
     }
 }

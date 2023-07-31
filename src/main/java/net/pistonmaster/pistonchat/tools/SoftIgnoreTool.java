@@ -1,6 +1,7 @@
 package net.pistonmaster.pistonchat.tools;
 
 import com.google.gson.Gson;
+import lombok.RequiredArgsConstructor;
 import net.pistonmaster.pistonchat.PistonChat;
 import net.pistonmaster.pistonchat.utils.UniqueSender;
 import org.bukkit.command.CommandSender;
@@ -12,7 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 public class SoftIgnoreTool {
+    private final PistonChat plugin;
     private final Gson gson = new Gson();
 
     public SoftReturn softIgnorePlayer(Player player, Player ignored) {
@@ -25,7 +28,7 @@ public class SoftIgnoreTool {
             list.add(ignored.getUniqueId());
         }
 
-        player.setMetadata("pistonchat_softignore", new FixedMetadataValue(PistonChat.getInstance(), gson.toJson(list)));
+        player.setMetadata("pistonchat_softignore", new FixedMetadataValue(plugin, gson.toJson(list)));
 
         return contains ? SoftReturn.UN_IGNORE : SoftReturn.IGNORE;
     }

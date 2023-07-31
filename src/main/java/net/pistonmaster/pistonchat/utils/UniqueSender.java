@@ -31,18 +31,4 @@ public record UniqueSender(CommandSender sender) {
             return customUUID.computeIfAbsent(sender, sender2 -> UUID.randomUUID());
         }
     }
-
-    public String getDisplayName() {
-        if (sender instanceof Player player) {
-            if (PistonChat.getInstance().getConfig().getBoolean("stripnamecolor")) {
-                return ChatColor.stripColor(player.getDisplayName());
-            } else {
-                return player.getDisplayName();
-            }
-        } else if (sender instanceof ConsoleCommandSender) {
-            return ChatColor.translateAlternateColorCodes('&', PistonChat.getInstance().getConfig().getString("consolename"));
-        } else {
-            return sender.getName();
-        }
-    }
 }

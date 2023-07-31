@@ -3,7 +3,6 @@ package net.pistonmaster.pistonchat.commands.whisper;
 import lombok.RequiredArgsConstructor;
 import net.pistonmaster.pistonchat.PistonChat;
 import net.pistonmaster.pistonchat.tools.CommonTool;
-import net.pistonmaster.pistonchat.tools.LanguageTool;
 import net.pistonmaster.pistonchat.utils.PlatformUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,21 +26,21 @@ public class WhisperCommand implements CommandExecutor, TabExecutor {
             if (receiver.isPresent()) {
                 if (plugin.getIgnoreTool().isIgnored(sender, receiver.get())) {
                     if (plugin.getConfig().getBoolean("onlyhidepms")) {
-                        CommonTool.sendSender(sender, CommonTool.mergeArgs(args, 0), receiver.get());
+                        plugin.getCommonTool().sendSender(sender, CommonTool.mergeArgs(args, 0), receiver.get());
                     } else {
-                        sender.sendMessage(CommonTool.getPrefix() + "This person ignores you!");
+                        plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), sender, "source-ignored");
                     }
                 } else if (!plugin.getConfig().getBoolean("allowpmignored") && plugin.getIgnoreTool().isIgnored(receiver.get(), sender)) {
-                    sender.sendMessage(CommonTool.getPrefix() + "You ignore this person!");
+                    plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), sender, "target-ignored");
                 } else {
                     if (args.length > 1) {
-                        CommonTool.sendWhisperTo(sender, CommonTool.mergeArgs(args, 1), receiver.get());
+                        plugin.getCommonTool().sendWhisperTo(sender, CommonTool.mergeArgs(args, 1), receiver.get());
                     } else {
                         return false;
                     }
                 }
             } else {
-                sender.sendMessage(LanguageTool.getMessage("notonline"));
+                plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), sender, "notonline");
             }
         } else {
             return false;

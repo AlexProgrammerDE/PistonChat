@@ -9,7 +9,6 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.pistonmaster.pistonchat.PistonChat;
 import net.pistonmaster.pistonchat.tools.CommonTool;
 import net.pistonmaster.pistonchat.tools.IgnoreTool;
-import net.pistonmaster.pistonchat.tools.LanguageTool;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -37,26 +36,27 @@ public class IgnoreListCommand implements CommandExecutor, TabExecutor {
             }
 
             if (list.isEmpty()) {
-                player.sendMessage(LanguageTool.getMessage("nooneignored"));
-            } else {
-                if (args.length > 0) {
-                    try {
-                        int page = Integer.parseInt(args[0]);
+                plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), player, "nooneignored");
+                return true;
+            }
 
-                        if (page < plugin.getIgnoreTool().getIgnoredPlayers(player).size()) {
-                            showList(page, player);
-                        } else {
-                            player.sendMessage(CommonTool.getPrefix() + "This page doesn't exist!");
-                        }
-                    } catch (NumberFormatException e) {
-                        player.sendMessage(CommonTool.getPrefix() + "Not a number!");
+            if (args.length > 0) {
+                try {
+                    int page = Integer.parseInt(args[0]);
+
+                    if (page < plugin.getIgnoreTool().getIgnoredPlayers(player).size()) {
+                        showList(page, player);
+                    } else {
+                        plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), player, "page-not-exists");
                     }
-                } else {
-                    showList(1, player);
+                } catch (NumberFormatException e) {
+                    plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), player, "not-a-number");
                 }
+            } else {
+                showList(1, player);
             }
         } else {
-            sender.sendMessage(LanguageTool.getMessage("playeronly"));
+            plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), sender, "playeronly");
         }
 
         return true;

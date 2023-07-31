@@ -3,7 +3,6 @@ package net.pistonmaster.pistonchat.commands.whisper;
 import lombok.RequiredArgsConstructor;
 import net.pistonmaster.pistonchat.PistonChat;
 import net.pistonmaster.pistonchat.tools.CommonTool;
-import net.pistonmaster.pistonchat.tools.LanguageTool;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -25,15 +24,15 @@ public class LastCommand implements CommandExecutor, TabExecutor {
         if (lastSentTo.isPresent()) {
             if (plugin.getIgnoreTool().isIgnored(sender, lastSentTo.get())) {
                 if (plugin.getConfig().getBoolean("onlyhidepms")) {
-                    CommonTool.sendSender(sender, CommonTool.mergeArgs(args, 0), lastSentTo.get());
+                    plugin.getCommonTool().sendSender(sender, CommonTool.mergeArgs(args, 0), lastSentTo.get());
                 } else {
-                    sender.sendMessage(CommonTool.getPrefix() + "This person ignores you!");
+                    plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), sender, "source-ignored");
                 }
             } else if (!plugin.getConfig().getBoolean("allowpmignored") && plugin.getIgnoreTool().isIgnored(lastSentTo.get(), sender)) {
-                sender.sendMessage(CommonTool.getPrefix() + "You ignore this person!");
+                plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), sender, "target-ignored");
             } else {
                 if (args.length > 0) {
-                    CommonTool.sendWhisperTo(sender, CommonTool.mergeArgs(args, 0), lastSentTo.get());
+                    plugin.getCommonTool().sendWhisperTo(sender, CommonTool.mergeArgs(args, 0), lastSentTo.get());
                 } else {
                     return false;
                 }
@@ -41,21 +40,21 @@ public class LastCommand implements CommandExecutor, TabExecutor {
         } else if (lastMessagedOf.isPresent()) {
             if (plugin.getIgnoreTool().isIgnored(sender, lastMessagedOf.get())) {
                 if (plugin.getConfig().getBoolean("onlyhidepms")) {
-                    CommonTool.sendSender(sender, CommonTool.mergeArgs(args, 0), lastMessagedOf.get());
+                    plugin.getCommonTool().sendSender(sender, CommonTool.mergeArgs(args, 0), lastMessagedOf.get());
                 } else {
-                    sender.sendMessage(CommonTool.getPrefix() + "This person ignores you!");
+                    plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), sender, "source-ignored");
                 }
             } else if (!plugin.getConfig().getBoolean("allowpmignored") && plugin.getIgnoreTool().isIgnored(lastMessagedOf.get(), sender)) {
-                sender.sendMessage(CommonTool.getPrefix() + "You ignore this person!");
+                plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), sender, "target-ignored");
             } else {
                 if (args.length > 0) {
-                    CommonTool.sendWhisperTo(sender, CommonTool.mergeArgs(args, 0), lastMessagedOf.get());
+                    plugin.getCommonTool().sendWhisperTo(sender, CommonTool.mergeArgs(args, 0), lastMessagedOf.get());
                 } else {
                     return false;
                 }
             }
         } else {
-            sender.sendMessage(LanguageTool.getMessage("notonline"));
+            plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), sender, "notonline");
         }
 
         return true;
