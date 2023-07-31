@@ -31,11 +31,13 @@ public class HardIgnoreCommand implements CommandExecutor, TabExecutor {
                     HardIgnoreTool.HardReturn type = plugin.getHardIgnoreTool().hardIgnorePlayer(player, ignored.get());
 
                     if (type == HardIgnoreTool.HardReturn.IGNORE) {
-                        plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), player, "ignorehard",
-                                Placeholder.unparsed("playername", ChatColor.stripColor(ignored.get().getDisplayName())));
+                        plugin.getCommonTool().sendLanguageMessageNoPrefix(plugin.getAdventure(), player,
+                                "ignorehard",
+                                CommonTool.getStrippedNameResolver(ignored.get()));
                     } else if (type == HardIgnoreTool.HardReturn.UN_IGNORE) {
-                        plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), player, "unignorehard",
-                                Placeholder.unparsed("playername", ChatColor.stripColor(ignored.get().getDisplayName())));
+                        plugin.getCommonTool().sendLanguageMessageNoPrefix(plugin.getAdventure(), player,
+                                "unignorehard",
+                                CommonTool.getStrippedNameResolver(ignored.get()));
                     }
                 } else {
                     plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), player, "notonline");

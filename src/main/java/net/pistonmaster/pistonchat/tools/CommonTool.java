@@ -15,7 +15,6 @@ import net.pistonmaster.pistonchat.PistonChat;
 import net.pistonmaster.pistonchat.api.PistonWhisperEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -55,8 +54,9 @@ public class CommonTool {
 
         Bukkit.getPluginManager().callEvent(pistonWhisperEvent);
 
-        if (pistonWhisperEvent.isCancelled())
+        if (pistonWhisperEvent.isCancelled()) {
             return;
+        }
 
         message = pistonWhisperEvent.getMessage();
 
@@ -70,7 +70,7 @@ public class CommonTool {
         String senderString = plugin.getConfig().getString("whisper.to");
         TagResolver tagResolver = TagResolver.resolver(
                 Placeholder.unparsed("message", message),
-                Placeholder.component("playername", getDisplayName(receiver))
+                getDisplayNameResolver(receiver)
         );
 
         plugin.getAdventure().sender(sender)
@@ -81,7 +81,7 @@ public class CommonTool {
         String senderString = plugin.getConfig().getString("whisper.from");
         TagResolver tagResolver = TagResolver.resolver(
                 Placeholder.unparsed("message", message),
-                Placeholder.component("playername", getDisplayName(sender))
+                getDisplayNameResolver(sender)
         );
 
         plugin.getAdventure().sender(receiver)
@@ -92,21 +92,29 @@ public class CommonTool {
         return String.join(" ", Arrays.copyOfRange(args, start, args.length));
     }
 
-    public Component getLanguageMessage(String messageKey, TagResolver... tagResolvers) {
-        String formatString = plugin.getLanguage().getString("format");
+    public Component getLanguageMessage(String messageKey, boolean prefix, TagResolver... tagResolvers) {
         String messageString = plugin.getLanguage().getString(messageKey);
+        Component messageComponent = MiniMessage.miniMessage().deserialize(messageString, tagResolvers);
 
-        Set<TagResolver> tagResolverSet = new HashSet<>();
-        tagResolverSet.add(Placeholder.unparsed("message", messageString));
-        tagResolverSet.addAll(Arrays.asList(tagResolvers));
+        if (!prefix) {
+            return messageComponent;
+        }
 
-        TagResolver tagResolver = TagResolver.resolver(tagResolverSet);
+        String formatString = plugin.getLanguage().getString("format");
+
+        TagResolver tagResolver = TagResolver.resolver(
+                Placeholder.component("message", messageComponent)
+        );
 
         return MiniMessage.miniMessage().deserialize(formatString, tagResolver);
     }
 
     public void sendLanguageMessage(BukkitAudiences audiences, CommandSender sender, String messageKey, TagResolver... tagResolvers) {
-        audiences.sender(sender).sendMessage(getLanguageMessage(messageKey, tagResolvers));
+        audiences.sender(sender).sendMessage(getLanguageMessage(messageKey, true, tagResolvers));
+    }
+
+    public void sendLanguageMessageNoPrefix(BukkitAudiences audiences, CommandSender sender, String messageKey, TagResolver... tagResolvers) {
+        audiences.sender(sender).sendMessage(getLanguageMessage(messageKey, false, tagResolvers));
     }
 
     public Optional<TextColor> getChatColorFor(String message, Player player) {
@@ -138,7 +146,7 @@ public class CommonTool {
             str = "<playername>";
 
         TagResolver tagResolver = TagResolver.resolver(
-                Placeholder.component("playername", getDisplayName(sender))
+                getDisplayNameResolver(sender)
         );
 
         return MiniMessage.miniMessage().deserialize(str, tagResolver);
@@ -152,7 +160,7 @@ public class CommonTool {
 
             String hoverText = plugin.getConfig().getString("hovertext");
             TagResolver tagResolver = TagResolver.resolver(
-                    Placeholder.unparsed("playername", ChatColor.stripColor(chatter.getDisplayName()))
+                    getStrippedNameResolver(chatter)
             );
             Component hoverComponent = MiniMessage.miniMessage().deserialize(hoverText, tagResolver);
 
@@ -186,19 +194,24 @@ public class CommonTool {
         return false;
     }
 
-    public Component getDisplayName(CommandSender sender) {
+    public TagResolver getDisplayNameResolver(CommandSender sender) {
         if (sender instanceof Player player) {
             if (plugin.getConfig().getBoolean("stripnamecolor")) {
-                return LegacyComponentSerializer.legacyAmpersand().deserialize(
-                        ChatColor.stripColor(player.getDisplayName())
-                );
+                return getStrippedNameResolver(player);
             } else {
-                return LegacyComponentSerializer.legacyAmpersand().deserialize(player.getDisplayName());
+                return Placeholder.component("playername",
+                        LegacyComponentSerializer.legacyAmpersand().deserialize(player.getDisplayName()));
             }
         } else if (sender instanceof ConsoleCommandSender) {
-            return LegacyComponentSerializer.legacyAmpersand().deserialize(plugin.getConfig().getString("consolename"));
+            return Placeholder.parsed("playername", plugin.getConfig().getString("consolename"));
         } else {
-            return Component.text(sender.getName());
+            return Placeholder.unparsed("playername", sender.getName());
         }
+    }
+
+    public static TagResolver getStrippedNameResolver(Player player) {
+        return TagResolver.resolver(
+                Placeholder.unparsed("playername", ChatColor.stripColor(player.getDisplayName()))
+        );
     }
 }

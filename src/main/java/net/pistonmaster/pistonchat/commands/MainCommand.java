@@ -30,7 +30,7 @@ public class MainCommand implements CommandExecutor, TabExecutor {
             switch (args[0].toLowerCase()) {
                 case "help" -> {
                     if (sender.hasPermission("pistonchat.help")) {
-                        String headerText = LegacyComponentSerializer.legacySection().serialize(plugin.getCommonTool().getLanguageMessage("help-header"));
+                        String headerText = LegacyComponentSerializer.legacySection().serialize(plugin.getCommonTool().getLanguageMessage("help-header", false));
                         ComponentBuilder builder = new ComponentBuilder(headerText).color(ChatColor.GOLD);
 
                         for (Map.Entry<String, Map<String, Object>> entry : plugin.getDescription().getCommands().entrySet()) {

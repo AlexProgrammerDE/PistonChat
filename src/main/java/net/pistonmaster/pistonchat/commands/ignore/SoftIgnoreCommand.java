@@ -31,11 +31,13 @@ public class SoftIgnoreCommand implements CommandExecutor, TabExecutor {
                     SoftIgnoreTool.SoftReturn type = plugin.getSoftignoreTool().softIgnorePlayer(player, ignored.get());
 
                     if (type == SoftIgnoreTool.SoftReturn.IGNORE) {
-                        plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), player, "ignore",
-                                Placeholder.unparsed("playername", ChatColor.stripColor(ignored.get().getDisplayName())));
+                        plugin.getCommonTool().sendLanguageMessageNoPrefix(plugin.getAdventure(), player,
+                                "ignore",
+                                CommonTool.getStrippedNameResolver(ignored.get()));
                     } else if (type == SoftIgnoreTool.SoftReturn.UN_IGNORE) {
-                        plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), player, "unignore",
-                                Placeholder.unparsed("playername", ChatColor.stripColor(ignored.get().getDisplayName())));
+                        plugin.getCommonTool().sendLanguageMessageNoPrefix(plugin.getAdventure(), player,
+                                "unignore",
+                                CommonTool.getStrippedNameResolver(ignored.get()));
                     }
                 } else {
                     plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), player, "notonline");

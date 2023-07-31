@@ -8,11 +8,6 @@ whisper:
   to: "<light_purple>You whisper to <playername>: <message>"
 hovertext: "<gold>Message <dark_aqua><playername>"
 
-ignore: "<gold>Now ignoring <dark_aqua><playername>"
-unignore: "<gold>No longer ignoring <dark_aqua><playername>"
-ignorehard: "<gold>Permanently ignoring <playername>. This is saved in <dark_red>/ignorelist</dark_red>."
-unignorehard: "<gold>No longer permanently ignoring <dark_aqua><playername>"
-
 mysql:
   host: "localhost"
   port: 3306
