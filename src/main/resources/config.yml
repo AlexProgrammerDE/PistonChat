@@ -23,7 +23,7 @@ mysql:
 use-displayname: true
 chatformats:
   special: "<playername> »"
-  default: "\<<playername>\>"
+  default: "<<playername>>"
 
 message-format: "<format> <message>"
 

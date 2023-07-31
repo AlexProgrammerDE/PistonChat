@@ -118,7 +118,7 @@ public class CommonTool {
             if (!prefix.equalsIgnoreCase("/")
                     && message.toLowerCase().startsWith(prefix)
                     && player.hasPermission("pistonchat.prefix." + str.toLowerCase())) {
-                return Optional.of(NamedTextColor.NAMES.valueOrThrow(section.getString("color").toUpperCase()));
+                return Optional.of(NamedTextColor.NAMES.valueOrThrow(section.getString("color").toLowerCase(Locale.ROOT)));
             }
         }
 
