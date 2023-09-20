@@ -10,7 +10,7 @@
 This plugin was created to be a recreation of ChatCo from the ground up.
 A lot of chat plugins usually don't get any updates anymore or have been abandoned by the developers. 
 
-PistonChat will always get updates and contributing is welcome!
+PistonChat will always get updates and contributions are welcome!
 
 ## Features
 * Green Text
