@@ -19,10 +19,10 @@ PistonChat will always get updates and contributing is welcome!
 * Ignore Commands
 * Lots of features that 2b2t's chat plugin has.
 
-## Servers that use PistonChat
-* [6b6t.org](https://www.6b6t.org)
-* [2b2t.com.au](https://namemc.com/server/2b2t.com.au)
-* [4b4t.me](https://namemc.com/server/4b4t.me)
+## 🌈 Community
 
-**Do you use PistonChat and want to add your server here? Create a pull request!**
+Feel free to join our Discord community server:
 
+[![Discord Banner](https://discord.com/api/guilds/739784741124833301/widget.png?style=banner2)](https://discord.gg/CDrcxzH)
+
+This project is in active development, so if you have any feature requests or issues please submit them here on GitHub. PRs are welcome, too. :octocat:
