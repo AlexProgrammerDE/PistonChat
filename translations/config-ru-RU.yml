@@ -5,18 +5,18 @@
 whisper:
   from: "&d%player%&d шепчет: %message%"
   to: "&dВы шепчете %player%'у&d: %message%"
-hovertext: "&6Сообщение от &3%player%"
+hover-text: "&6Сообщение от &3%player%"
 ignore: "&6Теперь игнорирую &3%player%"
 unignore: "&6Больше не игнорирую &3%player%"
 ignorehard: "&6Навсегда игнорирую %player%&6. Это сохранилось в &4/ignorelist."
 unignorehard: "&6Больше перманентно не игнорирую &3%player%"
 chatformat: "<%player%&r>"
-stripnamecolor: false
-consolename: "[консоль]"
-allowpmself: true
-allowpmignored: true
-onlyhidepms: true
-ignorelistsize: 9
+strip-name-color: false
+console-name: "[консоль]"
+allow-pm-self: true
+allow-pm-ignored: true
+only-hide-pms: true
+ignore-list-size: 9
 prefixes:
   GREEN: ">"
   BLUE: '/'

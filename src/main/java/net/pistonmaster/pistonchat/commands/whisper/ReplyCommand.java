@@ -22,12 +22,12 @@ public class ReplyCommand implements CommandExecutor, TabExecutor {
 
         if (lastMessagedOf.isPresent()) {
             if (plugin.getIgnoreTool().isIgnored(sender, lastMessagedOf.get())) {
-                if (plugin.getConfig().getBoolean("onlyhidepms")) {
+                if (plugin.getConfig().getBoolean("only-hide-pms")) {
                     plugin.getCommonTool().sendSender(sender, CommonTool.mergeArgs(args, 0), lastMessagedOf.get());
                 } else {
                     plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), sender, "source-ignored");
                 }
-            } else if (!plugin.getConfig().getBoolean("allowpmignored") && plugin.getIgnoreTool().isIgnored(lastMessagedOf.get(), sender)) {
+            } else if (!plugin.getConfig().getBoolean("allow-pm-ignored") && plugin.getIgnoreTool().isIgnored(lastMessagedOf.get(), sender)) {
                 plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), sender, "target-ignored");
             } else {
                 if (args.length > 0) {

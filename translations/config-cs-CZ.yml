@@ -5,18 +5,18 @@
 whisper:
   from: "&d%player%&d ti zašeptal: %message%"
   to: "&dZašeptal jsi hráči %player%: %message%"
-hovertext: "&6Napsat hráči &3%player%"
+hover-text: "&6Napsat hráči &3%player%"
 ignore: "&6Nyní ignorujete hráče &3%player%"
 unignore: "&6Již neignorujete hráče &3%player%"
 ignorehard: "&6Permanentně ignorujete hráče %player%. To je uloženo v &4/ignorelist."
 unignorehard: "&6Již permanentně neignorujete hráče &3%player%"
 chatformat: "<%player%&r>"
-stripnamecolor: false
-consolename: "[console]"
-allowpmself: true
-allowpmignored: true
-onlyhidepms: true
-ignorelistsize: 9
+strip-name-color: false
+console-name: "[console]"
+allow-pm-self: true
+allow-pm-ignored: true
+only-hide-pms: true
+ignore-list-size: 9
 prefixes:
   GREEN: ">"
   BLUE: '/'

@@ -29,14 +29,14 @@ public class CommonTool {
     private final PistonChat plugin;
 
     public void sendWhisperTo(CommandSender sender, String message, CommandSender receiver) {
-        if (!plugin.getConfig().getBoolean("allowpmself") && sender == receiver) {
+        if (!plugin.getConfig().getBoolean("allow-pm-self") && sender == receiver) {
             sendLanguageMessage(plugin.getAdventure(), sender, "pmself");
             return;
         }
 
         if (!sender.hasPermission("pistonchat.bypass")) {
             if (receiver instanceof Player player && !plugin.getTempDataTool().isWhisperingEnabled(player)) {
-                if (plugin.getConfig().getBoolean("onlyhidepms")) {
+                if (plugin.getConfig().getBoolean("only-hide-pms")) {
                     sendSender(sender, message, receiver);
                 } else {
                     sendLanguageMessage(plugin.getAdventure(), sender, "whispering-disabled");
@@ -135,15 +135,15 @@ public class CommonTool {
 
     public Component getFormat(Player sender) {
         String str = null;
-        for (String s : plugin.getConfig().getConfigurationSection("chatformats").getKeys(false)) {
+        for (String s : plugin.getConfig().getConfigurationSection("chat-formats").getKeys(false)) {
             if (sender.hasPermission("pistonchat.chatformat." + s.toLowerCase(Locale.ROOT))) {
-                str = plugin.getConfig().getString("chatformats." + s);
+                str = plugin.getConfig().getString("chat-formats." + s);
                 break;
             }
         }
 
         if (str == null)
-            str = "<playername>";
+            str = "<player_name>";
 
         TagResolver tagResolver = TagResolver.resolver(
                 getDisplayNameResolver(sender)
@@ -158,7 +158,7 @@ public class CommonTool {
         if (receiver.hasPermission("pistonchat.playernamereply")) {
             formatComponent = formatComponent.clickEvent(ClickEvent.suggestCommand(String.format("/w %s ", chatter.getName())));
 
-            String hoverText = plugin.getConfig().getString("hovertext");
+            String hoverText = plugin.getConfig().getString("hover-text");
             TagResolver tagResolver = TagResolver.resolver(
                     getStrippedNameResolver(chatter)
             );
@@ -196,22 +196,22 @@ public class CommonTool {
 
     public TagResolver getDisplayNameResolver(CommandSender sender) {
         if (sender instanceof Player player) {
-            if (plugin.getConfig().getBoolean("stripnamecolor")) {
+            if (plugin.getConfig().getBoolean("strip-name-color")) {
                 return getStrippedNameResolver(player);
             } else {
-                return Placeholder.component("playername",
+                return Placeholder.component("player_name",
                         LegacyComponentSerializer.legacyAmpersand().deserialize(player.getDisplayName()));
             }
         } else if (sender instanceof ConsoleCommandSender) {
-            return Placeholder.parsed("playername", plugin.getConfig().getString("consolename"));
+            return Placeholder.parsed("player_name", plugin.getConfig().getString("console-name"));
         } else {
-            return Placeholder.unparsed("playername", sender.getName());
+            return Placeholder.unparsed("player_name", sender.getName());
         }
     }
 
     public static TagResolver getStrippedNameResolver(Player player) {
         return TagResolver.resolver(
-                Placeholder.unparsed("playername", ChatColor.stripColor(player.getDisplayName()))
+                Placeholder.unparsed("player_name", ChatColor.stripColor(player.getDisplayName()))
         );
     }
 }

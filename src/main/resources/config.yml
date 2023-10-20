@@ -4,9 +4,9 @@
 # https://hub.spigotmc.org/javadocs/spigot/org/bukkit/ChatColor.html
 # pistonchat.prefix.green and pistonchat.chatformat.default are given by default.
 whisper:
-  from: "<light_purple><playername> whispers: <message>"
-  to: "<light_purple>You whisper to <playername>: <message>"
-hovertext: "<gold>Message <dark_aqua><playername>"
+  from: "<light_purple><player_name> whispers: <message>"
+  to: "<light_purple>You whisper to <player_name>: <message>"
+hover-text: "<gold>Message <dark_aqua><player_name>"
 
 mysql:
   host: "localhost"
@@ -16,20 +16,20 @@ mysql:
   password: ""
 
 use-displayname: true
-chatformats:
-  special: "<playername> »"
-  default: "<<playername>>"
+chat-formats:
+  special: "<player_name> »"
+  default: "<<player_name>>"
 
 message-format: "<format> <message>"
 
-consolename: "[console]"
+console-name: "[console]"
 
-allowpmself: true
-allowpmignored: true
-onlyhidepms: true
+allow-pm-self: true
+allow-pm-ignored: true
+only-hide-pms: true
 
-ignorelistsize: 9
-forcewhiteifnoprefix: true
+ignore-list-size: 9
+force-white-if-no-prefix: true
 prefixes:
   green:
     prefix: ">"
