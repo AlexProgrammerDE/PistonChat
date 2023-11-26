@@ -42,7 +42,8 @@ public class ChatEvent implements Listener {
         }
 
         for (Player receiver : recipients) {
-            if (plugin.getIgnoreTool().isIgnored(chatter, receiver) || !plugin.getTempDataTool().isChatEnabled(receiver)) {
+            if (plugin.getIgnoreTool().isIgnored(chatter, receiver)
+                    || !plugin.getTempDataTool().isChatEnabled(receiver)) {
                 continue;
             }
 

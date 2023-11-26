@@ -153,7 +153,7 @@ public class CommonTool {
     }
 
     public void sendChatMessage(Player chatter, String message, Player receiver) {
-        Component formatComponent = plugin.getCommonTool().getFormat(chatter);
+        Component formatComponent = getFormat(chatter);
 
         if (receiver.hasPermission("pistonchat.playernamereply")) {
             formatComponent = formatComponent.clickEvent(ClickEvent.suggestCommand(String.format("/w %s ", chatter.getName())));
@@ -168,7 +168,7 @@ public class CommonTool {
         }
 
         Component messageComponent = Component.text(message);
-        Optional<TextColor> messagePrefixColor = plugin.getCommonTool().getChatColorFor(message, chatter);
+        Optional<TextColor> messagePrefixColor = getChatColorFor(message, chatter);
         if (messagePrefixColor.isPresent()) {
             messageComponent = messageComponent.color(messagePrefixColor.get());
         }
@@ -181,7 +181,7 @@ public class CommonTool {
 
         Component finalComponent = MiniMessage.miniMessage().deserialize(messageFormat, tagResolver);
 
-        plugin.getAdventure().sender(receiver).sendMessage(finalComponent);
+        plugin.getAdventure().player(receiver).sendMessage(finalComponent);
     }
 
     private static boolean isVanished(Player player) {
