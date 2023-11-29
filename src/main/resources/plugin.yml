@@ -5,7 +5,7 @@ main: net.pistonmaster.pistonchat.PistonChat
 authors: [ AlexProgrammerDE ]
 description: An advanced chat plugin for survival/anarchy servers.
 website: https://pistonmaster.net/
-softdepend: ["PlaceholderAPI"]
+softdepend: ["MiniPlaceholders"]
 folia-supported: true
 
 commands:

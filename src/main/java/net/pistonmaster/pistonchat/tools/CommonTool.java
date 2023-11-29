@@ -1,6 +1,8 @@
 package net.pistonmaster.pistonchat.tools;
 
+import io.github.miniplaceholders.api.MiniPlaceholders;
 import lombok.RequiredArgsConstructor;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
@@ -67,25 +69,29 @@ public class CommonTool {
     }
 
     public void sendSender(CommandSender sender, String message, CommandSender receiver) {
+        Audience senderAudience = plugin.getAdventure().sender(sender);
+        Audience receiverAudience = plugin.getAdventure().sender(receiver);
         String senderString = plugin.getConfig().getString("whisper.to");
         TagResolver tagResolver = TagResolver.resolver(
+                getMiniPlaceholdersTagResolver(senderAudience, receiverAudience),
                 Placeholder.unparsed("message", message),
                 getDisplayNameResolver(receiver)
         );
 
-        plugin.getAdventure().sender(sender)
-                .sendMessage(MiniMessage.miniMessage().deserialize(senderString, tagResolver));
+        senderAudience.sendMessage(MiniMessage.miniMessage().deserialize(senderString, tagResolver));
     }
 
     private void sendReceiver(CommandSender sender, String message, CommandSender receiver) {
+        Audience senderAudience = plugin.getAdventure().sender(sender);
+        Audience receiverAudience = plugin.getAdventure().sender(receiver);
         String senderString = plugin.getConfig().getString("whisper.from");
         TagResolver tagResolver = TagResolver.resolver(
+                getMiniPlaceholdersTagResolver(senderAudience, receiverAudience),
                 Placeholder.unparsed("message", message),
                 getDisplayNameResolver(sender)
         );
 
-        plugin.getAdventure().sender(receiver)
-                .sendMessage(MiniMessage.miniMessage().deserialize(senderString, tagResolver));
+        senderAudience.sendMessage(MiniMessage.miniMessage().deserialize(senderString, tagResolver));
     }
 
     public static String mergeArgs(String[] args, int start) {
@@ -146,6 +152,7 @@ public class CommonTool {
             str = "<player_name>";
 
         TagResolver tagResolver = TagResolver.resolver(
+                getMiniPlaceholdersTagResolver(plugin.getAdventure().player(sender)),
                 getDisplayNameResolver(sender)
         );
 
@@ -153,6 +160,10 @@ public class CommonTool {
     }
 
     public void sendChatMessage(Player chatter, String message, Player receiver) {
+        TagResolver miniPlaceholderResolver = getMiniPlaceholdersTagResolver(
+                plugin.getAdventure().player(chatter),
+                plugin.getAdventure().player(receiver)
+        );
         Component formatComponent = getFormat(chatter);
 
         if (receiver.hasPermission("pistonchat.playernamereply")) {
@@ -160,6 +171,7 @@ public class CommonTool {
 
             String hoverText = plugin.getConfig().getString("hover-text");
             TagResolver tagResolver = TagResolver.resolver(
+                    miniPlaceholderResolver,
                     getStrippedNameResolver(chatter)
             );
             Component hoverComponent = MiniMessage.miniMessage().deserialize(hoverText, tagResolver);
@@ -175,6 +187,7 @@ public class CommonTool {
 
         String messageFormat = plugin.getConfig().getString("message-format");
         TagResolver tagResolver = TagResolver.resolver(
+                miniPlaceholderResolver,
                 Placeholder.component("message", messageComponent),
                 Placeholder.component("format", formatComponent)
         );
@@ -213,5 +226,21 @@ public class CommonTool {
         return TagResolver.resolver(
                 Placeholder.unparsed("player_name", ChatColor.stripColor(player.getDisplayName()))
         );
+    }
+
+    private TagResolver getMiniPlaceholdersTagResolver(Audience mainAudience) {
+        if (plugin.getServer().getPluginManager().isPluginEnabled("MiniPlaceholders")) {
+            return MiniPlaceholders.getAudienceGlobalPlaceholders(mainAudience);
+        } else {
+            return TagResolver.empty();
+        }
+    }
+
+    private TagResolver getMiniPlaceholdersTagResolver(Audience mainAudience, Audience otherAudience) {
+        if (plugin.getServer().getPluginManager().isPluginEnabled("MiniPlaceholders")) {
+            return MiniPlaceholders.getRelationalGlobalPlaceholders(mainAudience, otherAudience);
+        } else {
+            return TagResolver.empty();
+        }
     }
 }
