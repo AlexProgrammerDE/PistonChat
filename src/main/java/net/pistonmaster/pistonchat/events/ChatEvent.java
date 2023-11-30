@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import net.pistonmaster.pistonchat.PistonChat;
 import net.pistonmaster.pistonchat.api.PistonChatEvent;
 import net.pistonmaster.pistonchat.api.PistonChatReceiveEvent;
-import net.pistonmaster.pistonchat.tools.CommonTool;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -36,7 +35,7 @@ public class ChatEvent implements Listener {
         }
 
         if (!plugin.getTempDataTool().isChatEnabled(chatter)) {
-            plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), chatter, "chatisoff");
+            plugin.getCommonTool().sendLanguageMessage(chatter, "chatisoff");
             event.setCancelled(true);
             return;
         }

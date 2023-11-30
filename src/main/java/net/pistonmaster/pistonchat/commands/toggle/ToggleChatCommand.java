@@ -2,7 +2,6 @@ package net.pistonmaster.pistonchat.commands.toggle;
 
 import lombok.RequiredArgsConstructor;
 import net.pistonmaster.pistonchat.PistonChat;
-import net.pistonmaster.pistonchat.tools.CommonTool;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -22,12 +21,12 @@ public class ToggleChatCommand implements CommandExecutor, TabExecutor {
             plugin.getTempDataTool().setChatEnabled(player, !plugin.getTempDataTool().isChatEnabled(player));
 
             if (plugin.getTempDataTool().isChatEnabled(player)) {
-                plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), player, "chaton");
+                plugin.getCommonTool().sendLanguageMessage(player, "chaton");
             } else {
-                plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), player, "chatoff");
+                plugin.getCommonTool().sendLanguageMessage(player, "chatoff");
             }
         } else {
-            plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), sender, "playeronly");
+            plugin.getCommonTool().sendLanguageMessage(sender, "playeronly");
         }
 
         return true;

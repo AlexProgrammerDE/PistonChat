@@ -26,10 +26,10 @@ public class LastCommand implements CommandExecutor, TabExecutor {
                 if (plugin.getConfig().getBoolean("only-hide-pms")) {
                     plugin.getCommonTool().sendSender(sender, CommonTool.mergeArgs(args, 0), lastSentTo.get());
                 } else {
-                    plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), sender, "source-ignored");
+                    plugin.getCommonTool().sendLanguageMessage(sender, "source-ignored");
                 }
             } else if (!plugin.getConfig().getBoolean("allow-pm-ignored") && plugin.getIgnoreTool().isIgnored(lastSentTo.get(), sender)) {
-                plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), sender, "target-ignored");
+                plugin.getCommonTool().sendLanguageMessage(sender, "target-ignored");
             } else {
                 if (args.length > 0) {
                     plugin.getCommonTool().sendWhisperTo(sender, CommonTool.mergeArgs(args, 0), lastSentTo.get());
@@ -42,10 +42,10 @@ public class LastCommand implements CommandExecutor, TabExecutor {
                 if (plugin.getConfig().getBoolean("only-hide-pms")) {
                     plugin.getCommonTool().sendSender(sender, CommonTool.mergeArgs(args, 0), lastMessagedOf.get());
                 } else {
-                    plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), sender, "source-ignored");
+                    plugin.getCommonTool().sendLanguageMessage(sender, "source-ignored");
                 }
             } else if (!plugin.getConfig().getBoolean("allow-pm-ignored") && plugin.getIgnoreTool().isIgnored(lastMessagedOf.get(), sender)) {
-                plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), sender, "target-ignored");
+                plugin.getCommonTool().sendLanguageMessage(sender, "target-ignored");
             } else {
                 if (args.length > 0) {
                     plugin.getCommonTool().sendWhisperTo(sender, CommonTool.mergeArgs(args, 0), lastMessagedOf.get());
@@ -54,7 +54,7 @@ public class LastCommand implements CommandExecutor, TabExecutor {
                 }
             }
         } else {
-            plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), sender, "notonline");
+            plugin.getCommonTool().sendLanguageMessage(sender, "notonline");
         }
 
         return true;

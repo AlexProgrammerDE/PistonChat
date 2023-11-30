@@ -28,10 +28,10 @@ public class WhisperCommand implements CommandExecutor, TabExecutor {
                     if (plugin.getConfig().getBoolean("only-hide-pms")) {
                         plugin.getCommonTool().sendSender(sender, CommonTool.mergeArgs(args, 0), receiver.get());
                     } else {
-                        plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), sender, "source-ignored");
+                        plugin.getCommonTool().sendLanguageMessage(sender, "source-ignored");
                     }
                 } else if (!plugin.getConfig().getBoolean("allow-pm-ignored") && plugin.getIgnoreTool().isIgnored(receiver.get(), sender)) {
-                    plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), sender, "target-ignored");
+                    plugin.getCommonTool().sendLanguageMessage(sender, "target-ignored");
                 } else {
                     if (args.length > 1) {
                         plugin.getCommonTool().sendWhisperTo(sender, CommonTool.mergeArgs(args, 1), receiver.get());
@@ -40,7 +40,7 @@ public class WhisperCommand implements CommandExecutor, TabExecutor {
                     }
                 }
             } else {
-                plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), sender, "notonline");
+                plugin.getCommonTool().sendLanguageMessage(sender, "notonline");
             }
         } else {
             return false;

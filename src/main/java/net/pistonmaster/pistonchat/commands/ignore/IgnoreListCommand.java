@@ -7,7 +7,6 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.pistonmaster.pistonchat.PistonChat;
-import net.pistonmaster.pistonchat.tools.CommonTool;
 import net.pistonmaster.pistonchat.tools.IgnoreTool;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
@@ -36,7 +35,7 @@ public class IgnoreListCommand implements CommandExecutor, TabExecutor {
             }
 
             if (list.isEmpty()) {
-                plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), player, "nooneignored");
+                plugin.getCommonTool().sendLanguageMessage(player, "nooneignored");
                 return true;
             }
 
@@ -47,16 +46,16 @@ public class IgnoreListCommand implements CommandExecutor, TabExecutor {
                     if (page < plugin.getIgnoreTool().getIgnoredPlayers(player).size()) {
                         showList(page, player);
                     } else {
-                        plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), player, "page-not-exists");
+                        plugin.getCommonTool().sendLanguageMessage(player, "page-not-exists");
                     }
                 } catch (NumberFormatException e) {
-                    plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), player, "not-a-number");
+                    plugin.getCommonTool().sendLanguageMessage(player, "not-a-number");
                 }
             } else {
                 showList(1, player);
             }
         } else {
-            plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), sender, "playeronly");
+            plugin.getCommonTool().sendLanguageMessage(sender, "playeronly");
         }
 
         return true;

@@ -1,8 +1,6 @@
 package net.pistonmaster.pistonchat.commands.ignore;
 
 import lombok.RequiredArgsConstructor;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import net.md_5.bungee.api.ChatColor;
 import net.pistonmaster.pistonchat.PistonChat;
 import net.pistonmaster.pistonchat.tools.CommonTool;
 import net.pistonmaster.pistonchat.utils.PlatformUtils;
@@ -31,22 +29,22 @@ public class SoftIgnoreCommand implements CommandExecutor, TabExecutor {
                     SoftIgnoreTool.SoftReturn type = plugin.getSoftignoreTool().softIgnorePlayer(player, ignored.get());
 
                     if (type == SoftIgnoreTool.SoftReturn.IGNORE) {
-                        plugin.getCommonTool().sendLanguageMessageNoPrefix(plugin.getAdventure(), player,
+                        plugin.getCommonTool().sendLanguageMessageNoPrefix(player,
                                 "ignore",
                                 CommonTool.getStrippedNameResolver(ignored.get()));
                     } else if (type == SoftIgnoreTool.SoftReturn.UN_IGNORE) {
-                        plugin.getCommonTool().sendLanguageMessageNoPrefix(plugin.getAdventure(), player,
+                        plugin.getCommonTool().sendLanguageMessageNoPrefix(player,
                                 "unignore",
                                 CommonTool.getStrippedNameResolver(ignored.get()));
                     }
                 } else {
-                    plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), player, "notonline");
+                    plugin.getCommonTool().sendLanguageMessage(player, "notonline");
                 }
             } else {
                 return false;
             }
         } else {
-            plugin.getCommonTool().sendLanguageMessage(plugin.getAdventure(), sender, "playeronly");
+            plugin.getCommonTool().sendLanguageMessage(sender, "playeronly");
         }
 
         return true;
