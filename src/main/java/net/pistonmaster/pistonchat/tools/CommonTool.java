@@ -3,7 +3,6 @@ package net.pistonmaster.pistonchat.tools;
 import io.github.miniplaceholders.api.MiniPlaceholders;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.audience.Audience;
-import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -69,8 +68,8 @@ public class CommonTool {
     }
 
     public void sendSender(CommandSender sender, String message, CommandSender receiver) {
-        Audience senderAudience = plugin.getAdventure().sender(sender);
-        Audience receiverAudience = plugin.getAdventure().sender(receiver);
+        Audience senderAudience = senderAudience(sender);
+        Audience receiverAudience = senderAudience(receiver);
         String senderString = plugin.getConfig().getString("whisper.to");
         TagResolver tagResolver = TagResolver.resolver(
                 getMiniPlaceholdersTagResolver(senderAudience, receiverAudience),
@@ -82,8 +81,8 @@ public class CommonTool {
     }
 
     private void sendReceiver(CommandSender sender, String message, CommandSender receiver) {
-        Audience senderAudience = plugin.getAdventure().sender(sender);
-        Audience receiverAudience = plugin.getAdventure().sender(receiver);
+        Audience senderAudience = senderAudience(sender);
+        Audience receiverAudience = senderAudience(receiver);
         String senderString = plugin.getConfig().getString("whisper.from");
         TagResolver tagResolver = TagResolver.resolver(
                 getMiniPlaceholdersTagResolver(senderAudience, receiverAudience),
@@ -116,11 +115,11 @@ public class CommonTool {
     }
 
     public void sendLanguageMessage(CommandSender sender, String messageKey, TagResolver... tagResolvers) {
-        plugin.getAdventure().sender(sender).sendMessage(getLanguageMessage(messageKey, true, tagResolvers));
+        senderAudience(sender).sendMessage(getLanguageMessage(messageKey, true, tagResolvers));
     }
 
     public void sendLanguageMessageNoPrefix(CommandSender sender, String messageKey, TagResolver... tagResolvers) {
-        plugin.getAdventure().sender(sender).sendMessage(getLanguageMessage(messageKey, false, tagResolvers));
+        senderAudience(sender).sendMessage(getLanguageMessage(messageKey, false, tagResolvers));
     }
 
     public Optional<TextColor> getChatColorFor(String message, Player player) {
@@ -139,6 +138,38 @@ public class CommonTool {
         return Optional.empty();
     }
 
+    public void sendChatMessage(Player chatter, String message, Player receiver) {
+        Audience chatterAudience = senderAudience(chatter);
+        Audience receiverAudience = senderAudience(receiver);
+        TagResolver miniPlaceholderResolver = getMiniPlaceholdersTagResolver(chatterAudience, receiverAudience);
+        Component formatComponent = getFormat(chatter, miniPlaceholderResolver);
+
+        if (receiver.hasPermission("pistonchat.playernamereply")) {
+            String hoverText = plugin.getConfig().getString("hover-text");
+
+            formatComponent = formatComponent
+                    .clickEvent(ClickEvent.suggestCommand(String.format("/w %s ", chatter.getName())))
+                    .hoverEvent(HoverEvent.showText(MiniMessage.miniMessage().deserialize(hoverText, TagResolver.resolver(
+                            miniPlaceholderResolver,
+                            getStrippedNameResolver(chatter)
+                    ))));
+        }
+
+        Component messageComponent = Component.text(message);
+        Optional<TextColor> messagePrefixColor = getChatColorFor(message, chatter);
+        if (messagePrefixColor.isPresent()) {
+            messageComponent = messageComponent.color(messagePrefixColor.get());
+        }
+
+        String messageFormat = plugin.getConfig().getString("message-format");
+
+        receiverAudience.sendMessage(MiniMessage.miniMessage().deserialize(messageFormat, TagResolver.resolver(
+                miniPlaceholderResolver,
+                Placeholder.component("message", messageComponent),
+                Placeholder.component("format", formatComponent)
+        )));
+    }
+
     public Component getFormat(Player chatter, TagResolver miniPlaceholderResolver) {
         String formatString = "<player_name>";
         for (String s : plugin.getConfig().getConfigurationSection("chat-formats").getKeys(false)) {
@@ -152,41 +183,6 @@ public class CommonTool {
                 miniPlaceholderResolver,
                 getDisplayNameResolver(chatter)
         ));
-    }
-
-    public void sendChatMessage(Player chatter, String message, Player receiver) {
-        Audience chatterAudience = plugin.getAdventure().player(chatter);
-        Audience receiverAudience = plugin.getAdventure().player(receiver);
-        TagResolver miniPlaceholderResolver = getMiniPlaceholdersTagResolver(chatterAudience, receiverAudience);
-        Component formatComponent = getFormat(chatter, miniPlaceholderResolver);
-
-        if (receiver.hasPermission("pistonchat.playernamereply")) {
-            formatComponent = formatComponent.clickEvent(ClickEvent.suggestCommand(String.format("/w %s ", chatter.getName())));
-
-            String hoverText = plugin.getConfig().getString("hover-text");
-            Component hoverComponent = MiniMessage.miniMessage().deserialize(hoverText, TagResolver.resolver(
-                    miniPlaceholderResolver,
-                    getStrippedNameResolver(chatter)
-            ));
-
-            formatComponent = formatComponent.hoverEvent(HoverEvent.showText(hoverComponent));
-        }
-
-        Component messageComponent = Component.text(message);
-        Optional<TextColor> messagePrefixColor = getChatColorFor(message, chatter);
-        if (messagePrefixColor.isPresent()) {
-            messageComponent = messageComponent.color(messagePrefixColor.get());
-        }
-
-        String messageFormat = plugin.getConfig().getString("message-format");
-
-        Component finalComponent = MiniMessage.miniMessage().deserialize(messageFormat, TagResolver.resolver(
-                miniPlaceholderResolver,
-                Placeholder.component("message", messageComponent),
-                Placeholder.component("format", formatComponent)
-        ));
-
-        receiverAudience.sendMessage(finalComponent);
     }
 
     private static boolean isVanished(Player player) {
@@ -215,9 +211,7 @@ public class CommonTool {
     }
 
     public static TagResolver getStrippedNameResolver(Player player) {
-        return TagResolver.resolver(
-                Placeholder.unparsed("player_name", ChatColor.stripColor(player.getDisplayName()))
-        );
+        return Placeholder.unparsed("player_name", ChatColor.stripColor(player.getDisplayName()));
     }
 
     private TagResolver getMiniPlaceholdersTagResolver(Audience mainAudience, Audience otherAudience) {
@@ -225,6 +219,14 @@ public class CommonTool {
             return MiniPlaceholders.getRelationalGlobalPlaceholders(mainAudience, otherAudience);
         } else {
             return TagResolver.empty();
+        }
+    }
+
+    private Audience senderAudience(CommandSender sender) {
+        if (sender instanceof Audience audience) {
+            return audience;
+        } else {
+            return plugin.getAdventure().sender(sender);
         }
     }
 }
