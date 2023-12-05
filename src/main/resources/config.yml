@@ -15,7 +15,7 @@ mysql:
   username: "root"
   password: ""
 
-use-displayname: true
+strip-name-color: true
 chat-formats:
   special: "<player_name> »"
   default: "<<player_name>>"
@@ -29,7 +29,6 @@ allow-pm-ignored: true
 only-hide-pms: true
 
 ignore-list-size: 9
-force-white-if-no-prefix: true
 prefixes:
   green:
     prefix: ">"
