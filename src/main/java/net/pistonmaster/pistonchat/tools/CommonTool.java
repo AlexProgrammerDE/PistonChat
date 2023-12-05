@@ -90,7 +90,7 @@ public class CommonTool {
                 getDisplayNameResolver(sender)
         );
 
-        senderAudience.sendMessage(MiniMessage.miniMessage().deserialize(senderString, tagResolver));
+        receiverAudience.sendMessage(MiniMessage.miniMessage().deserialize(senderString, tagResolver));
     }
 
     public static String mergeArgs(String[] args, int start) {
