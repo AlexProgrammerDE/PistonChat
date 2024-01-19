@@ -15,12 +15,12 @@ mysql:
   password: ""
 strip-name-color: true
 chat-formats:
-  special: <<player_name>>
+  special: "<player_name> »"
   default: <<player_name>>
 message-format: <format> <message>
 console-name: '[console]'
 allow-pm-self: true
-allow-pm-ignored: false
+allow-pm-ignored: true
 only-hide-pms: true
 ignore-list-size: 9
 prefixes:
