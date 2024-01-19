@@ -1,14 +1,23 @@
----
-#You can find pre translated languages on crowdin:
-#https://crowdin.com/project/pistonchat
-#The prefix can also be set to just "&6"
-prefix: "[&2PistonChat&r] &6"
-playeronly: "Вы должны быть игроком, чтобы это сделать."
-notonline: "Этот игрок не в сети."
-nooneignored: "Нет игнорируемых игроков."
-chaton: "Чат снова виден."
-chatoff: "Чат скрыт."
-pmson: "Личные сообщения скрыты."
-pmsoff: "Личные сообщения снова видны."
-pmself: "Пожалуйста, не пишите себе."
-chatisoff: "Вы отключили чат"
+# You can find pre translated languages on crowdin:
+# https://crowdin.com/project/pistonchat
+# The prefix can also be set to just "&6"
+format: <gold><message>
+help-header: '---[<dark_green>PistonChat</dark_green>]---'
+playeronly: Для этого нужно быть игроком.
+notonline: Этот игрок не в сети.
+nooneignored: Нет игнорируемых игроков.
+chaton: Чат снова виден.
+chatoff: Чат скрыт.
+pmson: Личные сообщения снова видны.
+pmsoff: Личные сообщения скрыты.
+pmself: Вы не можете писать себе личные сообщения.
+chatisoff: Вы отключили чат.
+source-ignored: Этот игрок игнорирует вас.
+target-ignored: Вы игнорируете этого игрока.
+page-not-exists: Такой страницы не существует!"
+not-a-number: Это не число!
+whispering-disabled: Игрок отключил личные сообщения.
+ignore: <gold>Теперь игнорирую <dark_aqua><player_name>
+unignore: <gold>Больше не игнорирую <dark_aqua><player_name>
+ignorehard: <gold>Всегда игнорирую <player_name>. Это сохранено в <dark_red>/ignorelist</dark_red>.
+unignorehard: <gold>Больше не игнорирую всегда <dark_aqua><player_name>
