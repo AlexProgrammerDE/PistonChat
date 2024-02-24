@@ -15,36 +15,23 @@ import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class WhisperCommand implements CommandExecutor, TabExecutor {
+public class WhisperCommand extends MessageCommandHelper implements CommandExecutor, TabExecutor {
     private final PistonChat plugin;
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length > 0) {
-            Optional<Player> receiver = PlatformUtils.getPlayer(args[0]);
-
-            if (receiver.isPresent()) {
-                if (plugin.getIgnoreTool().isIgnored(sender, receiver.get())) {
-                    if (plugin.getConfig().getBoolean("only-hide-pms")) {
-                        plugin.getCommonTool().sendSender(sender, CommonTool.mergeArgs(args, 0), receiver.get());
-                    } else {
-                        plugin.getCommonTool().sendLanguageMessage(sender, "source-ignored");
-                    }
-                } else if (!plugin.getConfig().getBoolean("allow-pm-ignored") && plugin.getIgnoreTool().isIgnored(receiver.get(), sender)) {
-                    plugin.getCommonTool().sendLanguageMessage(sender, "target-ignored");
-                } else {
-                    if (args.length > 1) {
-                        plugin.getCommonTool().sendWhisperTo(sender, CommonTool.mergeArgs(args, 1), receiver.get());
-                    } else {
-                        return false;
-                    }
-                }
-            } else {
-                plugin.getCommonTool().sendLanguageMessage(sender, "notonline");
-            }
-        } else {
+        if (args.length <= 1) {
             return false;
         }
+
+        Optional<Player> receiver = PlatformUtils.getPlayer(args[0]);
+
+        if (receiver.isEmpty()) {
+            plugin.getCommonTool().sendLanguageMessage(sender, "notonline");
+            return true;
+        }
+
+        MessageCommandHelper.sendWhisper(plugin, sender, receiver.get(), CommonTool.mergeArgs(args, 1));
 
         return true;
     }

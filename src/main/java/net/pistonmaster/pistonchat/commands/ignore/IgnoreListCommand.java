@@ -27,38 +27,41 @@ public class IgnoreListCommand implements CommandExecutor, TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (sender instanceof Player player) {
-            List<String> list = new ArrayList<>();
-
-            for (OfflinePlayer offlinePlayer : plugin.getIgnoreTool().getIgnoredPlayers(player).keySet()) {
-                list.add(offlinePlayer.getName());
-            }
-
-            if (list.isEmpty()) {
-                plugin.getCommonTool().sendLanguageMessage(player, "nooneignored");
-                return true;
-            }
-
-            if (args.length > 0) {
-                try {
-                    int page = Integer.parseInt(args[0]);
-
-                    if (page < plugin.getIgnoreTool().getIgnoredPlayers(player).size()) {
-                        showList(page, player);
-                    } else {
-                        plugin.getCommonTool().sendLanguageMessage(player, "page-not-exists");
-                    }
-                } catch (NumberFormatException e) {
-                    plugin.getCommonTool().sendLanguageMessage(player, "not-a-number");
-                }
-            } else {
-                showList(1, player);
-            }
-        } else {
+        if (!(sender instanceof Player player)) {
             plugin.getCommonTool().sendLanguageMessage(sender, "playeronly");
+            return true;
         }
 
-        return true;
+        List<String> list = new ArrayList<>();
+
+        for (OfflinePlayer offlinePlayer : plugin.getIgnoreTool().getIgnoredPlayers(player).keySet()) {
+            list.add(offlinePlayer.getName());
+        }
+
+        if (list.isEmpty()) {
+            plugin.getCommonTool().sendLanguageMessage(player, "nooneignored");
+            return true;
+        }
+
+        if (args.length == 0) {
+            showList(1, player);
+            return true;
+        }
+
+        try {
+            int page = Integer.parseInt(args[0]);
+
+            if (page < plugin.getIgnoreTool().getIgnoredPlayers(player).size()) {
+                showList(page, player);
+            } else {
+                plugin.getCommonTool().sendLanguageMessage(player, "page-not-exists");
+            }
+
+            return true;
+        } catch (NumberFormatException e) {
+            plugin.getCommonTool().sendLanguageMessage(player, "not-a-number");
+            return false;
+        }
     }
 
     @Override

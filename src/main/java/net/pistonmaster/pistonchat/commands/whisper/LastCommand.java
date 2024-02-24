@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class LastCommand implements CommandExecutor, TabExecutor {
+public class LastCommand extends MessageCommandHelper implements CommandExecutor, TabExecutor {
     private final PistonChat plugin;
 
     @Override
@@ -22,37 +22,9 @@ public class LastCommand implements CommandExecutor, TabExecutor {
         Optional<CommandSender> lastMessagedOf = plugin.getCacheTool().getLastMessagedOf(sender);
 
         if (lastSentTo.isPresent()) {
-            if (plugin.getIgnoreTool().isIgnored(sender, lastSentTo.get())) {
-                if (plugin.getConfig().getBoolean("only-hide-pms")) {
-                    plugin.getCommonTool().sendSender(sender, CommonTool.mergeArgs(args, 0), lastSentTo.get());
-                } else {
-                    plugin.getCommonTool().sendLanguageMessage(sender, "source-ignored");
-                }
-            } else if (!plugin.getConfig().getBoolean("allow-pm-ignored") && plugin.getIgnoreTool().isIgnored(lastSentTo.get(), sender)) {
-                plugin.getCommonTool().sendLanguageMessage(sender, "target-ignored");
-            } else {
-                if (args.length > 0) {
-                    plugin.getCommonTool().sendWhisperTo(sender, CommonTool.mergeArgs(args, 0), lastSentTo.get());
-                } else {
-                    return false;
-                }
-            }
+            MessageCommandHelper.sendWhisper(plugin, sender, lastSentTo.get(), CommonTool.mergeArgs(args, 0));
         } else if (lastMessagedOf.isPresent()) {
-            if (plugin.getIgnoreTool().isIgnored(sender, lastMessagedOf.get())) {
-                if (plugin.getConfig().getBoolean("only-hide-pms")) {
-                    plugin.getCommonTool().sendSender(sender, CommonTool.mergeArgs(args, 0), lastMessagedOf.get());
-                } else {
-                    plugin.getCommonTool().sendLanguageMessage(sender, "source-ignored");
-                }
-            } else if (!plugin.getConfig().getBoolean("allow-pm-ignored") && plugin.getIgnoreTool().isIgnored(lastMessagedOf.get(), sender)) {
-                plugin.getCommonTool().sendLanguageMessage(sender, "target-ignored");
-            } else {
-                if (args.length > 0) {
-                    plugin.getCommonTool().sendWhisperTo(sender, CommonTool.mergeArgs(args, 0), lastMessagedOf.get());
-                } else {
-                    return false;
-                }
-            }
+            MessageCommandHelper.sendWhisper(plugin, sender, lastMessagedOf.get(), CommonTool.mergeArgs(args, 0));
         } else {
             plugin.getCommonTool().sendLanguageMessage(sender, "notonline");
         }
