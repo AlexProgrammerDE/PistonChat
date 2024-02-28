@@ -1,7 +1,6 @@
 package net.pistonmaster.pistonchat.tools;
 
 import lombok.RequiredArgsConstructor;
-import net.md_5.bungee.api.ChatColor;
 import net.pistonmaster.pistonchat.PistonChat;
 import net.pistonmaster.pistonchat.utils.UniqueSender;
 import org.bukkit.command.CommandSender;

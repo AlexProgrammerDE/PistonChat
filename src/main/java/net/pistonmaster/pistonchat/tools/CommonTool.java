@@ -23,11 +23,31 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 public class CommonTool {
     private final PistonChat plugin;
+
+    public static String mergeArgs(String[] args, int start) {
+        return String.join(" ", Arrays.copyOfRange(args, start, args.length));
+    }
+
+    private static boolean isVanished(Player player) {
+        for (MetadataValue meta : player.getMetadata("vanished")) {
+            if (meta.asBoolean()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static TagResolver getStrippedNameResolver(Player player) {
+        return Placeholder.unparsed("player_name", ChatColor.stripColor(player.getDisplayName()));
+    }
 
     public void sendWhisperTo(CommandSender sender, String message, CommandSender receiver) {
         if (!plugin.getConfig().getBoolean("allow-pm-self") && sender == receiver) {
@@ -91,10 +111,6 @@ public class CommonTool {
         );
 
         receiverAudience.sendMessage(MiniMessage.miniMessage().deserialize(senderString, tagResolver));
-    }
-
-    public static String mergeArgs(String[] args, int start) {
-        return String.join(" ", Arrays.copyOfRange(args, start, args.length));
     }
 
     public Component getLanguageMessage(String messageKey, boolean prefix, TagResolver... tagResolvers) {
@@ -185,16 +201,6 @@ public class CommonTool {
         ));
     }
 
-    private static boolean isVanished(Player player) {
-        for (MetadataValue meta : player.getMetadata("vanished")) {
-            if (meta.asBoolean()) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public TagResolver getDisplayNameResolver(CommandSender sender) {
         if (sender instanceof Player player) {
             if (plugin.getConfig().getBoolean("strip-name-color")) {
@@ -208,10 +214,6 @@ public class CommonTool {
         } else {
             return Placeholder.unparsed("player_name", sender.getName());
         }
-    }
-
-    public static TagResolver getStrippedNameResolver(Player player) {
-        return Placeholder.unparsed("player_name", ChatColor.stripColor(player.getDisplayName()));
     }
 
     private TagResolver getMiniPlaceholdersTagResolver(Audience mainAudience, Audience otherAudience) {

@@ -21,30 +21,32 @@ public class HardIgnoreCommand implements CommandExecutor, TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (sender instanceof Player player) {
-            if (args.length > 0) {
-                Optional<Player> ignored = PlatformUtils.getPlayer(args[0]);
-
-                if (ignored.isPresent()) {
-                    HardIgnoreTool.HardReturn type = plugin.getHardIgnoreTool().hardIgnorePlayer(player, ignored.get());
-
-                    if (type == HardIgnoreTool.HardReturn.IGNORE) {
-                        plugin.getCommonTool().sendLanguageMessageNoPrefix(player,
-                                "ignorehard",
-                                CommonTool.getStrippedNameResolver(ignored.get()));
-                    } else if (type == HardIgnoreTool.HardReturn.UN_IGNORE) {
-                        plugin.getCommonTool().sendLanguageMessageNoPrefix(player,
-                                "unignorehard",
-                                CommonTool.getStrippedNameResolver(ignored.get()));
-                    }
-                } else {
-                    plugin.getCommonTool().sendLanguageMessage(player, "notonline");
-                }
-            } else {
-                return false;
-            }
-        } else {
+        if (!(sender instanceof Player player)) {
             plugin.getCommonTool().sendLanguageMessage(sender, "playeronly");
+            return true;
+        }
+
+        if (args.length == 0) {
+            return false;
+        }
+
+        Optional<Player> ignored = PlatformUtils.getPlayer(args[0]);
+
+        if (ignored.isEmpty()) {
+            plugin.getCommonTool().sendLanguageMessage(player, "notonline");
+            return true;
+        }
+
+        HardIgnoreTool.HardReturn type = plugin.getHardIgnoreTool().hardIgnorePlayer(player, ignored.get());
+
+        if (type == HardIgnoreTool.HardReturn.IGNORE) {
+            plugin.getCommonTool().sendLanguageMessageNoPrefix(player,
+                    "ignorehard",
+                    CommonTool.getStrippedNameResolver(ignored.get()));
+        } else if (type == HardIgnoreTool.HardReturn.UN_IGNORE) {
+            plugin.getCommonTool().sendLanguageMessageNoPrefix(player,
+                    "unignorehard",
+                    CommonTool.getStrippedNameResolver(ignored.get()));
         }
 
         return true;

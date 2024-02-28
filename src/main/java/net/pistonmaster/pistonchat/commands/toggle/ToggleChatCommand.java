@@ -17,16 +17,17 @@ public class ToggleChatCommand implements CommandExecutor, TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (sender instanceof Player player) {
-            plugin.getTempDataTool().setChatEnabled(player, !plugin.getTempDataTool().isChatEnabled(player));
-
-            if (plugin.getTempDataTool().isChatEnabled(player)) {
-                plugin.getCommonTool().sendLanguageMessage(player, "chaton");
-            } else {
-                plugin.getCommonTool().sendLanguageMessage(player, "chatoff");
-            }
-        } else {
+        if (!(sender instanceof Player player)) {
             plugin.getCommonTool().sendLanguageMessage(sender, "playeronly");
+            return true;
+        }
+
+        plugin.getTempDataTool().setChatEnabled(player, !plugin.getTempDataTool().isChatEnabled(player));
+
+        if (plugin.getTempDataTool().isChatEnabled(player)) {
+            plugin.getCommonTool().sendLanguageMessage(player, "chaton");
+        } else {
+            plugin.getCommonTool().sendLanguageMessage(player, "chatoff");
         }
 
         return true;

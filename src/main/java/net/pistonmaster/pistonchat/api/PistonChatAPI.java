@@ -2,7 +2,6 @@ package net.pistonmaster.pistonchat.api;
 
 import com.google.common.base.Preconditions;
 import net.pistonmaster.pistonchat.PistonChat;
-import net.pistonmaster.pistonchat.tools.CommonTool;
 import net.pistonmaster.pistonchat.tools.IgnoreTool;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;

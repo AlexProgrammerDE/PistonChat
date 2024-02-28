@@ -7,7 +7,6 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.pistonmaster.pistonchat.PistonChat;
-import net.pistonmaster.pistonchat.tools.CommonTool;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -26,65 +25,65 @@ public class MainCommand implements CommandExecutor, TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length > 0) {
-            switch (args[0].toLowerCase()) {
-                case "help" -> {
-                    if (sender.hasPermission("pistonchat.help")) {
-                        String headerText = LegacyComponentSerializer.legacySection().serialize(plugin.getCommonTool().getLanguageMessage("help-header", false));
-                        ComponentBuilder builder = new ComponentBuilder(headerText).color(ChatColor.GOLD);
-
-                        for (Map.Entry<String, Map<String, Object>> entry : plugin.getDescription().getCommands().entrySet()) {
-                            String name = entry.getKey();
-                            Map<String, Object> info = entry.getValue();
-                            if (!sender.hasPermission(info.get("permission").toString())) {
-                                continue;
-                            }
-
-                            builder.append("\n/" + name)
-                                    .color(ChatColor.GOLD)
-                                    .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/" + name + " "))
-                                    .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                            new ComponentBuilder("Click me!")
-                                                    .color(ChatColor.GOLD)
-                                                    .create()
-                                    ))
-                                    .append(" - ")
-                                    .color(ChatColor.GOLD)
-                                    .append(info.get("description").toString());
-                        }
-
-                        sender.spigot().sendMessage(builder.create());
-                    } else {
-                        sender.sendMessage(command.getPermissionMessage());
-                    }
-                }
-                case "version" -> {
-                    if (sender.hasPermission("pistonchat.version")) {
-                        sender.sendMessage(ChatColor.GOLD + "Currently running: " + plugin.getDescription().getFullName());
-                    } else {
-                        sender.sendMessage(command.getPermissionMessage());
-                    }
-                }
-                case "reload" -> {
-                    if (sender.hasPermission("pistonchat.reload")) {
-                        try {
-                            plugin.getConfigManager().create();
-                            plugin.getLanguageManager().create();
-                        } catch (IOException e) {
-                            plugin.getLogger().severe("Could not create config!");
-                            e.printStackTrace();
-                        }
-                        sender.sendMessage("Reloaded the config!");
-                    } else {
-                        sender.sendMessage(command.getPermissionMessage());
-                    }
-                }
-                default -> {
-                    return false;
-                }
-            }
-        } else {
+        if (args.length == 0) {
             return false;
+        }
+
+        switch (args[0].toLowerCase()) {
+            case "help" -> {
+                if (!sender.hasPermission("pistonchat.help")) {
+                    sender.sendMessage(command.getPermissionMessage());
+                }
+
+                String headerText = LegacyComponentSerializer.legacySection().serialize(plugin.getCommonTool().getLanguageMessage("help-header", false));
+                ComponentBuilder builder = new ComponentBuilder(headerText).color(ChatColor.GOLD);
+
+                for (Map.Entry<String, Map<String, Object>> entry : plugin.getDescription().getCommands().entrySet()) {
+                    String name = entry.getKey();
+                    Map<String, Object> info = entry.getValue();
+                    if (!sender.hasPermission(info.get("permission").toString())) {
+                        continue;
+                    }
+
+                    builder.append("\n/" + name)
+                            .color(ChatColor.GOLD)
+                            .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/" + name + " "))
+                            .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                    new ComponentBuilder("Click me!")
+                                            .color(ChatColor.GOLD)
+                                            .create()
+                            ))
+                            .append(" - ")
+                            .color(ChatColor.GOLD)
+                            .append(info.get("description").toString());
+                }
+
+                sender.spigot().sendMessage(builder.create());
+            }
+            case "version" -> {
+                if (!sender.hasPermission("pistonchat.version")) {
+                    sender.sendMessage(command.getPermissionMessage());
+                }
+
+                sender.sendMessage(ChatColor.GOLD + "Currently running: " + plugin.getDescription().getFullName());
+            }
+            case "reload" -> {
+                if (!sender.hasPermission("pistonchat.reload")) {
+                    sender.sendMessage(command.getPermissionMessage());
+                }
+
+                try {
+                    plugin.getConfigManager().create();
+                    plugin.getLanguageManager().create();
+                } catch (IOException e) {
+                    plugin.getLogger().severe("Could not create config!");
+                    e.printStackTrace();
+                }
+                sender.sendMessage("Reloaded the config!");
+            }
+            default -> {
+                return false;
+            }
         }
 
         return true;

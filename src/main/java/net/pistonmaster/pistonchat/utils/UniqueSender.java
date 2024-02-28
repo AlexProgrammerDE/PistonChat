@@ -1,9 +1,6 @@
 package net.pistonmaster.pistonchat.utils;
 
-import net.md_5.bungee.api.ChatColor;
-import net.pistonmaster.pistonchat.PistonChat;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
