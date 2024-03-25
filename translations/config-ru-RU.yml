@@ -1,39 +1,30 @@
----
-#To use these prefixes you need additionally the pistonchat.<COLORCODE>
-#/ indicates disabled!
-#This config is configured to be what 2b2t.org has.
+# To use these prefixes you need additionally the pistonchat.<COLORCODE>
+# / indicates disabled!
+# This config is configured to be what 2b2t.org has.
+# https://hub.spigotmc.org/javadocs/spigot/org/bukkit/ChatColor.html
+# pistonchat.prefix.green and pistonchat.chatformat.default are given by default.
 whisper:
-  from: "&d%player%&d шепчет: %message%"
-  to: "&dВы шепчете %player%'у&d: %message%"
-hover-text: "&6Сообщение от &3%player%"
-ignore: "&6Теперь игнорирую &3%player%"
-unignore: "&6Больше не игнорирую &3%player%"
-ignorehard: "&6Навсегда игнорирую %player%&6. Это сохранилось в &4/ignorelist."
-unignorehard: "&6Больше перманентно не игнорирую &3%player%"
-chatformat: "<%player%&r>"
-strip-name-color: false
-console-name: "[консоль]"
+  from: '<light_purple><player_name> шепчет: <message>'
+  to: '<light_purple>Вы шепчете <player_name>: <message>'
+hover-text: <gold>Message <dark_aqua><player_name>
+mysql:
+  host: "localhost"
+  port: 3306
+  database: "pistonchat"
+  username: "root"
+  password: ""
+strip-name-color: true
+chat-formats:
+  special: "<player_name> »"
+  default: <<player_name>>
+message-format: <format> <message>
+console-name: '[console]'
 allow-pm-self: true
 allow-pm-ignored: true
 only-hide-pms: true
 ignore-list-size: 9
 prefixes:
-  GREEN: ">"
-  BLUE: '/'
-  RED: '/'
-  AQUA: '/'
-  GOLD: '/'
-  YELLOW: '/'
-  GRAY: '/'
-  BLACK: '/'
-  DARK_GREEN: '/'
-  DARK_RED: '/'
-  DARK_GRAY: '/'
-  DARK_BLUE: '/'
-  DARK_AQUA: '/'
-  DARK_PURPLE: '/'
-  LIGHT_PURPLE: '/'
-  ITALIC: '/'
-  UNDERLINE: '/'
-  BOLD: '/'
-  STRIKETHROUGH: '/'
+  green:
+    prefix: '>'
+    color: GREEN
+    
