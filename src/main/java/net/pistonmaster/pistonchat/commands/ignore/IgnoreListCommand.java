@@ -14,6 +14,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import org.bukkit.util.StringUtil;
 
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -48,6 +49,12 @@ public class IgnoreListCommand implements CommandExecutor, TabExecutor {
             return true;
         }
 
+        if (args[0].equalsIgnoreCase("clear")) {
+            plugin.getIgnoreTool().clearIgnoredPlayers(player);
+            plugin.getCommonTool().sendLanguageMessage(player, "ignorelistcleared");
+            return true;
+        }
+
         try {
             int page = Integer.parseInt(args[0]);
 
@@ -66,7 +73,11 @@ public class IgnoreListCommand implements CommandExecutor, TabExecutor {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        return Collections.emptyList();
+        if (args.length == 1) {
+            return StringUtil.copyPartialMatches(args[0], List.of("clear"), new ArrayList<>());
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     private void showList(int page, Player player) {

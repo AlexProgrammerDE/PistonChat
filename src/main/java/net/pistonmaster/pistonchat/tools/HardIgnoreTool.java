@@ -73,6 +73,16 @@ public class HardIgnoreTool {
         }
     }
 
+    public void clearIgnoredPlayers(Player player) {
+        try (Connection connection = plugin.getDs().getConnection()) {
+            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM `pistonchat_hard_ignores` WHERE `uuid`=?");
+            preparedStatement.setString(1, player.getUniqueId().toString());
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public enum HardReturn {
         IGNORE, UN_IGNORE
     }

@@ -50,6 +50,11 @@ public class IgnoreTool {
         return returnedPlayers;
     }
 
+    public void clearIgnoredPlayers(Player player) {
+        plugin.getSoftignoreTool().clearIgnoredPlayers(player);
+        plugin.getHardIgnoreTool().clearIgnoredPlayers(player);
+    }
+
     public enum IgnoreType {
         SOFT, HARD
     }

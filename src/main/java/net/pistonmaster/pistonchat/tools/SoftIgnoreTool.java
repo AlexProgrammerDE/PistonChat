@@ -15,6 +15,7 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 public class SoftIgnoreTool {
+    private static final String METADATA_KEY = "pistonchat_softignore";
     private final PistonChat plugin;
     private final Gson gson = new Gson();
 
@@ -28,7 +29,7 @@ public class SoftIgnoreTool {
             list.add(ignored.getUniqueId());
         }
 
-        player.setMetadata("pistonchat_softignore", new FixedMetadataValue(plugin, gson.toJson(list)));
+        player.setMetadata(METADATA_KEY, new FixedMetadataValue(plugin, gson.toJson(list)));
 
         return contains ? SoftReturn.UN_IGNORE : SoftReturn.IGNORE;
     }
@@ -39,12 +40,16 @@ public class SoftIgnoreTool {
     }
 
     protected List<UUID> getStoredList(Player player) {
-        List<MetadataValue> values = player.getMetadata("pistonchat_softignore");
+        List<MetadataValue> values = player.getMetadata(METADATA_KEY);
         if (values.isEmpty()) {
             return new ArrayList<>();
         }
 
         return gson.<List<String>>fromJson(values.get(0).asString(), List.class).stream().map(UUID::fromString).toList();
+    }
+
+    public void clearIgnoredPlayers(Player player) {
+        player.removeMetadata(METADATA_KEY, plugin);
     }
 
     public enum SoftReturn {
