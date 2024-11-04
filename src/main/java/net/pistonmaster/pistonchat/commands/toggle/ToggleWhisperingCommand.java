@@ -22,9 +22,10 @@ public class ToggleWhisperingCommand implements CommandExecutor, TabExecutor {
             return true;
         }
 
-        plugin.getTempDataTool().setWhisperingEnabled(player, !plugin.getTempDataTool().isWhisperingEnabled(player));
+        boolean whisperingNowEnabled = !plugin.getTempDataTool().isWhisperingEnabled(player);
+        plugin.getTempDataTool().setWhisperingEnabled(player, whisperingNowEnabled);
 
-        if (plugin.getTempDataTool().isWhisperingEnabled(player)) {
+        if (whisperingNowEnabled) {
             plugin.getCommonTool().sendLanguageMessage(player, "pmson");
         } else {
             plugin.getCommonTool().sendLanguageMessage(player, "pmsoff");
