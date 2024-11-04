@@ -19,17 +19,17 @@ public class SoftIgnoreTool {
     private final PistonChat plugin;
     private final Gson gson = new Gson();
 
-    public SoftReturn softIgnorePlayer(Player player, Player ignored) {
-        List<UUID> list = new ArrayList<>(getStoredList(player));
+    public SoftReturn softIgnorePlayer(Player ignoringReceiver, Player ignoredChatter) {
+        List<UUID> list = new ArrayList<>(getStoredList(ignoringReceiver));
 
-        boolean contains = list.contains(ignored.getUniqueId());
+        boolean contains = list.contains(ignoredChatter.getUniqueId());
         if (contains) {
-            list.remove(ignored.getUniqueId());
+            list.remove(ignoredChatter.getUniqueId());
         } else {
-            list.add(ignored.getUniqueId());
+            list.add(ignoredChatter.getUniqueId());
         }
 
-        player.setMetadata(METADATA_KEY, new FixedMetadataValue(plugin, gson.toJson(list)));
+        ignoringReceiver.setMetadata(METADATA_KEY, new FixedMetadataValue(plugin, gson.toJson(list)));
 
         return contains ? SoftReturn.UN_IGNORE : SoftReturn.IGNORE;
     }
