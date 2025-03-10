@@ -3,6 +3,7 @@ package net.pistonmaster.pistonchat.commands.whisper;
 import lombok.RequiredArgsConstructor;
 import net.pistonmaster.pistonchat.PistonChat;
 import net.pistonmaster.pistonchat.tools.CommonTool;
+import net.pistonmaster.pistonchat.tools.SoftIgnoreTool;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -18,16 +19,18 @@ public class LastCommand extends MessageCommandHelper implements CommandExecutor
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        Optional<CommandSender> lastSentTo = plugin.getCacheTool().getLastSentTo(sender);
-        Optional<CommandSender> lastMessagedOf = plugin.getCacheTool().getLastMessagedOf(sender);
+        plugin.runAsync(() -> {
+            Optional<CommandSender> lastSentTo = plugin.getCacheTool().getLastSentTo(sender);
+            Optional<CommandSender> lastMessagedOf = plugin.getCacheTool().getLastMessagedOf(sender);
 
-        if (lastSentTo.isPresent()) {
-            MessageCommandHelper.sendWhisper(plugin, sender, lastSentTo.get(), CommonTool.mergeArgs(args, 0));
-        } else if (lastMessagedOf.isPresent()) {
-            MessageCommandHelper.sendWhisper(plugin, sender, lastMessagedOf.get(), CommonTool.mergeArgs(args, 0));
-        } else {
-            plugin.getCommonTool().sendLanguageMessage(sender, "notonline");
-        }
+            if (lastSentTo.isPresent()) {
+                MessageCommandHelper.sendWhisper(plugin, sender, lastSentTo.get(), CommonTool.mergeArgs(args, 0));
+            } else if (lastMessagedOf.isPresent()) {
+                MessageCommandHelper.sendWhisper(plugin, sender, lastMessagedOf.get(), CommonTool.mergeArgs(args, 0));
+            } else {
+                plugin.getCommonTool().sendLanguageMessage(sender, "notonline");
+            }
+        });
 
         return true;
     }

@@ -37,17 +37,19 @@ public class HardIgnoreCommand implements CommandExecutor, TabExecutor {
             return true;
         }
 
-        HardIgnoreTool.HardReturn type = plugin.getHardIgnoreTool().hardIgnorePlayer(player, ignored.get());
+        plugin.runAsync(() -> {
+            HardIgnoreTool.HardReturn type = plugin.getHardIgnoreTool().hardIgnorePlayer(player, ignored.get());
 
-        if (type == HardIgnoreTool.HardReturn.IGNORE) {
-            plugin.getCommonTool().sendLanguageMessageNoPrefix(player,
+            if (type == HardIgnoreTool.HardReturn.IGNORE) {
+                plugin.getCommonTool().sendLanguageMessageNoPrefix(player,
                     "ignorehard",
                     CommonTool.getStrippedNameResolver(ignored.get()));
-        } else if (type == HardIgnoreTool.HardReturn.UN_IGNORE) {
-            plugin.getCommonTool().sendLanguageMessageNoPrefix(player,
+            } else if (type == HardIgnoreTool.HardReturn.UN_IGNORE) {
+                plugin.getCommonTool().sendLanguageMessageNoPrefix(player,
                     "unignorehard",
                     CommonTool.getStrippedNameResolver(ignored.get()));
-        }
+            }
+        });
 
         return true;
     }

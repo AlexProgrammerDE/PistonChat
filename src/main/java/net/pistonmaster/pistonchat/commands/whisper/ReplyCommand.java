@@ -22,14 +22,16 @@ public class ReplyCommand extends MessageCommandHelper implements CommandExecuto
             return false;
         }
 
-        Optional<CommandSender> lastMessagedOf = plugin.getCacheTool().getLastMessagedOf(sender);
+        plugin.runAsync(() -> {
+            Optional<CommandSender> lastMessagedOf = plugin.getCacheTool().getLastMessagedOf(sender);
 
-        if (lastMessagedOf.isEmpty()) {
-            plugin.getCommonTool().sendLanguageMessage(sender, "notonline");
-            return true;
-        }
+            if (lastMessagedOf.isEmpty()) {
+                plugin.getCommonTool().sendLanguageMessage(sender, "notonline");
+                return;
+            }
 
-        MessageCommandHelper.sendWhisper(plugin, sender, lastMessagedOf.get(), CommonTool.mergeArgs(args, 0));
+            MessageCommandHelper.sendWhisper(plugin, sender, lastMessagedOf.get(), CommonTool.mergeArgs(args, 0));
+        });
 
         return true;
     }

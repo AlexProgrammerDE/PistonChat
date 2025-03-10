@@ -22,14 +22,16 @@ public class ToggleWhisperingCommand implements CommandExecutor, TabExecutor {
             return true;
         }
 
-        boolean whisperingNowEnabled = !plugin.getTempDataTool().isWhisperingEnabled(player);
-        plugin.getTempDataTool().setWhisperingEnabled(player, whisperingNowEnabled);
+        plugin.runAsync(() -> {
+            boolean whisperingNowEnabled = !plugin.getTempDataTool().isWhisperingEnabled(player);
+            plugin.getTempDataTool().setWhisperingEnabled(player, whisperingNowEnabled);
 
-        if (whisperingNowEnabled) {
-            plugin.getCommonTool().sendLanguageMessage(player, "pmson");
-        } else {
-            plugin.getCommonTool().sendLanguageMessage(player, "pmsoff");
-        }
+            if (whisperingNowEnabled) {
+                plugin.getCommonTool().sendLanguageMessage(player, "pmson");
+            } else {
+                plugin.getCommonTool().sendLanguageMessage(player, "pmsoff");
+            }
+        });
 
         return true;
     }

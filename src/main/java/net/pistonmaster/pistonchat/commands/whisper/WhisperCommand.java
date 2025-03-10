@@ -31,7 +31,7 @@ public class WhisperCommand extends MessageCommandHelper implements CommandExecu
             return true;
         }
 
-        MessageCommandHelper.sendWhisper(plugin, sender, receiver.get(), CommonTool.mergeArgs(args, 1));
+        plugin.runAsync(() -> MessageCommandHelper.sendWhisper(plugin, sender, receiver.get(), CommonTool.mergeArgs(args, 1)));
 
         return true;
     }

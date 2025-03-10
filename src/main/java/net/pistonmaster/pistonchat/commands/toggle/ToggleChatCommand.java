@@ -22,14 +22,16 @@ public class ToggleChatCommand implements CommandExecutor, TabExecutor {
             return true;
         }
 
-        boolean chatNowEnabled = !plugin.getTempDataTool().isChatEnabled(player);
-        plugin.getTempDataTool().setChatEnabled(player, chatNowEnabled);
+        plugin.runAsync(() -> {
+            boolean chatNowEnabled = !plugin.getTempDataTool().isChatEnabled(player);
+            plugin.getTempDataTool().setChatEnabled(player, chatNowEnabled);
 
-        if (chatNowEnabled) {
-            plugin.getCommonTool().sendLanguageMessage(player, "chaton");
-        } else {
-            plugin.getCommonTool().sendLanguageMessage(player, "chatoff");
-        }
+            if (chatNowEnabled) {
+                plugin.getCommonTool().sendLanguageMessage(player, "chaton");
+            } else {
+                plugin.getCommonTool().sendLanguageMessage(player, "chatoff");
+            }
+        });
 
         return true;
     }

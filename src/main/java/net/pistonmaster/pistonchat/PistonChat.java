@@ -189,4 +189,8 @@ public final class PistonChat extends JavaPlugin {
     public FileConfiguration getLanguage() {
         return languageManager.get();
     }
+
+    public void runAsync(Runnable runnable) {
+        Bukkit.getScheduler().runTaskAsynchronously(this, runnable);
+    }
 }

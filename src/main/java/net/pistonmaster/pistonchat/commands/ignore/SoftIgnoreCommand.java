@@ -37,17 +37,19 @@ public class SoftIgnoreCommand implements CommandExecutor, TabExecutor {
             return true;
         }
 
-        SoftIgnoreTool.SoftReturn type = plugin.getSoftignoreTool().softIgnorePlayer(player, ignored.get());
+        plugin.runAsync(() -> {
+            SoftIgnoreTool.SoftReturn type = plugin.getSoftignoreTool().softIgnorePlayer(player, ignored.get());
 
-        if (type == SoftIgnoreTool.SoftReturn.IGNORE) {
-            plugin.getCommonTool().sendLanguageMessageNoPrefix(player,
+            if (type == SoftIgnoreTool.SoftReturn.IGNORE) {
+                plugin.getCommonTool().sendLanguageMessageNoPrefix(player,
                     "ignore",
                     CommonTool.getStrippedNameResolver(ignored.get()));
-        } else if (type == SoftIgnoreTool.SoftReturn.UN_IGNORE) {
-            plugin.getCommonTool().sendLanguageMessageNoPrefix(player,
+            } else if (type == SoftIgnoreTool.SoftReturn.UN_IGNORE) {
+                plugin.getCommonTool().sendLanguageMessageNoPrefix(player,
                     "unignore",
                     CommonTool.getStrippedNameResolver(ignored.get()));
-        }
+            }
+        });
 
         return true;
     }
