@@ -5,17 +5,14 @@ plugins {
 
 repositories {
     mavenCentral()
-    maven {
-        url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") {
+        name = "spigot-snapshots"
     }
-    maven {
-        url = uri("https://oss.sonatype.org/content/groups/public/")
+    maven("https://oss.sonatype.org/content/groups/public/") {
+        name = "sonatype"
     }
-    maven {
-        url = uri("https://repo.codemc.org/repository/maven-public")
-    }
-    maven {
-        url = uri("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+    maven("https://repo.codemc.org/repository/maven-public") {
+        name = "codemc"
     }
 }
 
