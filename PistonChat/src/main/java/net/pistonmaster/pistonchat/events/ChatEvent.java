@@ -2,9 +2,6 @@ package net.pistonmaster.pistonchat.events;
 
 import lombok.RequiredArgsConstructor;
 import net.pistonmaster.pistonchat.PistonChat;
-import net.pistonmaster.pistonchat.api.PistonChatEvent;
-import net.pistonmaster.pistonchat.api.PistonChatReceiveEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -21,18 +18,9 @@ public class ChatEvent implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onChat(AsyncPlayerChatEvent event) {
         Player chatter = event.getPlayer();
-        PistonChatEvent pistonChatEvent = new PistonChatEvent(chatter, event.getMessage(), event.isAsynchronous());
 
         Set<Player> recipients = Set.copyOf(event.getRecipients());
         event.getRecipients().clear();
-
-        Bukkit.getPluginManager().callEvent(pistonChatEvent);
-
-        event.setCancelled(pistonChatEvent.isCancelled());
-
-        if (pistonChatEvent.isCancelled()) {
-            return;
-        }
 
         if (!plugin.getTempDataTool().isChatEnabled(chatter)) {
             plugin.getCommonTool().sendLanguageMessage(chatter, "chatisoff");
@@ -46,15 +34,7 @@ public class ChatEvent implements Listener {
                 continue;
             }
 
-            PistonChatReceiveEvent perPlayerEvent = new PistonChatReceiveEvent(chatter, receiver, pistonChatEvent.getMessage(), event.isAsynchronous());
-
-            Bukkit.getPluginManager().callEvent(perPlayerEvent);
-
-            if (perPlayerEvent.isCancelled()) {
-                continue;
-            }
-
-            plugin.getCommonTool().sendChatMessage(chatter, perPlayerEvent.getMessage(), receiver);
+            plugin.getCommonTool().sendChatMessage(chatter, event.getMessage(), receiver);
         }
     }
 }
