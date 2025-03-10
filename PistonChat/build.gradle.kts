@@ -12,4 +12,5 @@ dependencies {
     implementation("net.pistonmaster:PistonUtils:1.3.2")
     implementation("org.bstats:bstats-bukkit:3.1.0")
     implementation("org.mariadb.jdbc:mariadb-java-client:3.5.1")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.2.0")
 }
