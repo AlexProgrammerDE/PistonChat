@@ -19,7 +19,7 @@ allprojects {
     }
 }
 
-tasks.create("outputVersion") {
+tasks.register("outputVersion") {
     doLast {
         println(project.version)
     }
