@@ -1,10 +1,10 @@
 name: PistonChat
-version: ${project.version}
+version: ${version}
 api-version: 1.13
 main: net.pistonmaster.pistonchat.PistonChat
 authors: [ AlexProgrammerDE ]
-description: An advanced chat plugin for survival/anarchy servers.
-website: https://pistonmaster.net/
+description: ${description}
+website: ${url}
 softdepend: ["MiniPlaceholders"]
 folia-supported: true
 
