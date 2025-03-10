@@ -26,7 +26,7 @@ public class SoftIgnoreCommand implements CommandExecutor, TabExecutor {
             return true;
         }
 
-        if (args.length <= 0) {
+        if (args.length == 0) {
             return false;
         }
 

@@ -1,14 +1,7 @@
 package net.pistonmaster.pistonchat.api;
 
-import com.google.common.base.Preconditions;
 import net.pistonmaster.pistonchat.PistonChat;
-import net.pistonmaster.pistonchat.tools.IgnoreTool;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
-import javax.annotation.Nonnull;
-import java.util.Map;
 import java.util.Objects;
 
 /**

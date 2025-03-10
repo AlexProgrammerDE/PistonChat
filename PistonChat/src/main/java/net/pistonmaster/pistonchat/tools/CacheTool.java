@@ -48,7 +48,7 @@ public class CacheTool {
                 return Optional.empty();
             }
 
-            sentTo = UUID.fromString(values.get(0).asString());
+            sentTo = UUID.fromString(values.getFirst().asString());
         } else {
             indexConsole(sender);
             sentTo = customMap.get(sender).sentTo;
@@ -76,7 +76,7 @@ public class CacheTool {
                 return Optional.empty();
             }
 
-            messagedOf = UUID.fromString(values.get(0).asString());
+            messagedOf = UUID.fromString(values.getFirst().asString());
         } else {
             indexConsole(sender);
             messagedOf = customMap.get(sender).messagedOf;

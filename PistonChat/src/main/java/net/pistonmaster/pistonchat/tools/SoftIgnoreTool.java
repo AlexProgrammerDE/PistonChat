@@ -45,7 +45,7 @@ public class SoftIgnoreTool {
             return new ArrayList<>();
         }
 
-        return gson.<List<String>>fromJson(values.get(0).asString(), List.class).stream().map(UUID::fromString).toList();
+        return gson.<List<String>>fromJson(values.getFirst().asString(), List.class).stream().map(UUID::fromString).toList();
     }
 
     public void clearIgnoredPlayers(Player player) {
