@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import javax.annotation.Nonnull;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * API for interacting with PistonChat!
@@ -25,43 +26,7 @@ public final class PistonChatAPI {
             PistonChatAPI.plugin = plugin;
     }
 
-    /**
-     * Ignore players! (Can also unignore)
-     *
-     * @param ignorer The person that ignores someone!
-     * @param ignored The person to ignore!
-     */
-    public static void ignorePlayer(@Nonnull Player ignorer, @Nonnull Player ignored) {
-        Preconditions.checkNotNull(ignorer, "Ignorer can not be null!");
-        Preconditions.checkNotNull(ignored, "Ignored can not be null!");
-
-        plugin.getHardIgnoreTool().hardIgnorePlayer(ignorer, ignored);
-    }
-
-    /**
-     * Get a list of all players a player ignores!
-     *
-     * @param player The person who ignores players!
-     * @return A list of all players this players ignored!
-     */
-    @Nonnull
-    public static Map<OfflinePlayer, IgnoreTool.IgnoreType> getIgnoreList(@Nonnull Player player) {
-        Preconditions.checkNotNull(player, "Player can not be null!");
-
-        return plugin.getIgnoreTool().getIgnoredPlayers(player);
-    }
-
-    /**
-     * Send whispers!
-     *
-     * @param sender   The player who sends the whisper!
-     * @param message  Whisper to send!
-     * @param receiver The person who receives the whisper!
-     */
-    public static void whisperPlayer(@Nonnull CommandSender sender, @Nonnull String message, @Nonnull CommandSender receiver) {
-        Preconditions.checkNotNull(sender, "Sender can not be null!");
-        Preconditions.checkNotNull(receiver, "Receiver can not be null!");
-
-        plugin.getCommonTool().sendWhisperTo(sender, message, receiver);
+    public static PistonChat getInstance() {
+        return Objects.requireNonNull(plugin, "plugin is null");
     }
 }

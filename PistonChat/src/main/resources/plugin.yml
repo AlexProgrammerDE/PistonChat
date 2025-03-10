@@ -1,10 +1,10 @@
 name: PistonChat
 version: ${version}
+description: ${description}
+website: ${url}
 api-version: 1.13
 main: net.pistonmaster.pistonchat.PistonChat
 authors: [ AlexProgrammerDE ]
-description: ${description}
-website: ${url}
 softdepend: ["MiniPlaceholders"]
 folia-supported: true
 

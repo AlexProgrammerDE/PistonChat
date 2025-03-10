@@ -4,8 +4,6 @@ plugins {
 
 allprojects {
     group = "net.pistonmaster"
-    version = "1.6.0"
-    description = "An advanced chat plugin for survival/anarchy servers."
 
     repositories {
         mavenCentral()

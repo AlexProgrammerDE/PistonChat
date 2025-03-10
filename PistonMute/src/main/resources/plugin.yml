@@ -1,0 +1,24 @@
+name: PistonMute
+version: ${version}
+description: ${description}
+website: ${url}
+api-version: 1.13
+main: net.pistonmaster.pistonmute.PistonMute
+authors: [ AlexProgrammerDE ]
+depend: [ PistonChat ]
+commands:
+  mute:
+    description: Mute a player!
+    usage: /<command> [player] <time>
+    permission: pistonmute.mute
+  unmute:
+    description: Unmute a player!
+    usage: /<command> [player]
+    permission: pistonmute.unmute
+permissions:
+  pistonmute.mute:
+    description: Permission to mute!
+    default: op
+  pistonmute.unmute:
+    description: Permission to unmute!
+    default: op

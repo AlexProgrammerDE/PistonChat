@@ -2,6 +2,9 @@ plugins {
     id("pc.shadow-conventions")
 }
 
+version = "1.6.0"
+description = "An advanced chat plugin for survival/anarchy servers."
+
 dependencies {
     compileOnly("com.google.code.findbugs:jsr305:3.0.2")
     compileOnly("io.github.miniplaceholders:miniplaceholders-api:2.2.3")

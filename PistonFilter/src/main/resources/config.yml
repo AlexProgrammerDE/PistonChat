@@ -1,0 +1,45 @@
+verbose: true
+message-sender: true
+no-repeat: true
+# How many times after sending a message should the player wait before sending the same message again
+no-repeat-time: 60
+# How many messages are stored that are not allowed to be repeated?
+no-repeat-stack-size: 20
+# How similar from 1-100 are two messages allowed to be before they are considered the same?
+no-repeat-similar-ratio: 90
+# Check words of previous messages for repeated word ratio. -1 to disable. Value means how many percent of the messages has repeated words.
+no-repeat-word-ratio: 40
+# How many of the last message of a user are allowed to have a number inside them?
+no-repeat-number-messages: 5
+no-repeat-number-amount: 3
+# Store last global messages and compare them for no repeat as well
+global-repeat-check: true
+# Store the last x amount of global messages to compare for no repeat
+global-message-stack-size: 40
+# Should we mute a user if they fail the above checks too often? (Requires PistonMute)
+mute-on-fail: true
+# After how many violations of our checks do we mute someone?
+mute-violations: 3
+# How long until violations expire?
+mute-violations-timeframe: 60
+# For how long do we mute someone? (seconds)
+mute-time: 60
+# Example: "2 5f gg 8b 33 hj 6zb 6573" has 8 words and 6 words with numbers
+max-words-with-numbers: 5
+max-separated-numbers: 3
+max-word-length: 20
+banned-text-partial-ratio: 95
+banned-text:
+  - "http"
+  - "https"
+  - "://"
+  - ".org"
+  - ".com"
+  - ".net"
+  - ".org"
+  - ".co"
+  - ".cc"
+  - ".tk"
+  - ".ga"
+  - ".gg"
+  - ".io"

@@ -1,0 +1,21 @@
+name: PistonFilter
+version: ${version}
+description: ${description}
+website: ${url}
+api-version: 1.13
+main: net.pistonmaster.pistonfilter.PistonFilter
+authors: [ AlexProgrammerDE ]
+depend: [ "PistonChat" ]
+softdepend: [ "PistonMute" ]
+commands:
+  pistonfilter:
+    description: Main command for PistonFilter
+    permission: pistonfilter.admin
+permissions:
+  pistonfilter.admin:
+    description: Admin permission for PistonFilter
+    default: op
+    children:
+      pistonfilter.bypass: true
+  pistonfilter.bypass:
+    description: Permission to bypass the chatfilter

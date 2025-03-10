@@ -7,5 +7,7 @@ plugins {
 rootProject.name = "PistonChatSuite"
 
 include(
-    "PistonChat"
+    "PistonChat",
+    "PistonMute",
+    "PistonFilter"
 )
