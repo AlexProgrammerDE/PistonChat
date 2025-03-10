@@ -27,17 +27,17 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
       - name: Upload PistonChat
-        uses: actions/upload-artifact@v4.4.3
+        uses: actions/upload-artifact@v4.6.1
         with:
           name: PistonChat
           path: PistonChat/build/libs/*.jar
       - name: Upload PistonMute
-        uses: actions/upload-artifact@v4.4.3
+        uses: actions/upload-artifact@v4.6.1
         with:
           name: PistonMute
           path: PistonMute/build/libs/*.jar
       - name: Upload PistonFilter
-        uses: actions/upload-artifact@v4.4.3
+        uses: actions/upload-artifact@v4.6.1
         with:
           name: PistonFilter
           path: PistonFilter/build/libs/*.jar
