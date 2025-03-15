@@ -1,5 +1,6 @@
 plugins {
     id("pc.shadow-conventions")
+    alias(libs.plugins.runpaper)
 }
 
 version = "1.6.0"
@@ -15,4 +16,10 @@ dependencies {
     implementation("org.bstats:bstats-bukkit:3.1.0")
     implementation("org.mariadb.jdbc:mariadb-java-client:3.5.2")
     implementation("com.github.ben-manes.caffeine:caffeine:3.2.0")
+}
+
+tasks {
+    runServer {
+        minecraftVersion(libs.versions.runpaperversion.get())
+    }
 }

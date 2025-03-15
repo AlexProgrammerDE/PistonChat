@@ -1,5 +1,6 @@
 plugins {
     id("pc.shadow-conventions")
+    alias(libs.plugins.runpaper)
 }
 
 version = "1.3.0"
@@ -15,4 +16,10 @@ dependencies {
     implementation("org.bstats:bstats-bukkit:3.1.0")
     implementation("net.pistonmaster:PistonUtils:1.3.2")
     implementation("org.apache.commons:commons-collections4:4.4")
+}
+
+tasks {
+    runServer {
+        minecraftVersion(libs.versions.runpaperversion.get())
+    }
 }
