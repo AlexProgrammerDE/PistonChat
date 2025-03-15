@@ -14,7 +14,6 @@ tasks {
     shadowJar {
         archiveClassifier.set("")
         exclude("META-INF/SPONGEPO.SF", "META-INF/SPONGEPO.DSA", "META-INF/SPONGEPO.RSA")
-        minimize()
         configureRelocations()
     }
 
