@@ -14,7 +14,7 @@ public class PistonWhisperEvent extends Event implements Cancellable {
     private String message;
 
     public PistonWhisperEvent(CommandSender sender, CommandSender receiver, String message) {
-        super(false);
+        super(true);
 
         this.sender = sender;
         this.receiver = receiver;
