@@ -99,7 +99,7 @@ public final class StorageTool {
         Date now = new Date();
 
         if (dataConfig.contains(player.getUniqueId().toString())) {
-            SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", new Locale("us"));
+            SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.US);
 
             try {
                 Date date = sdf.parse(dataConfig.getString(player.getUniqueId().toString()));

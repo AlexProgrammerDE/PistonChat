@@ -30,4 +30,6 @@ fun ShadowJar.configureRelocations() {
     relocate("org.jetbrains.annotations", "net.pistonmaster.pistonchat.shadow.annotations.jetbrains")
     relocate("com.google.gson", "net.pistonmaster.pistonchat.shadow.gson")
     relocate("com.google.errorprone", "net.pistonmaster.pistonchat.shadow.errorprone")
+    relocate("com.github.benmanes.caffeine", "net.pistonmaster.pistonchat.shadow.caffeine")
+    relocate("net.kyori", "net.pistonmaster.pistonchat.shadow.kyori")
 }
