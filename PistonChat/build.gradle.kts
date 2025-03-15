@@ -11,6 +11,7 @@ dependencies {
     compileOnly("io.github.miniplaceholders:miniplaceholders-api:2.3.0")
     compileOnly("org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT")
 
+    implementation("com.google.code.gson:gson:2.12.1")
     implementation("net.kyori:adventure-platform-bukkit:4.3.4")
     implementation("net.kyori:adventure-text-minimessage:4.19.0")
     implementation("org.bstats:bstats-bukkit:3.1.0")
