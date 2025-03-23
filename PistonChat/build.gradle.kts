@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.runpaper)
 }
 
-version = "2.0.0"
 description = "An advanced chat plugin for survival/anarchy servers."
 
 dependencies {

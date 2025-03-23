@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.runpaper)
 }
 
-version = "1.2.0"
 description = "Mute addon for PistonChat."
 
 dependencies {

@@ -3,6 +3,7 @@ plugins {
 }
 
 allprojects {
+    version = "2.0.0"
     group = "net.pistonmaster"
 
     repositories {

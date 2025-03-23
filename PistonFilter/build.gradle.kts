@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.runpaper)
 }
 
-version = "1.3.0"
 description = "Chat filter addon for PistonChat."
 
 dependencies {
