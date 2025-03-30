@@ -10,6 +10,7 @@ dependencies {
     compileOnly("io.github.miniplaceholders:miniplaceholders-api:2.3.0")
     compileOnly("org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT")
 
+    implementation("net.pistonmaster:PistonUtils:1.4.0")
     implementation("com.github.technicallycoded:FoliaLib:main-SNAPSHOT")
     implementation("com.google.code.gson:gson:2.12.1")
     implementation("net.kyori:adventure-platform-bukkit:4.3.4")

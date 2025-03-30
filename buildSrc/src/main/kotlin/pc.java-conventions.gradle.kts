@@ -5,7 +5,6 @@ plugins {
 
 dependencies {
     compileOnlyApi("org.apiguardian:apiguardian-api:1.1.2")
-    implementation("net.pistonmaster:PistonUtils:1.3.2")
 
     compileOnly("net.luckperms:api:5.4")
 
