@@ -17,6 +17,9 @@ allprojects {
         maven("https://repo.codemc.org/repository/maven-public") {
             name = "codemc"
         }
+        maven("https://jitpack.io") {
+            name = "jitpack"
+        }
     }
 }
 

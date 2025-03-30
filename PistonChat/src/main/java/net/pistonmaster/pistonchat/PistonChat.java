@@ -1,5 +1,6 @@
 package net.pistonmaster.pistonchat;
 
+import com.tcoded.folialib.FoliaLib;
 import lombok.Getter;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.md_5.bungee.api.ChatColor;
@@ -43,6 +44,7 @@ public final class PistonChat extends JavaPlugin {
     private final IgnoreTool ignoreTool = new IgnoreTool(this);
     private final HardIgnoreTool hardIgnoreTool = new HardIgnoreTool(this);
     private final CommonTool commonTool = new CommonTool(this);
+    private final FoliaLib foliaLib = new FoliaLib(this);
     private MariaDbPoolDataSource ds;
     private BukkitAudiences adventure;
 
@@ -191,6 +193,6 @@ public final class PistonChat extends JavaPlugin {
     }
 
     public void runAsync(Runnable runnable) {
-        Bukkit.getScheduler().runTaskAsynchronously(this, runnable);
+        foliaLib.getScheduler().runAsync(task -> runnable.run());
     }
 }
