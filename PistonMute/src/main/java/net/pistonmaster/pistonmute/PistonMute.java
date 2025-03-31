@@ -37,15 +37,16 @@ public final class PistonMute extends JavaPlugin {
 
         log.info(ChatColor.YELLOW + "Checking for a newer version");
         try {
+            String currentVersionString = this.getDescription().getVersion();
             SemanticVersion gitHubVersion = new GitHubUpdateChecker()
                     .getVersion("https://api.github.com/repos/AlexProgrammerDE/PistonChat/releases/latest");
-            SemanticVersion currentVersion = SemanticVersion.fromString(this.getDescription().getVersion());
+            SemanticVersion currentVersion = SemanticVersion.fromString(currentVersionString);
 
             if (gitHubVersion.isNewerThan(currentVersion)) {
                 log.info(ChatColor.YELLOW + "You're up to date!");
             } else {
                 log.info(ChatColor.RED + "There is an update available!");
-                log.info(ChatColor.RED + "Current version: " + this.getDescription().getVersion() + " New version: " + gitHubVersion);
+                log.info(ChatColor.RED + "Current version: " + currentVersionString + " New version: " + gitHubVersion);
                 log.info(ChatColor.RED + "Download it at: https://github.com/AlexProgrammerDE/PistonChat/releases");
             }
         } catch (IOException e) {
