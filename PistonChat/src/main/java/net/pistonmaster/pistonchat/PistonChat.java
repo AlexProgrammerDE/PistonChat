@@ -156,11 +156,11 @@ public final class PistonChat extends JavaPlugin {
             SemanticVersion currentVersion = SemanticVersion.fromString(currentVersionString);
 
             if (gitHubVersion.isNewerThan(currentVersion)) {
-                log.info(ChatColor.DARK_GREEN + "You're up to date!");
-            } else {
                 log.info(ChatColor.RED + "There is an update available!");
                 log.info(ChatColor.RED + "Current version: " + currentVersionString + " New version: " + gitHubVersion);
                 log.info(ChatColor.RED + "Download it at: https://github.com/AlexProgrammerDE/PistonChat/releases");
+            } else {
+                log.info(ChatColor.DARK_GREEN + "You're up to date!");
             }
         } catch (IOException e) {
             log.severe("Could not check for updates!");
