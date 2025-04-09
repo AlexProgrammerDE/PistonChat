@@ -14,9 +14,9 @@ dependencies {
     implementation("com.github.technicallycoded:FoliaLib:main-SNAPSHOT")
     implementation("com.google.code.gson:gson:2.12.1")
     implementation("net.kyori:adventure-platform-bukkit:4.3.4")
-    implementation("net.kyori:adventure-text-minimessage:4.19.0")
+    implementation("net.kyori:adventure-text-minimessage:4.20.0")
     implementation("org.bstats:bstats-bukkit:3.1.0")
-    implementation("org.mariadb.jdbc:mariadb-java-client:3.5.2")
+    implementation("org.mariadb.jdbc:mariadb-java-client:3.5.3")
     implementation("com.github.ben-manes.caffeine:caffeine:3.2.0")
 }
 
