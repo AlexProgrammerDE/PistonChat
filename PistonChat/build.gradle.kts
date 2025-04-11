@@ -12,7 +12,7 @@ dependencies {
 
     implementation("net.pistonmaster:PistonUtils:1.4.0")
     implementation("com.github.technicallycoded:FoliaLib:main-SNAPSHOT")
-    implementation("com.google.code.gson:gson:2.12.1")
+    implementation("com.google.code.gson:gson:2.13.0")
     implementation("net.kyori:adventure-platform-bukkit:4.3.4")
     implementation("net.kyori:adventure-text-minimessage:4.20.0")
     implementation("org.bstats:bstats-bukkit:3.1.0")
