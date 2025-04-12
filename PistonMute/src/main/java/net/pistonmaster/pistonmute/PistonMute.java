@@ -45,7 +45,7 @@ public final class PistonMute extends JavaPlugin {
             if (gitHubVersion.isNewerThan(currentVersion)) {
                 log.info(ChatColor.RED + "There is an update available!");
                 log.info(ChatColor.RED + "Current version: " + currentVersionString + " New version: " + gitHubVersion);
-                log.info(ChatColor.RED + "Download it at: https://github.com/AlexProgrammerDE/PistonChat/releases");
+                log.info(ChatColor.RED + "Download it at: https://modrinth.com/plugin/pistonchat");
             } else {
                 log.info(ChatColor.YELLOW + "You're up to date!");
             }
