@@ -31,4 +31,5 @@ fun ShadowJar.configureRelocations() {
     relocate("com.google.errorprone", "net.pistonmaster.pistonchat.shadow.errorprone")
     relocate("com.github.benmanes.caffeine", "net.pistonmaster.pistonchat.shadow.caffeine")
     relocate("net.kyori", "net.pistonmaster.pistonchat.shadow.kyori")
+    relocate("com.tcoded.folialib", "net.pistonmaster.pistonchat.shadow.folialib")
 }
