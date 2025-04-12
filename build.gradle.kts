@@ -3,7 +3,7 @@ plugins {
 }
 
 allprojects {
-    version = "2.0.0"
+    version = property("maven_version")!!
     group = "net.pistonmaster"
 
     repositories {
