@@ -112,9 +112,9 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
 
         files: |
-          build/libs/PistonChat-${{ inputs.version }}.jar
-          build/libs/PistonMute-${{ inputs.version }}.jar
-          build/libs/PistonFilter-${{ inputs.version }}.jar
+          PistonChat/build/libs/PistonChat-${{ inputs.version }}.jar
+          PistonMute/build/libs/PistonMute-${{ inputs.version }}.jar
+          PistonFilter/build/libs/PistonFilter-${{ inputs.version }}.jar
 
         name: PistonChat ${{ inputs.version }}
         version: ${{ inputs.version }}
