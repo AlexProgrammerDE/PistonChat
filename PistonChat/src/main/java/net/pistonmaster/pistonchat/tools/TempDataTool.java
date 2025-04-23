@@ -56,7 +56,7 @@ public class TempDataTool {
         return Boolean.TRUE.equals(whisperCache.get(player.getUniqueId()));
     }
 
-    public boolean loadIsWhisperingEnabled(UUID uuid) {
+    private boolean loadIsWhisperingEnabled(UUID uuid) {
         try (Connection connection = plugin.getDs().getConnection()) {
             PreparedStatement statement = connection.prepareStatement("SELECT `whisper_enabled` FROM `pistonchat_settings_whisper` WHERE `uuid` = ?;");
             statement.setString(1, uuid.toString());
@@ -77,7 +77,7 @@ public class TempDataTool {
         return Boolean.TRUE.equals(chatCache.get(player.getUniqueId()));
     }
 
-    public boolean loadIsChatEnabled(UUID uuid) {
+    private boolean loadIsChatEnabled(UUID uuid) {
         try (Connection connection = plugin.getDs().getConnection()) {
             PreparedStatement statement = connection.prepareStatement("SELECT `chat_enabled` FROM `pistonchat_settings_chat` WHERE `uuid` = ?;");
             statement.setString(1, uuid.toString());
