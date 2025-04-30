@@ -137,7 +137,6 @@ jobs:
         changelog: ${{ steps.github_release.outputs.changelog }}
 
         loaders: |
-          bukkit
           folia
           paper
           purpur
