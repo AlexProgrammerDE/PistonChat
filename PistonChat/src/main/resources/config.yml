@@ -3,11 +3,13 @@
 # This config is configured to be what 2b2t.org has.
 # https://hub.spigotmc.org/javadocs/spigot/org/bukkit/ChatColor.html
 # pistonchat.prefix.green and pistonchat.chatformat.default are given by default.
+# storage is either file or mysql
 whisper:
   from: "<light_purple><player_name> whispers: <message>"
   to: "<light_purple>You whisper to <player_name>: <message>"
 hover-text: "<gold>Message <dark_aqua><player_name>"
 
+storage: "file"
 mysql:
   host: "localhost"
   port: 3306

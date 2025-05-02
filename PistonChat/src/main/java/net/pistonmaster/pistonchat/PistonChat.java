@@ -15,6 +15,8 @@ import net.pistonmaster.pistonchat.commands.whisper.LastCommand;
 import net.pistonmaster.pistonchat.commands.whisper.ReplyCommand;
 import net.pistonmaster.pistonchat.commands.whisper.WhisperCommand;
 import net.pistonmaster.pistonchat.events.ChatEvent;
+import net.pistonmaster.pistonchat.storage.PCStorage;
+import net.pistonmaster.pistonchat.storage.mysql.MySQLStorage;
 import net.pistonmaster.pistonchat.tools.*;
 import net.pistonmaster.pistonchat.utils.ConfigManager;
 import net.pistonmaster.pistonutils.update.GitHubUpdateChecker;
@@ -28,8 +30,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.mariadb.jdbc.MariaDbPoolDataSource;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.logging.Logger;
 
 @Getter
@@ -43,7 +43,7 @@ public final class PistonChat extends JavaPlugin {
     private final HardIgnoreTool hardIgnoreTool = new HardIgnoreTool(this);
     private final CommonTool commonTool = new CommonTool(this);
     private final FoliaLib foliaLib = new FoliaLib(this);
-    private MariaDbPoolDataSource ds;
+    private PCStorage storage;
     private BukkitAudiences adventure;
 
     @Override
@@ -71,30 +71,11 @@ public final class PistonChat extends JavaPlugin {
             Bukkit.getPluginManager().disablePlugin(this);
         }
 
-        log.info(ChatColor.DARK_GREEN + "Connecting to database");
-        ds = new MariaDbPoolDataSource();
-        FileConfiguration config = configManager.get();
-        try {
-            ds.setUser(config.getString("mysql.username"));
-            ds.setPassword(config.getString("mysql.password"));
-            ds.setUrl("jdbc:mariadb://" + config.getString("mysql.host") + ":" + config.getInt("mysql.port") +
-                    "/" + config.getString("mysql.database")
-                    + "?sslMode=disable&serverTimezone=UTC&maxPoolSize=10"
-            );
+        log.info(ChatColor.DARK_GREEN + "Loading storage");
+        if (configManager.get().getString("storage").equalsIgnoreCase("mysql")) {
+            storage = new MySQLStorage(log, configManager);
+        } else if (configManager.get().getString("storage").equalsIgnoreCase("file")) {
 
-            try (Connection connection = ds.getConnection()) {
-                connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `pistonchat_settings_chat` (`uuid` VARCHAR(36) NOT NULL," +
-                        "`chat_enabled` tinyint(1) NOT NULL," +
-                        "PRIMARY KEY (`uuid`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
-                connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `pistonchat_settings_whisper` (`uuid` VARCHAR(36) NOT NULL," +
-                        "`whisper_enabled` tinyint(1) NOT NULL," +
-                        "PRIMARY KEY (`uuid`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
-                connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `pistonchat_hard_ignores` (`uuid` VARCHAR(36) NOT NULL," +
-                        "`ignored_uuid` VARCHAR(36) NOT NULL," +
-                        "PRIMARY KEY (`uuid`, `ignored_uuid`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
 
         log.info(ChatColor.DARK_GREEN + "Registering commands");
