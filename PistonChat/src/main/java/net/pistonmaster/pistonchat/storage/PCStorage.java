@@ -12,11 +12,15 @@ public interface PCStorage {
 
   boolean isWhisperingEnabled(UUID uuid);
 
-  void hardIgnorePlayer(UUID ignoringReceiver, UUID ignoredChatter);
+  HardReturn hardIgnorePlayer(UUID ignoringReceiver, UUID ignoredChatter);
 
   boolean isHardIgnored(UUID chatter, UUID receiver);
 
   List<UUID> getIgnoredList(UUID uuid);
 
   void clearIgnoredPlayers(UUID player);
+
+  enum HardReturn {
+    IGNORE, UN_IGNORE
+  }
 }

@@ -2,6 +2,7 @@ package net.pistonmaster.pistonchat.commands.ignore;
 
 import lombok.RequiredArgsConstructor;
 import net.pistonmaster.pistonchat.PistonChat;
+import net.pistonmaster.pistonchat.storage.PCStorage;
 import net.pistonmaster.pistonchat.tools.CommonTool;
 import net.pistonmaster.pistonchat.tools.HardIgnoreTool;
 import net.pistonmaster.pistonchat.utils.PlatformUtils;
@@ -38,13 +39,13 @@ public class HardIgnoreCommand implements CommandExecutor, TabExecutor {
         }
 
         plugin.runAsync(() -> {
-            HardIgnoreTool.HardReturn type = plugin.getHardIgnoreTool().hardIgnorePlayer(player, ignored.get());
+            PCStorage.HardReturn type = plugin.getHardIgnoreTool().hardIgnorePlayer(player, ignored.get());
 
-            if (type == HardIgnoreTool.HardReturn.IGNORE) {
+            if (type == PCStorage.HardReturn.IGNORE) {
                 plugin.getCommonTool().sendLanguageMessageNoPrefix(player,
                     "ignorehard",
                     CommonTool.getStrippedNameResolver(ignored.get()));
-            } else if (type == HardIgnoreTool.HardReturn.UN_IGNORE) {
+            } else if (type == PCStorage.HardReturn.UN_IGNORE) {
                 plugin.getCommonTool().sendLanguageMessageNoPrefix(player,
                     "unignorehard",
                     CommonTool.getStrippedNameResolver(ignored.get()));

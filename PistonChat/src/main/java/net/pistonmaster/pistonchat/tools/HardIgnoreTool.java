@@ -4,6 +4,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import lombok.RequiredArgsConstructor;
 import net.pistonmaster.pistonchat.PistonChat;
+import net.pistonmaster.pistonchat.storage.PCStorage;
 import net.pistonmaster.pistonchat.utils.UniqueSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -24,32 +25,18 @@ public class HardIgnoreTool {
             .expireAfterWrite(5, TimeUnit.SECONDS)
             .build(this::loadIsHardIgnored);
 
-    public HardReturn hardIgnorePlayer(Player ignoringReceiver, Player ignoredChatter) {
-        try (Connection connection = plugin.getDs().getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `pistonchat_hard_ignores` WHERE `uuid`=? AND `ignored_uuid`=?");
-            preparedStatement.setString(1, ignoringReceiver.getUniqueId().toString());
-            preparedStatement.setString(2, ignoredChatter.getUniqueId().toString());
-
-            if (preparedStatement.executeQuery().next()) {
-                preparedStatement = connection.prepareStatement("DELETE FROM `pistonchat_hard_ignores` WHERE `uuid`=? AND `ignored_uuid`=?");
-                preparedStatement.setString(1, ignoringReceiver.getUniqueId().toString());
-                preparedStatement.setString(2, ignoredChatter.getUniqueId().toString());
-                preparedStatement.execute();
-
-                ignoreCache.put(new IgnorePair(ignoredChatter.getUniqueId(), ignoringReceiver.getUniqueId()), false);
-                return HardReturn.UN_IGNORE;
-            } else {
-                preparedStatement = connection.prepareStatement("INSERT INTO `pistonchat_hard_ignores` (`uuid`, `ignored_uuid`) VALUES (?, ?)");
-                preparedStatement.setString(1, ignoringReceiver.getUniqueId().toString());
-                preparedStatement.setString(2, ignoredChatter.getUniqueId().toString());
-                preparedStatement.execute();
-
+    public PCStorage.HardReturn hardIgnorePlayer(Player ignoringReceiver, Player ignoredChatter) {
+        var hardReturn = plugin.getStorage().hardIgnorePlayer(ignoringReceiver.getUniqueId(), ignoredChatter.getUniqueId());
+        return switch (hardReturn) {
+            case IGNORE -> {
                 ignoreCache.put(new IgnorePair(ignoredChatter.getUniqueId(), ignoringReceiver.getUniqueId()), true);
-                return HardReturn.IGNORE;
+                yield PCStorage.HardReturn.IGNORE;
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+            case UN_IGNORE -> {
+                ignoreCache.put(new IgnorePair(ignoredChatter.getUniqueId(), ignoringReceiver.getUniqueId()), false);
+                yield PCStorage.HardReturn.UN_IGNORE;
+            }
+        };
     }
 
     protected boolean isHardIgnored(CommandSender chatter, Player receiver) {
@@ -59,48 +46,16 @@ public class HardIgnoreTool {
     }
 
     private boolean loadIsHardIgnored(IgnorePair pair) {
-        try (Connection connection = plugin.getDs().getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `pistonchat_hard_ignores` WHERE `uuid`=? AND `ignored_uuid`=?");
-            preparedStatement.setString(1, pair.receiver().toString());
-            preparedStatement.setString(2, pair.chatter().toString());
-            return preparedStatement.executeQuery().next();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return plugin.getStorage().isHardIgnored(pair.chatter(), pair.receiver());
     }
 
     public List<UUID> getStoredList(Player player) {
-        try (Connection connection = plugin.getDs().getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `pistonchat_hard_ignores` WHERE `uuid`=?");
-            preparedStatement.setString(1, player.getUniqueId().toString());
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            List<UUID> uuids = new ArrayList<>();
-            while (resultSet.next()) {
-                uuids.add(UUID.fromString(resultSet.getString("ignored_uuid")));
-            }
-
-            return uuids;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return plugin.getStorage().getIgnoredList(player.getUniqueId());
     }
 
     public void clearIgnoredPlayers(Player player) {
-        try (Connection connection = plugin.getDs().getConnection()) {
-            PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM `pistonchat_hard_ignores` WHERE `uuid`=?");
-            preparedStatement.setString(1, player.getUniqueId().toString());
-            preparedStatement.execute();
-
-            ignoreCache.asMap().keySet().removeIf(pair -> pair.chatter().equals(player.getUniqueId()));
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public enum HardReturn {
-        IGNORE, UN_IGNORE
+        plugin.getStorage().clearIgnoredPlayers(player.getUniqueId());
+        ignoreCache.asMap().keySet().removeIf(pair -> pair.chatter().equals(player.getUniqueId()));
     }
 
     private record IgnorePair(UUID chatter, UUID receiver) {
