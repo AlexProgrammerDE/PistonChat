@@ -16,6 +16,7 @@ import net.pistonmaster.pistonchat.commands.whisper.ReplyCommand;
 import net.pistonmaster.pistonchat.commands.whisper.WhisperCommand;
 import net.pistonmaster.pistonchat.events.ChatEvent;
 import net.pistonmaster.pistonchat.storage.PCStorage;
+import net.pistonmaster.pistonchat.storage.file.FileStorage;
 import net.pistonmaster.pistonchat.storage.mysql.MySQLStorage;
 import net.pistonmaster.pistonchat.tools.*;
 import net.pistonmaster.pistonchat.utils.ConfigManager;
@@ -72,10 +73,11 @@ public final class PistonChat extends JavaPlugin {
         }
 
         log.info(ChatColor.DARK_GREEN + "Loading storage");
-        if (configManager.get().getString("storage").equalsIgnoreCase("mysql")) {
+        var storageType = configManager.get().getString("storage");
+        if (storageType.equalsIgnoreCase("mysql")) {
             storage = new MySQLStorage(log, configManager);
-        } else if (configManager.get().getString("storage").equalsIgnoreCase("file")) {
-
+        } else if (storageType.equalsIgnoreCase("file")) {
+            storage = new FileStorage(log, getDataFolder().toPath());
         }
 
         log.info(ChatColor.DARK_GREEN + "Registering commands");
