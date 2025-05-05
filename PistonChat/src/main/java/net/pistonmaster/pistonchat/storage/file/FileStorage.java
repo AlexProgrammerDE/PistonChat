@@ -86,7 +86,7 @@ public class FileStorage implements PCStorage {
         }
     }
 
-    private void saveMap(Map<?, ?> data, Path file) {
+    private synchronized void saveMap(Map<?, ?> data, Path file) {
         try {
             Files.createDirectories(file.getParent());
             try (Writer writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
@@ -100,7 +100,9 @@ public class FileStorage implements PCStorage {
     @Override
     public void setChatEnabled(UUID uuid, boolean enabled) {
         chatSettings.put(uuid, enabled);
-        saveMap(chatSettings, chatSettingsFile);
+        synchronized (chatSettings) {
+            saveMap(chatSettings, chatSettingsFile);
+        }
     }
 
     @Override
@@ -111,7 +113,9 @@ public class FileStorage implements PCStorage {
     @Override
     public void setWhisperingEnabled(UUID uuid, boolean enabled) {
         whisperSettings.put(uuid, enabled);
-        saveMap(whisperSettings, whisperSettingsFile);
+        synchronized (whisperSettings) {
+            saveMap(whisperSettings, whisperSettingsFile);
+        }
     }
 
     @Override
@@ -125,11 +129,15 @@ public class FileStorage implements PCStorage {
 
         if (ignored.contains(ignoredChatter)) {
             ignored.remove(ignoredChatter);
-            saveMap(ignoreList, ignoreListFile);
+            synchronized (ignored) {
+                saveMap(ignoreList, ignoreListFile);
+            }
             return HardReturn.UN_IGNORE;
         } else {
             ignored.add(ignoredChatter);
-            saveMap(ignoreList, ignoreListFile);
+            synchronized (ignored) {
+                saveMap(ignoreList, ignoreListFile);
+            }
             return HardReturn.IGNORE;
         }
     }
@@ -149,6 +157,8 @@ public class FileStorage implements PCStorage {
     @Override
     public void clearIgnoredPlayers(UUID player) {
         ignoreList.remove(player);
-        saveMap(ignoreList, ignoreListFile);
+        synchronized (ignoreList) {
+            saveMap(ignoreList, ignoreListFile);
+        }
     }
 }
