@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.runpaper)
 }
 
-description = "An advanced chat plugin for survival/anarchy servers."
+description = "Advanced chat plugin for survival/anarchy servers."
 
 dependencies {
     compileOnly("com.google.code.findbugs:jsr305:3.0.2")
