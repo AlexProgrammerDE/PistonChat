@@ -3,7 +3,7 @@
 [![Build Status](https://ci.codemc.io/buildStatus/icon?job=AlexProgrammerDE%2FPistonChat)](https://ci.codemc.io/job/AlexProgrammerDE/job/PistonChat/)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/AlexProgrammerDE/PistonChat)](https://github.com/AlexProgrammerDE/PistonChat/releases)
 
-**Advanced chat plugin for survival/anarchy servers.**
+**💬 Advanced chat plugin for survival/anarchy servers.**
 
 ## About
 This plugin was created to be a recreation of ChatCo from the ground up.
