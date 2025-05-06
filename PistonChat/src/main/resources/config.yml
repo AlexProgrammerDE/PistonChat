@@ -4,6 +4,7 @@
 # https://hub.spigotmc.org/javadocs/spigot/org/bukkit/ChatColor.html
 # pistonchat.prefix.green and pistonchat.chatformat.default are given by default.
 # storage is either file or mysql
+
 whisper:
   from: "<light_purple><player_name> whispers: <message>"
   to: "<light_purple>You whisper to <player_name>: <message>"

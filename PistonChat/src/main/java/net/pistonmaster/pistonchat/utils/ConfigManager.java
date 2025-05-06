@@ -2,7 +2,6 @@ package net.pistonmaster.pistonchat.utils;
 
 import lombok.RequiredArgsConstructor;
 import net.pistonmaster.pistonchat.PistonChat;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -31,7 +30,7 @@ public class ConfigManager {
         return config;
     }
 
-    private Configuration getDefaultConfig() {
+    private YamlConfiguration getDefaultConfig() {
         YamlConfiguration config = new YamlConfiguration();
 
         try (
@@ -46,7 +45,7 @@ public class ConfigManager {
         return config;
     }
 
-    private FileConfiguration getConfig() {
+    private YamlConfiguration getConfig() {
         YamlConfiguration config = new YamlConfiguration();
 
         try {
