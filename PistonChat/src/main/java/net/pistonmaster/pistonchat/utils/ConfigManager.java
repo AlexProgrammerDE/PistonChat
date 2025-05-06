@@ -3,13 +3,11 @@ package net.pistonmaster.pistonchat.utils;
 import lombok.RequiredArgsConstructor;
 import net.pistonmaster.pistonchat.PistonChat;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.file.Files;
 
 @RequiredArgsConstructor
@@ -24,8 +22,9 @@ public class ConfigManager {
         config = getConfig();
         config.setDefaults(getDefaultConfig());
         config.options().copyHeader(true);
+        config.options().copyDefaults(true);
 
-        saveConfig(config);
+        config.save(getConfigFile());
     }
 
     public FileConfiguration get() {
@@ -33,15 +32,30 @@ public class ConfigManager {
     }
 
     private Configuration getDefaultConfig() {
-        return YamlConfiguration.loadConfiguration(new InputStreamReader(getDefaultInput()));
+        YamlConfiguration config = new YamlConfiguration();
+
+        try (
+            InputStream inputStream = getDefaultInput();
+            InputStreamReader reader = new InputStreamReader(inputStream)
+        ) {
+            config.load(reader);
+        } catch (IOException | InvalidConfigurationException ex) {
+            throw new IllegalStateException("Cannot load default config", ex);
+        }
+
+        return config;
     }
 
     private FileConfiguration getConfig() {
-        return YamlConfiguration.loadConfiguration(getConfigFile());
-    }
+        YamlConfiguration config = new YamlConfiguration();
 
-    private void saveConfig(FileConfiguration config) throws IOException {
-        config.save(getConfigFile());
+        try {
+            config.load(getConfigFile());
+        } catch (IOException | InvalidConfigurationException ex) {
+            throw new IllegalStateException("Cannot load config", ex);
+        }
+
+        return config;
     }
 
     private void createIfAbsent() throws IOException {
