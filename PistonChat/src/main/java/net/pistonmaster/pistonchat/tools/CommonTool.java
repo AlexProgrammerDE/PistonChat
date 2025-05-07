@@ -14,7 +14,6 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.pistonmaster.pistonchat.PistonChat;
 import net.pistonmaster.pistonchat.api.PistonWhisperEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -73,7 +72,7 @@ public class CommonTool {
 
         PistonWhisperEvent pistonWhisperEvent = new PistonWhisperEvent(sender, receiver, message);
 
-        Bukkit.getPluginManager().callEvent(pistonWhisperEvent);
+        plugin.getServer().getPluginManager().callEvent(pistonWhisperEvent);
 
         if (pistonWhisperEvent.isCancelled()) {
             return;

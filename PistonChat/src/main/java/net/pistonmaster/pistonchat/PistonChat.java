@@ -23,12 +23,10 @@ import net.pistonmaster.pistonchat.utils.ConfigManager;
 import net.pistonmaster.pistonutils.update.GitHubUpdateChecker;
 import net.pistonmaster.pistonutils.update.SemanticVersion;
 import org.bstats.bukkit.Metrics;
-import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.mariadb.jdbc.MariaDbPoolDataSource;
 
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -69,7 +67,7 @@ public final class PistonChat extends JavaPlugin {
             languageManager.create();
         } catch (IOException e) {
             e.printStackTrace();
-            Bukkit.getPluginManager().disablePlugin(this);
+            getServer().getPluginManager().disablePlugin(this);
         }
 
         log.info(ChatColor.DARK_GREEN + "Loading storage");
