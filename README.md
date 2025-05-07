@@ -6,8 +6,10 @@
 **💬 Advanced chat plugin for survival/anarchy servers.**
 
 ## About
-This plugin was created to be a recreation of ChatCo from the ground up.
-A lot of chat plugins usually don't get any updates anymore or have been abandoned by the developers. 
+
+PistonChat is a recreation of 2b2t's chat plugin, but with many more features and options.
+It is designed to be used on survival and anarchy servers, but can also be used on other types of servers.
+Other options like ChatCo aren't up to date anymore and are not maintained, so I decided to create my own chat plugin.
 
 PistonChat will always get updates and contributions are welcome!
 
