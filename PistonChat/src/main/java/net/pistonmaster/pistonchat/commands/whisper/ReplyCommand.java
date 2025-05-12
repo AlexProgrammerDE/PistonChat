@@ -14,30 +14,30 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 public class ReplyCommand extends MessageCommandHelper implements CommandExecutor, TabExecutor {
-    private final PistonChat plugin;
+  private final PistonChat plugin;
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length == 0) {
-            return false;
-        }
-
-        plugin.runAsync(() -> {
-            Optional<CommandSender> lastMessagedOf = plugin.getCacheTool().getLastMessagedOf(sender);
-
-            if (lastMessagedOf.isEmpty()) {
-                plugin.getCommonTool().sendLanguageMessage(sender, "notonline");
-                return;
-            }
-
-            MessageCommandHelper.sendWhisper(plugin, sender, lastMessagedOf.get(), CommonTool.mergeArgs(args, 0));
-        });
-
-        return true;
+  @Override
+  public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    if (args.length == 0) {
+      return false;
     }
 
-    @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        return Collections.emptyList();
-    }
+    plugin.runAsync(() -> {
+      Optional<CommandSender> lastMessagedOf = plugin.getCacheTool().getLastMessagedOf(sender);
+
+      if (lastMessagedOf.isEmpty()) {
+        plugin.getCommonTool().sendLanguageMessage(sender, "notonline");
+        return;
+      }
+
+      MessageCommandHelper.sendWhisper(plugin, sender, lastMessagedOf.get(), CommonTool.mergeArgs(args, 0));
+    });
+
+    return true;
+  }
+
+  @Override
+  public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+    return Collections.emptyList();
+  }
 }

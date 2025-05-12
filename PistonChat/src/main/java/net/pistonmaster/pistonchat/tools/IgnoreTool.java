@@ -14,48 +14,48 @@ import java.util.*;
  */
 @RequiredArgsConstructor
 public class IgnoreTool {
-    private final PistonChat plugin;
+  private final PistonChat plugin;
 
-    public boolean isIgnored(CommandSender chatter, CommandSender receiver) {
-        if (receiver instanceof Player player) {
-            if (plugin.getSoftignoreTool().isSoftIgnored(chatter, player)) {
-                return true;
-            } else return plugin.getHardIgnoreTool().isHardIgnored(chatter, player);
-        } else {
-            return false;
-        }
+  public boolean isIgnored(CommandSender chatter, CommandSender receiver) {
+    if (receiver instanceof Player player) {
+      if (plugin.getSoftignoreTool().isSoftIgnored(chatter, player)) {
+        return true;
+      } else return plugin.getHardIgnoreTool().isHardIgnored(chatter, player);
+    } else {
+      return false;
+    }
+  }
+
+  public Map<OfflinePlayer, IgnoreType> getIgnoredPlayers(Player player) {
+    Map<OfflinePlayer, IgnoreType> map = new HashMap<>();
+
+    for (OfflinePlayer ignoredPlayer : convertIgnoredPlayer(plugin.getSoftignoreTool().getStoredList(player))) {
+      map.put(ignoredPlayer, IgnoreType.SOFT);
     }
 
-    public Map<OfflinePlayer, IgnoreType> getIgnoredPlayers(Player player) {
-        Map<OfflinePlayer, IgnoreType> map = new HashMap<>();
-
-        for (OfflinePlayer ignoredPlayer : convertIgnoredPlayer(plugin.getSoftignoreTool().getStoredList(player))) {
-            map.put(ignoredPlayer, IgnoreType.SOFT);
-        }
-
-        for (OfflinePlayer ignoredPlayer : convertIgnoredPlayer(plugin.getHardIgnoreTool().getStoredList(player))) {
-            map.put(ignoredPlayer, IgnoreType.HARD);
-        }
-
-        return map;
+    for (OfflinePlayer ignoredPlayer : convertIgnoredPlayer(plugin.getHardIgnoreTool().getStoredList(player))) {
+      map.put(ignoredPlayer, IgnoreType.HARD);
     }
 
-    protected List<OfflinePlayer> convertIgnoredPlayer(List<UUID> listUUID) {
-        List<OfflinePlayer> returnedPlayers = new ArrayList<>();
+    return map;
+  }
 
-        for (UUID str : listUUID) {
-            returnedPlayers.add(Bukkit.getOfflinePlayer(str));
-        }
+  protected List<OfflinePlayer> convertIgnoredPlayer(List<UUID> listUUID) {
+    List<OfflinePlayer> returnedPlayers = new ArrayList<>();
 
-        return returnedPlayers;
+    for (UUID str : listUUID) {
+      returnedPlayers.add(Bukkit.getOfflinePlayer(str));
     }
 
-    public void clearIgnoredPlayers(Player player) {
-        plugin.getSoftignoreTool().clearIgnoredPlayers(player);
-        plugin.getHardIgnoreTool().clearIgnoredPlayers(player);
-    }
+    return returnedPlayers;
+  }
 
-    public enum IgnoreType {
-        SOFT, HARD
-    }
+  public void clearIgnoredPlayers(Player player) {
+    plugin.getSoftignoreTool().clearIgnoredPlayers(player);
+    plugin.getHardIgnoreTool().clearIgnoredPlayers(player);
+  }
+
+  public enum IgnoreType {
+    SOFT, HARD
+  }
 }

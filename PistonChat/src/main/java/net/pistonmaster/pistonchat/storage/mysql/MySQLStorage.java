@@ -120,7 +120,7 @@ public class MySQLStorage implements PCStorage {
         preparedStatement.setString(1, ignoringReceiver.toString());
         preparedStatement.setString(2, ignoredChatter.toString());
         preparedStatement.execute();
-        
+
         return HardReturn.UN_IGNORE;
       } else {
         preparedStatement = connection.prepareStatement("INSERT INTO `pistonchat_hard_ignores` (`uuid`, `ignored_uuid`) VALUES (?, ?)");

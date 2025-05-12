@@ -8,16 +8,16 @@ import org.bukkit.entity.Player;
  */
 @SuppressWarnings("unused")
 public final class MuteAPI {
-    private MuteAPI() {
-    }
+  private MuteAPI() {
+  }
 
-    /**
-     * Check if a player is muted.
-     *
-     * @param player The player to check
-     * @return If the player is muted
-     */
-    public static boolean isMuted(Player player) {
-        return StorageTool.isMuted(player);
-    }
+  /**
+   * Check if a player is muted.
+   *
+   * @param player The player to check
+   * @return If the player is muted
+   */
+  public static boolean isMuted(Player player) {
+    return StorageTool.isMuted(player);
+  }
 }

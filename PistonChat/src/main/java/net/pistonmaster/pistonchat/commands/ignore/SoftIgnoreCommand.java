@@ -17,49 +17,49 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 public class SoftIgnoreCommand implements CommandExecutor, TabExecutor {
-    private final PistonChat plugin;
+  private final PistonChat plugin;
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player player)) {
-            plugin.getCommonTool().sendLanguageMessage(sender, "playeronly");
-            return true;
-        }
-
-        if (args.length == 0) {
-            return false;
-        }
-
-        Optional<Player> ignored = PlatformUtils.getPlayer(args[0]);
-
-        if (ignored.isEmpty()) {
-            plugin.getCommonTool().sendLanguageMessage(player, "notonline");
-            return true;
-        }
-
-        plugin.runAsync(() -> {
-            SoftIgnoreTool.SoftReturn type = plugin.getSoftignoreTool().softIgnorePlayer(player, ignored.get());
-
-            if (type == SoftIgnoreTool.SoftReturn.IGNORE) {
-                plugin.getCommonTool().sendLanguageMessageNoPrefix(player,
-                    "ignore",
-                    CommonTool.getStrippedNameResolver(ignored.get()));
-            } else if (type == SoftIgnoreTool.SoftReturn.UN_IGNORE) {
-                plugin.getCommonTool().sendLanguageMessageNoPrefix(player,
-                    "unignore",
-                    CommonTool.getStrippedNameResolver(ignored.get()));
-            }
-        });
-
-        return true;
+  @Override
+  public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    if (!(sender instanceof Player player)) {
+      plugin.getCommonTool().sendLanguageMessage(sender, "playeronly");
+      return true;
     }
 
-    @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        if (args.length == 1) {
-            return null;
-        } else {
-            return Collections.emptyList();
-        }
+    if (args.length == 0) {
+      return false;
     }
+
+    Optional<Player> ignored = PlatformUtils.getPlayer(args[0]);
+
+    if (ignored.isEmpty()) {
+      plugin.getCommonTool().sendLanguageMessage(player, "notonline");
+      return true;
+    }
+
+    plugin.runAsync(() -> {
+      SoftIgnoreTool.SoftReturn type = plugin.getSoftignoreTool().softIgnorePlayer(player, ignored.get());
+
+      if (type == SoftIgnoreTool.SoftReturn.IGNORE) {
+        plugin.getCommonTool().sendLanguageMessageNoPrefix(player,
+            "ignore",
+            CommonTool.getStrippedNameResolver(ignored.get()));
+      } else if (type == SoftIgnoreTool.SoftReturn.UN_IGNORE) {
+        plugin.getCommonTool().sendLanguageMessageNoPrefix(player,
+            "unignore",
+            CommonTool.getStrippedNameResolver(ignored.get()));
+      }
+    });
+
+    return true;
+  }
+
+  @Override
+  public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+    if (args.length == 1) {
+      return null;
+    } else {
+      return Collections.emptyList();
+    }
+  }
 }

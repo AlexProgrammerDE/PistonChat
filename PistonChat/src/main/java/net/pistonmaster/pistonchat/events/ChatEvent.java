@@ -14,48 +14,48 @@ import java.util.Set;
 
 @RequiredArgsConstructor
 public class ChatEvent implements Listener {
-    private final PistonChat plugin;
+  private final PistonChat plugin;
 
-    // Mute plugins should have a lower priority to work!
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onChat(AsyncPlayerChatEvent event) {
-        Player chatter = event.getPlayer();
-        PistonChatEvent pistonChatEvent = new PistonChatEvent(chatter, event.getMessage(), event.isAsynchronous());
+  // Mute plugins should have a lower priority to work!
+  @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+  public void onChat(AsyncPlayerChatEvent event) {
+    Player chatter = event.getPlayer();
+    PistonChatEvent pistonChatEvent = new PistonChatEvent(chatter, event.getMessage(), event.isAsynchronous());
 
-        Set<Player> recipients = Set.copyOf(event.getRecipients());
-        event.getRecipients().clear();
+    Set<Player> recipients = Set.copyOf(event.getRecipients());
+    event.getRecipients().clear();
 
-        plugin.getServer().getPluginManager().callEvent(pistonChatEvent);
+    plugin.getServer().getPluginManager().callEvent(pistonChatEvent);
 
-        event.setCancelled(pistonChatEvent.isCancelled());
+    event.setCancelled(pistonChatEvent.isCancelled());
 
-        if (pistonChatEvent.isCancelled()) {
-            return;
+    if (pistonChatEvent.isCancelled()) {
+      return;
+    }
+
+    plugin.runAsync(() -> {
+      if (!plugin.getTempDataTool().isChatEnabled(chatter)) {
+        plugin.getCommonTool().sendLanguageMessage(chatter, "chatisoff");
+        event.setCancelled(true);
+        return;
+      }
+
+      for (Player receiver : recipients) {
+        if (plugin.getIgnoreTool().isIgnored(chatter, receiver)
+            || !plugin.getTempDataTool().isChatEnabled(receiver)) {
+          continue;
         }
 
-        plugin.runAsync(() -> {
-            if (!plugin.getTempDataTool().isChatEnabled(chatter)) {
-                plugin.getCommonTool().sendLanguageMessage(chatter, "chatisoff");
-                event.setCancelled(true);
-                return;
-            }
+        PistonChatReceiveEvent perPlayerEvent = new PistonChatReceiveEvent(chatter, receiver, pistonChatEvent.getMessage(), event.isAsynchronous());
 
-            for (Player receiver : recipients) {
-                if (plugin.getIgnoreTool().isIgnored(chatter, receiver)
-                    || !plugin.getTempDataTool().isChatEnabled(receiver)) {
-                    continue;
-                }
+        plugin.getServer().getPluginManager().callEvent(perPlayerEvent);
 
-                PistonChatReceiveEvent perPlayerEvent = new PistonChatReceiveEvent(chatter, receiver, pistonChatEvent.getMessage(), event.isAsynchronous());
+        if (perPlayerEvent.isCancelled()) {
+          continue;
+        }
 
-                plugin.getServer().getPluginManager().callEvent(perPlayerEvent);
-
-                if (perPlayerEvent.isCancelled()) {
-                    continue;
-                }
-
-                plugin.getCommonTool().sendChatMessage(chatter, perPlayerEvent.getMessage(), receiver);
-            }
-        });
-    }
+        plugin.getCommonTool().sendChatMessage(chatter, perPlayerEvent.getMessage(), receiver);
+      }
+    });
+  }
 }

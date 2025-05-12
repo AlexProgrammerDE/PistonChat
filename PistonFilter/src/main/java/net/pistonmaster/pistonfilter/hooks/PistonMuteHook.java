@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import java.util.Date;
 
 public class PistonMuteHook {
-    public static void mute(Player player, Date date) {
-        StorageTool.tempMutePlayer(player, date);
-    }
+  public static void mute(Player player, Date date) {
+    StorageTool.tempMutePlayer(player, date);
+  }
 }

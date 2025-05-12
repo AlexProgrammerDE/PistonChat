@@ -16,32 +16,32 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 public class WhisperCommand extends MessageCommandHelper implements CommandExecutor, TabExecutor {
-    private final PistonChat plugin;
+  private final PistonChat plugin;
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length <= 1) {
-            return false;
-        }
-
-        Optional<Player> receiver = PlatformUtils.getPlayer(args[0]);
-
-        if (receiver.isEmpty()) {
-            plugin.getCommonTool().sendLanguageMessage(sender, "notonline");
-            return true;
-        }
-
-        plugin.runAsync(() -> MessageCommandHelper.sendWhisper(plugin, sender, receiver.get(), CommonTool.mergeArgs(args, 1)));
-
-        return true;
+  @Override
+  public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    if (args.length <= 1) {
+      return false;
     }
 
-    @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        if (args.length == 1) {
-            return null;
-        } else {
-            return Collections.emptyList();
-        }
+    Optional<Player> receiver = PlatformUtils.getPlayer(args[0]);
+
+    if (receiver.isEmpty()) {
+      plugin.getCommonTool().sendLanguageMessage(sender, "notonline");
+      return true;
     }
+
+    plugin.runAsync(() -> MessageCommandHelper.sendWhisper(plugin, sender, receiver.get(), CommonTool.mergeArgs(args, 1)));
+
+    return true;
+  }
+
+  @Override
+  public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+    if (args.length == 1) {
+      return null;
+    } else {
+      return Collections.emptyList();
+    }
+  }
 }

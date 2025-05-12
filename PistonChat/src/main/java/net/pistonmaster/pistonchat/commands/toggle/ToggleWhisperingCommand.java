@@ -13,31 +13,31 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public class ToggleWhisperingCommand implements CommandExecutor, TabExecutor {
-    private final PistonChat plugin;
+  private final PistonChat plugin;
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player player)) {
-            plugin.getCommonTool().sendLanguageMessage(sender, "playeronly");
-            return true;
-        }
-
-        plugin.runAsync(() -> {
-            boolean whisperingNowEnabled = !plugin.getTempDataTool().isWhisperingEnabled(player);
-            plugin.getTempDataTool().setWhisperingEnabled(player, whisperingNowEnabled);
-
-            if (whisperingNowEnabled) {
-                plugin.getCommonTool().sendLanguageMessage(player, "pmson");
-            } else {
-                plugin.getCommonTool().sendLanguageMessage(player, "pmsoff");
-            }
-        });
-
-        return true;
+  @Override
+  public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    if (!(sender instanceof Player player)) {
+      plugin.getCommonTool().sendLanguageMessage(sender, "playeronly");
+      return true;
     }
 
-    @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        return Collections.emptyList();
-    }
+    plugin.runAsync(() -> {
+      boolean whisperingNowEnabled = !plugin.getTempDataTool().isWhisperingEnabled(player);
+      plugin.getTempDataTool().setWhisperingEnabled(player, whisperingNowEnabled);
+
+      if (whisperingNowEnabled) {
+        plugin.getCommonTool().sendLanguageMessage(player, "pmson");
+      } else {
+        plugin.getCommonTool().sendLanguageMessage(player, "pmsoff");
+      }
+    });
+
+    return true;
+  }
+
+  @Override
+  public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+    return Collections.emptyList();
+  }
 }

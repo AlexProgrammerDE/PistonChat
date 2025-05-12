@@ -19,55 +19,55 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public final class UnMuteCommand implements CommandExecutor, TabExecutor {
-    private final PistonMute plugin;
+  private final PistonMute plugin;
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length > 0) {
-            Player player = plugin.getServer().getPlayer(args[0]);
+  @Override
+  public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    if (args.length > 0) {
+      Player player = plugin.getServer().getPlayer(args[0]);
 
-            if (player != null) {
-                if (player != sender) {
-                    if (StorageTool.unMutePlayer(player)) {
-                        sender.spigot().sendMessage(new ComponentBuilder("----------------").color(ChatColor.DARK_BLUE).create());
-                        sender.spigot().sendMessage(new ComponentBuilder("PistonMute").color(ChatColor.GOLD).create());
-                        sender.spigot().sendMessage(new ComponentBuilder("Successfully unmuted " + player.getName() + "!").color(ChatColor.GREEN).create());
-                        sender.spigot().sendMessage(new ComponentBuilder("----------------").color(ChatColor.DARK_BLUE).create());
-                    } else {
-                        sender.spigot().sendMessage(new ComponentBuilder("----------------").color(ChatColor.DARK_BLUE).create());
-                        sender.spigot().sendMessage(new ComponentBuilder("PistonMute").color(ChatColor.GOLD).create());
-                        sender.spigot().sendMessage(new ComponentBuilder(player.getName() + " wasn't muted!").color(ChatColor.RED).create());
-                        sender.spigot().sendMessage(new ComponentBuilder("----------------").color(ChatColor.DARK_BLUE).create());
-                    }
-                } else {
-                    sender.sendMessage("Please don't mute yourself!");
-                }
-            }
+      if (player != null) {
+        if (player != sender) {
+          if (StorageTool.unMutePlayer(player)) {
+            sender.spigot().sendMessage(new ComponentBuilder("----------------").color(ChatColor.DARK_BLUE).create());
+            sender.spigot().sendMessage(new ComponentBuilder("PistonMute").color(ChatColor.GOLD).create());
+            sender.spigot().sendMessage(new ComponentBuilder("Successfully unmuted " + player.getName() + "!").color(ChatColor.GREEN).create());
+            sender.spigot().sendMessage(new ComponentBuilder("----------------").color(ChatColor.DARK_BLUE).create());
+          } else {
+            sender.spigot().sendMessage(new ComponentBuilder("----------------").color(ChatColor.DARK_BLUE).create());
+            sender.spigot().sendMessage(new ComponentBuilder("PistonMute").color(ChatColor.GOLD).create());
+            sender.spigot().sendMessage(new ComponentBuilder(player.getName() + " wasn't muted!").color(ChatColor.RED).create());
+            sender.spigot().sendMessage(new ComponentBuilder("----------------").color(ChatColor.DARK_BLUE).create());
+          }
         } else {
-            return false;
+          sender.sendMessage("Please don't mute yourself!");
         }
-
-        return true;
+      }
+    } else {
+      return false;
     }
 
-    @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        if (args.length == 1) {
-            List<String> players = new ArrayList<>();
+    return true;
+  }
 
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                players.add(player.getName());
-            }
+  @Override
+  public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+    if (args.length == 1) {
+      List<String> players = new ArrayList<>();
 
-            List<String> completions = new ArrayList<>();
+      for (Player player : Bukkit.getOnlinePlayers()) {
+        players.add(player.getName());
+      }
 
-            StringUtil.copyPartialMatches(args[0], players, completions);
+      List<String> completions = new ArrayList<>();
 
-            Collections.sort(completions);
+      StringUtil.copyPartialMatches(args[0], players, completions);
 
-            return completions;
-        } else {
-            return new ArrayList<>();
-        }
+      Collections.sort(completions);
+
+      return completions;
+    } else {
+      return new ArrayList<>();
     }
+  }
 }

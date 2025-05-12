@@ -14,28 +14,28 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 public class LastCommand extends MessageCommandHelper implements CommandExecutor, TabExecutor {
-    private final PistonChat plugin;
+  private final PistonChat plugin;
 
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        plugin.runAsync(() -> {
-            Optional<CommandSender> lastSentTo = plugin.getCacheTool().getLastSentTo(sender);
-            Optional<CommandSender> lastMessagedOf = plugin.getCacheTool().getLastMessagedOf(sender);
+  @Override
+  public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    plugin.runAsync(() -> {
+      Optional<CommandSender> lastSentTo = plugin.getCacheTool().getLastSentTo(sender);
+      Optional<CommandSender> lastMessagedOf = plugin.getCacheTool().getLastMessagedOf(sender);
 
-            if (lastSentTo.isPresent()) {
-                MessageCommandHelper.sendWhisper(plugin, sender, lastSentTo.get(), CommonTool.mergeArgs(args, 0));
-            } else if (lastMessagedOf.isPresent()) {
-                MessageCommandHelper.sendWhisper(plugin, sender, lastMessagedOf.get(), CommonTool.mergeArgs(args, 0));
-            } else {
-                plugin.getCommonTool().sendLanguageMessage(sender, "notonline");
-            }
-        });
+      if (lastSentTo.isPresent()) {
+        MessageCommandHelper.sendWhisper(plugin, sender, lastSentTo.get(), CommonTool.mergeArgs(args, 0));
+      } else if (lastMessagedOf.isPresent()) {
+        MessageCommandHelper.sendWhisper(plugin, sender, lastMessagedOf.get(), CommonTool.mergeArgs(args, 0));
+      } else {
+        plugin.getCommonTool().sendLanguageMessage(sender, "notonline");
+      }
+    });
 
-        return true;
-    }
+    return true;
+  }
 
-    @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        return Collections.emptyList();
-    }
+  @Override
+  public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+    return Collections.emptyList();
+  }
 }

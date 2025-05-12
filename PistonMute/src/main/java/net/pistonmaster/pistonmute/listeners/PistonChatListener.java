@@ -12,30 +12,30 @@ import org.bukkit.event.Listener;
 
 @RequiredArgsConstructor
 public final class PistonChatListener implements Listener {
-    private final PistonMute plugin;
-    private final PistonChat pistonChat = PistonChat.getPlugin(PistonChat.class);
+  private final PistonMute plugin;
+  private final PistonChat pistonChat = PistonChat.getPlugin(PistonChat.class);
 
-    @EventHandler
-    public void onChat(PistonChatEvent event) {
-        if (StorageTool.isMuted(event.getPlayer())) {
-            if (plugin.getConfig().getBoolean("shadowMute")) {
-                pistonChat.getCommonTool().sendChatMessage(event.getPlayer(), event.getMessage(), event.getPlayer());
-            }
+  @EventHandler
+  public void onChat(PistonChatEvent event) {
+    if (StorageTool.isMuted(event.getPlayer())) {
+      if (plugin.getConfig().getBoolean("shadowMute")) {
+        pistonChat.getCommonTool().sendChatMessage(event.getPlayer(), event.getMessage(), event.getPlayer());
+      }
 
-            event.setCancelled(true);
-        }
+      event.setCancelled(true);
     }
+  }
 
-    @EventHandler
-    public void onChat(PistonWhisperEvent event) {
-        if (event.getSender() == event.getReceiver()) return;
+  @EventHandler
+  public void onChat(PistonWhisperEvent event) {
+    if (event.getSender() == event.getReceiver()) return;
 
-        if (event.getSender() instanceof Player && StorageTool.isMuted((Player) event.getSender())) {
-            if (plugin.getConfig().getBoolean("shadowMute")) {
-                pistonChat.getCommonTool().sendSender(event.getSender(), event.getMessage(), event.getReceiver());
-            }
+    if (event.getSender() instanceof Player && StorageTool.isMuted((Player) event.getSender())) {
+      if (plugin.getConfig().getBoolean("shadowMute")) {
+        pistonChat.getCommonTool().sendSender(event.getSender(), event.getMessage(), event.getReceiver());
+      }
 
-            event.setCancelled(true);
-        }
+      event.setCancelled(true);
     }
+  }
 }
