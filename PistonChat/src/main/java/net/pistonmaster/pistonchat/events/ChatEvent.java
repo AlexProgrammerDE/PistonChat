@@ -33,29 +33,27 @@ public class ChatEvent implements Listener {
       return;
     }
 
-    plugin.runAsync(() -> {
-      if (!plugin.getTempDataTool().isChatEnabled(chatter)) {
-        plugin.getCommonTool().sendLanguageMessage(chatter, "chatisoff");
-        event.setCancelled(true);
-        return;
+    if (!plugin.getTempDataTool().isChatEnabled(chatter)) {
+      plugin.getCommonTool().sendLanguageMessage(chatter, "chatisoff");
+      event.setCancelled(true);
+      return;
+    }
+
+    for (Player receiver : recipients) {
+      if (plugin.getIgnoreTool().isIgnored(chatter, receiver)
+        || !plugin.getTempDataTool().isChatEnabled(receiver)) {
+        continue;
       }
 
-      for (Player receiver : recipients) {
-        if (plugin.getIgnoreTool().isIgnored(chatter, receiver)
-            || !plugin.getTempDataTool().isChatEnabled(receiver)) {
-          continue;
-        }
+      PistonChatReceiveEvent perPlayerEvent = new PistonChatReceiveEvent(chatter, receiver, pistonChatEvent.getMessage(), event.isAsynchronous());
 
-        PistonChatReceiveEvent perPlayerEvent = new PistonChatReceiveEvent(chatter, receiver, pistonChatEvent.getMessage(), event.isAsynchronous());
+      plugin.getServer().getPluginManager().callEvent(perPlayerEvent);
 
-        plugin.getServer().getPluginManager().callEvent(perPlayerEvent);
-
-        if (perPlayerEvent.isCancelled()) {
-          continue;
-        }
-
-        plugin.getCommonTool().sendChatMessage(chatter, perPlayerEvent.getMessage(), receiver);
+      if (perPlayerEvent.isCancelled()) {
+        continue;
       }
-    });
+
+      plugin.getCommonTool().sendChatMessage(chatter, perPlayerEvent.getMessage(), receiver);
+    }
   }
 }
