@@ -1,7 +1,10 @@
+<img align="right" src="https://github.com/AlexProgrammerDE/PistonChat/blob/main/images/logo.png?raw=true" height="150" width="150">
+
+[![modrinth](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/available/modrinth_vector.svg)](https://modrinth.com/plugin/pistonchat)
+
+[![discord](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/social/discord-singular_vector.svg)](https://discord.gg/CDrcxzH) [![kofi](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/donate/kofi-singular_vector.svg)](https://ko-fi.com/alexprogrammerde)
+
 # PistonChat
-[![Discord embed](https://discordapp.com/api/guilds/739784741124833301/embed.png)](https://discord.gg/CDrcxzH)
-[![Build Status](https://ci.codemc.io/buildStatus/icon?job=AlexProgrammerDE%2FPistonChat)](https://ci.codemc.io/job/AlexProgrammerDE/job/PistonChat/)
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/AlexProgrammerDE/PistonChat)](https://github.com/AlexProgrammerDE/PistonChat/releases)
 
 **💬 Advanced chat plugin for survival/anarchy servers.**
 
