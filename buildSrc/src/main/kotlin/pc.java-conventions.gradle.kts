@@ -6,7 +6,7 @@ plugins {
 dependencies {
     compileOnlyApi("org.apiguardian:apiguardian-api:1.1.2")
 
-    compileOnly("net.luckperms:api:5.4")
+    compileOnly("net.luckperms:api:5.5")
 
     compileOnly("org.projectlombok:lombok:1.18.38")
     annotationProcessor("org.projectlombok:lombok:1.18.38")
