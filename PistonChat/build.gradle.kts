@@ -17,7 +17,7 @@ dependencies {
     implementation("net.kyori:adventure-text-minimessage:4.21.0")
     implementation("org.bstats:bstats-bukkit:3.1.0")
     implementation("org.mariadb.jdbc:mariadb-java-client:3.5.3")
-    implementation("com.github.ben-manes.caffeine:caffeine:3.2.0")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.2.1")
 }
 
 tasks {
