@@ -12,8 +12,8 @@ dependencies {
 
     implementation("net.pistonmaster:PistonUtils:1.4.0")
     implementation("me.xdrop:fuzzywuzzy:1.4.0")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.13.1")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.13.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.13.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.13.2")
     implementation("org.bstats:bstats-bukkit:3.1.0")
     implementation("org.apache.commons:commons-collections4:4.5.0")
 }
