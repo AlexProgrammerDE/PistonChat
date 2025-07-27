@@ -11,7 +11,7 @@ allprojects {
         maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") {
             name = "spigot-snapshots"
         }
-        maven("https://oss.sonatype.org/content/groups/public/") {
+        maven("https://central.sonatype.com/repository/maven-snapshots/") {
             name = "sonatype"
         }
         maven("https://repo.codemc.org/repository/maven-public") {
