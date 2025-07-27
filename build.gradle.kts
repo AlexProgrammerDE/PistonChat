@@ -20,6 +20,12 @@ allprojects {
         maven("https://jitpack.io") {
             name = "jitpack"
         }
+        maven("https://repo.tcoded.com/releases") {
+            name = "tcoded-releases"
+            content {
+                includeGroup("com.tcoded")
+            }
+        }
     }
 }
 
