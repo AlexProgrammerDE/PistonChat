@@ -53,7 +53,7 @@ public class ChatEvent implements Listener {
         continue;
       }
 
-      plugin.getCommonTool().sendChatMessage(chatter, perPlayerEvent.getMessage(), receiver);
+      plugin.getCommonTool().sendChatMessage(chatter, perPlayerEvent.getMessage(), receiver, perPlayerEvent.getFormat());
     }
   }
 }
