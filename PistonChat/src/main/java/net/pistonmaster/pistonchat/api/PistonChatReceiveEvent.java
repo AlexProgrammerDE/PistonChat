@@ -1,5 +1,6 @@
 package net.pistonmaster.pistonchat.api;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -15,6 +16,7 @@ public class PistonChatReceiveEvent extends Event implements Cancellable {
   private final Player receiver;
   private boolean isCancelled;
   private String message;
+  private Component format;
 
   public PistonChatReceiveEvent(Player sender, Player receiver, String message, boolean isAsync) {
     super(isAsync);
@@ -90,5 +92,23 @@ public class PistonChatReceiveEvent extends Event implements Cancellable {
    */
   public void setMessage(String message) {
     this.message = message;
+  }
+
+  /**
+   * Get the chat format.
+   *
+   * @return the format
+   */
+  public Component getFormat() {
+    return format;
+  }
+
+  /**
+   * Set the chat format.
+   *
+   * @param format the format to set
+   */
+  public void setFormat(Component format) {
+    this.format = format;
   }
 }
