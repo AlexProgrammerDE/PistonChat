@@ -19,7 +19,13 @@ dependencies {
 
 tasks {
     processResources {
-        expand("version" to version, "description" to description, "url" to "https://pistonmaster.net/PistonChat")
+        expand(
+            mapOf(
+                "version" to version,
+                "description" to description,
+                "url" to "https://pistonmaster.net/PistonChat"
+            )
+        )
     }
     test {
         reports.junitXml.required = true
