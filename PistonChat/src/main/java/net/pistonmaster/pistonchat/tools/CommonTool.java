@@ -23,6 +23,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Optional;
@@ -155,10 +156,16 @@ public class CommonTool {
   }
 
   public void sendChatMessage(Player chatter, String message, Player receiver) {
+    sendChatMessage(chatter, message, receiver, null);
+  }
+
+  public void sendChatMessage(Player chatter, String message, Player receiver, @Nullable Component overrideFormat) {
     Audience chatterAudience = senderAudience(chatter);
     Audience receiverAudience = senderAudience(receiver);
     TagResolver miniPlaceholderResolver = miniPlaceholdersTagResolver();
-    Component formatComponent = getFormat(chatter, miniPlaceholderResolver);
+    Component formatComponent = overrideFormat != null
+      ? overrideFormat
+      : getFormat(chatter, miniPlaceholderResolver);
 
     if (receiver.hasPermission("pistonchat.playernamereply")) {
       String hoverText = plugin.getConfig().getString("hover-text");
