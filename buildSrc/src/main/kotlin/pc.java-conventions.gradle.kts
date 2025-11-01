@@ -1,10 +1,12 @@
 plugins {
     `java-library`
     `maven-publish`
+    id("net.ltgt.errorprone")
 }
 
 dependencies {
     compileOnlyApi("org.apiguardian:apiguardian-api:1.1.2")
+    errorprone("com.google.errorprone:error_prone_core:2.43.0")
 
     compileOnly("net.luckperms:api:5.5")
 
