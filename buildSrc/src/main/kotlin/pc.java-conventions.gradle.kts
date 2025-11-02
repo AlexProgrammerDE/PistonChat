@@ -2,11 +2,18 @@ plugins {
     `java-library`
     `maven-publish`
     id("net.ltgt.errorprone")
+    id("com.github.spotbugs")
+}
+
+spotbugs {
+    ignoreFailures = true
 }
 
 dependencies {
     compileOnlyApi("org.apiguardian:apiguardian-api:1.1.2")
+
     errorprone("com.google.errorprone:error_prone_core:2.43.0")
+    spotbugs("com.github.spotbugs:spotbugs:4.9.8")
 
     compileOnly("net.luckperms:api:5.5")
 
