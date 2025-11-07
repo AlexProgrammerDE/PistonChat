@@ -12,7 +12,7 @@ spotbugs {
 dependencies {
     compileOnlyApi("org.apiguardian:apiguardian-api:1.1.2")
 
-    errorprone("com.google.errorprone:error_prone_core:2.43.0")
+    errorprone("com.google.errorprone:error_prone_core:2.44.0")
     spotbugs("com.github.spotbugs:spotbugs:4.9.8")
 
     compileOnly("net.luckperms:api:5.5")
