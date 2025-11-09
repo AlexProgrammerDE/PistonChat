@@ -5,10 +5,6 @@ plugins {
     id("com.github.spotbugs")
 }
 
-spotbugs {
-    ignoreFailures = true
-}
-
 dependencies {
     compileOnlyApi("org.apiguardian:apiguardian-api:1.1.2")
 
