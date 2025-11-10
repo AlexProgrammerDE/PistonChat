@@ -3,6 +3,7 @@ package net.pistonmaster.pistonchat.storage.file;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.md_5.bungee.api.ChatColor;
 import net.pistonmaster.pistonchat.storage.PCStorage;
 
@@ -32,7 +33,7 @@ public class FileStorage implements PCStorage {
   private final Map<UUID, Boolean> whisperSettings = new ConcurrentHashMap<>();
   private final Map<UUID, List<UUID>> ignoreList = new ConcurrentHashMap<>();
 
-  @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Logger is a shared resource by design")
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Logger is a shared resource by design")
   public FileStorage(Logger log, Path dataFolder) {
     this.log = log;
 

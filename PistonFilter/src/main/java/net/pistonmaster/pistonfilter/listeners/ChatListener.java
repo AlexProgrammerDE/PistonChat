@@ -2,6 +2,7 @@ package net.pistonmaster.pistonfilter.listeners;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 import net.md_5.bungee.api.ChatColor;
 import net.pistonmaster.pistonchat.api.PistonChatAPI;
@@ -34,7 +35,7 @@ public class ChatListener implements Listener {
   private final Map<UUID, Deque<MessageInfo>> players = new ConcurrentHashMap<>();
   private final Cache<UUID, AtomicInteger> violationsCache;
 
-  @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Plugin instance is intentionally shared")
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Plugin instance is intentionally shared")
   public ChatListener(PistonFilter plugin) {
     this.plugin = plugin;
     this.globalMessages = new MaxSizeDeque<>(plugin.getConfig().getInt("global-message-stack-size"));
@@ -57,7 +58,9 @@ public class ChatListener implements Listener {
 
   @EventHandler(ignoreCancelled = true)
   public void onWhisper(PistonWhisperEvent event) {
-    if (event.getSender() == event.getReceiver()) return;
+    if (event.getSender() == event.getReceiver()) {
+      return;
+    }
 
     handleMessage(event.getSender(), MessageInfo.of(Instant.now(), event.getMessage()),
         () -> event.setCancelled(true),
@@ -65,11 +68,13 @@ public class ChatListener implements Listener {
   }
 
   public void handleMessage(CommandSender sender, MessageInfo message, Runnable cancelEvent, Consumer<String> sendEmpty) {
-    if (sender.hasPermission("pistonfilter.bypass")) return;
+    if (sender.hasPermission("pistonfilter.bypass")) {
+      return;
+    }
 
     for (String str : plugin.getConfig().getStringList("banned-text")) {
       if (FuzzySearch.partialRatio(message.getStrippedMessage(), StringHelper.revertLeet(str)) > plugin.getConfig().getInt("banned-text-partial-ratio")) {
-        cancelMessage(sender, message, cancelEvent, sendEmpty, String.format("Contains banned text: %s", str));
+        cancelMessage(sender, message, cancelEvent, sendEmpty, "Contains banned text: %s".formatted(str));
         return;
       }
     }
@@ -77,10 +82,10 @@ public class ChatListener implements Listener {
     int wordsWithNumbers = 0;
     for (String word : message.getWords()) {
       if (word.length() > plugin.getConfig().getInt("max-word-length")) {
-        cancelMessage(sender, message, cancelEvent, sendEmpty, String.format("Contains a word with length (%d) \"%s\".", word.length(), word));
+        cancelMessage(sender, message, cancelEvent, sendEmpty, "Contains a word with length (%d) \"%s\".".formatted(word.length(), word));
         return;
       } else if (hasInvalidSeparators(word)) {
-        cancelMessage(sender, message, cancelEvent, sendEmpty, String.format("Has a word with invalid separators (%s).", word));
+        cancelMessage(sender, message, cancelEvent, sendEmpty, "Has a word with invalid separators (%s).".formatted(word));
         return;
       }
 
@@ -90,7 +95,7 @@ public class ChatListener implements Listener {
     }
 
     if (wordsWithNumbers > plugin.getConfig().getInt("max-words-with-numbers")) {
-      cancelMessage(sender, message, cancelEvent, sendEmpty, String.format("Used %d words with numbers.", wordsWithNumbers));
+      cancelMessage(sender, message, cancelEvent, sendEmpty, "Used %d words with numbers.".formatted(wordsWithNumbers));
       return;
     }
 
@@ -138,11 +143,11 @@ public class ChatListener implements Listener {
         int similarity;
         if ((similarity = FuzzySearch.weightedRatio(pair.getStrippedMessage(), message.getStrippedMessage())) > similarRatio) {
           cancelMessage(sender, message, cancelEvent, sendEmpty,
-              String.format("Similar to previous message (%d%%) (%s)", similarity, pair.getOriginalMessage()));
+              "Similar to previous message (%d%%) (%s)".formatted(similarity, pair.getOriginalMessage()));
           return true;
         } else if (noRepeatWordRatio > -1 && (similarity = getAverageEqualRatio(pair.getStrippedWords(), message.getStrippedWords())) > noRepeatWordRatio) {
           cancelMessage(sender, message, cancelEvent, sendEmpty,
-              String.format("Word similarity to previous message (%d%%) (%s)", similarity, pair.getOriginalMessage()));
+              "Word similarity to previous message (%d%%) (%s)".formatted(similarity, pair.getOriginalMessage()));
           return true;
         }
         return true;

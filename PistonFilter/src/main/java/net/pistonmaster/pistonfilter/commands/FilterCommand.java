@@ -25,12 +25,12 @@ public class FilterCommand implements CommandExecutor, TabExecutor {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (sender.hasPermission("pistonfilter.admin") && args.length > 0) {
-      if (args[0].equalsIgnoreCase("reload")) {
+      if ("reload".equalsIgnoreCase(args[0])) {
         plugin.reloadConfig();
         sender.sendMessage(ChatColor.GOLD + "Reloaded the config!");
       }
 
-      if (args[0].equalsIgnoreCase("add") && args.length > 1) {
+      if ("add".equalsIgnoreCase(args[0]) && args.length > 1) {
         FileConfiguration config = plugin.getConfig();
 
         config.set("banned-text", Stream.concat(plugin.getConfig().getStringList("banned-text").stream(), Stream.of(args[1])).collect(Collectors.toList()));

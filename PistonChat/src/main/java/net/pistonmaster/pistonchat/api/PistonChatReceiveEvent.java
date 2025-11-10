@@ -1,5 +1,6 @@
 package net.pistonmaster.pistonchat.api;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -18,7 +19,7 @@ public class PistonChatReceiveEvent extends Event implements Cancellable {
   private String message;
   private Component format;
 
-  @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Bukkit API convention - Player objects are meant to be shared")
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Bukkit API convention - Player objects are meant to be shared")
   public PistonChatReceiveEvent(Player sender, Player receiver, String message, boolean isAsync) {
     super(isAsync);
 
@@ -64,7 +65,7 @@ public class PistonChatReceiveEvent extends Event implements Cancellable {
    *
    * @return the player who sends the message
    */
-  @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "Bukkit API convention - Player objects are meant to be shared")
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "Bukkit API convention - Player objects are meant to be shared")
   public Player getSender() {
     return sender;
   }
@@ -74,7 +75,7 @@ public class PistonChatReceiveEvent extends Event implements Cancellable {
    *
    * @return the player who receives the message
    */
-  @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "Bukkit API convention - Player objects are meant to be shared")
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "Bukkit API convention - Player objects are meant to be shared")
   public Player getReceiver() {
     return receiver;
   }
@@ -102,7 +103,7 @@ public class PistonChatReceiveEvent extends Event implements Cancellable {
    *
    * @return the format
    */
-  @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "Adventure Component is immutable")
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "Adventure Component is immutable")
   public Component getFormat() {
     return format;
   }
@@ -112,7 +113,7 @@ public class PistonChatReceiveEvent extends Event implements Cancellable {
    *
    * @param format the format to set
    */
-  @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Adventure Component is immutable")
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Adventure Component is immutable")
   public void setFormat(Component format) {
     this.format = format;
   }

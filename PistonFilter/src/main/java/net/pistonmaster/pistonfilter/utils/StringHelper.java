@@ -58,4 +58,7 @@ public class StringHelper {
     }
     return Pattern.compile("\\p{InCombiningDiacriticalMarks}+").matcher(decomposed).replaceAll("");
   }
+
+  private StringHelper() {
+  }
 }

@@ -9,4 +9,7 @@ public class PistonMuteHook {
   public static void mute(Player player, Instant unmuteAt) {
     StorageTool.tempMutePlayer(player, unmuteAt);
   }
+
+  private PistonMuteHook() {
+  }
 }

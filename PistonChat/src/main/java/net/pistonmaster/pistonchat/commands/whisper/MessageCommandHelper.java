@@ -21,4 +21,7 @@ public class MessageCommandHelper {
 
     plugin.getCommonTool().sendWhisperTo(sender, message, receiver);
   }
+
+  private MessageCommandHelper() {
+  }
 }

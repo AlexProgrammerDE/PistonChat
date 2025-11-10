@@ -30,8 +30,8 @@ public class MySQLStorage implements PCStorage {
     try {
       dataSource.setUser(config.getString("mysql.username"));
       dataSource.setPassword(config.getString("mysql.password"));
-      dataSource.setUrl("jdbc:mariadb://" + config.getString("mysql.host") + ":" + config.getInt("mysql.port") +
-          "/" + config.getString("mysql.database")
+      dataSource.setUrl("jdbc:mariadb://" + config.getString("mysql.host") + ":" + config.getInt("mysql.port")
+          + "/" + config.getString("mysql.database")
           + "?sslMode=disable&serverTimezone=UTC&maxPoolSize=10"
       );
 
@@ -39,15 +39,15 @@ public class MySQLStorage implements PCStorage {
            var stmt1 = connection.createStatement();
            var stmt2 = connection.createStatement();
            var stmt3 = connection.createStatement()) {
-        stmt1.execute("CREATE TABLE IF NOT EXISTS `pistonchat_settings_chat` (`uuid` VARCHAR(36) NOT NULL," +
-            "`chat_enabled` tinyint(1) NOT NULL," +
-            "PRIMARY KEY (`uuid`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
-        stmt2.execute("CREATE TABLE IF NOT EXISTS `pistonchat_settings_whisper` (`uuid` VARCHAR(36) NOT NULL," +
-            "`whisper_enabled` tinyint(1) NOT NULL," +
-            "PRIMARY KEY (`uuid`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
-        stmt3.execute("CREATE TABLE IF NOT EXISTS `pistonchat_hard_ignores` (`uuid` VARCHAR(36) NOT NULL," +
-            "`ignored_uuid` VARCHAR(36) NOT NULL," +
-            "PRIMARY KEY (`uuid`, `ignored_uuid`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+        stmt1.execute("CREATE TABLE IF NOT EXISTS `pistonchat_settings_chat` (`uuid` VARCHAR(36) NOT NULL,"
+            + "`chat_enabled` tinyint(1) NOT NULL,"
+            + "PRIMARY KEY (`uuid`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+        stmt2.execute("CREATE TABLE IF NOT EXISTS `pistonchat_settings_whisper` (`uuid` VARCHAR(36) NOT NULL,"
+            + "`whisper_enabled` tinyint(1) NOT NULL,"
+            + "PRIMARY KEY (`uuid`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+        stmt3.execute("CREATE TABLE IF NOT EXISTS `pistonchat_hard_ignores` (`uuid` VARCHAR(36) NOT NULL,"
+            + "`ignored_uuid` VARCHAR(36) NOT NULL,"
+            + "PRIMARY KEY (`uuid`, `ignored_uuid`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
       }
     } catch (SQLException e) {
       log.log(Level.SEVERE, "Failed to initialize database connection", e);

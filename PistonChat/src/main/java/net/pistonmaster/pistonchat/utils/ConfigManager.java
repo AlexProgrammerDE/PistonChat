@@ -1,5 +1,6 @@
 package net.pistonmaster.pistonchat.utils;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.RequiredArgsConstructor;
 import net.pistonmaster.pistonchat.PistonChat;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -10,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
 @RequiredArgsConstructor
@@ -29,7 +31,7 @@ public class ConfigManager {
     config.save(getConfigFile());
   }
 
-  @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "Bukkit API convention - FileConfiguration is meant to be mutable")
+  @SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "Bukkit API convention - FileConfiguration is meant to be mutable")
   public FileConfiguration get() {
     return config;
   }
@@ -39,7 +41,7 @@ public class ConfigManager {
 
     try (
         InputStream inputStream = getDefaultInput();
-        InputStreamReader reader = new InputStreamReader(inputStream, java.nio.charset.StandardCharsets.UTF_8)
+        InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)
     ) {
       config.load(reader);
     } catch (IOException | InvalidConfigurationException ex) {

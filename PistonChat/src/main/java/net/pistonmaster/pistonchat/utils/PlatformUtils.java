@@ -14,4 +14,7 @@ public class PlatformUtils {
   public static Optional<Player> getPlayer(UUID uuid) {
     return Optional.ofNullable(Bukkit.getPlayer(uuid));
   }
+
+  private PlatformUtils() {
+  }
 }

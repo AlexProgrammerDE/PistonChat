@@ -145,7 +145,7 @@ public class CommonTool {
     for (String str : config.getConfigurationSection("prefixes").getKeys(false)) {
       ConfigurationSection section = config.getConfigurationSection("prefixes." + str);
       String prefix = section.getString("prefix");
-      if (!prefix.equalsIgnoreCase("/")
+      if (!"/".equalsIgnoreCase(prefix)
           && message.toLowerCase(Locale.ROOT).startsWith(prefix)
           && player.hasPermission("pistonchat.prefix." + str.toLowerCase(Locale.ROOT))) {
         return Optional.of(NamedTextColor.NAMES.valueOrThrow(section.getString("color").toLowerCase(Locale.ROOT)));
@@ -171,7 +171,7 @@ public class CommonTool {
       String hoverText = plugin.getConfig().getString("hover-text");
 
       formatComponent = formatComponent
-          .clickEvent(ClickEvent.suggestCommand(String.format("/w %s ", chatter.getName())))
+          .clickEvent(ClickEvent.suggestCommand("/w %s ".formatted(chatter.getName())))
           .hoverEvent(HoverEvent.showText(MiniMessage.miniMessage().deserialize(hoverText, new RelationalAudience<>(chatterAudience, receiverAudience), TagResolver.resolver(
               miniPlaceholderResolver,
               getStrippedNameResolver(chatter)

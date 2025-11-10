@@ -45,7 +45,7 @@ public class IgnoreListCommand implements CommandExecutor, TabExecutor {
       return true;
     }
 
-    if (args[0].equalsIgnoreCase("clear")) {
+    if ("clear".equalsIgnoreCase(args[0])) {
       plugin.runAsync(() -> {
         if (noPlayersIgnored(player)) {
           return;

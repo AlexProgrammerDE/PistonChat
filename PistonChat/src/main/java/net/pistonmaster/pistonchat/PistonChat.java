@@ -73,9 +73,9 @@ public final class PistonChat extends JavaPlugin {
 
     log.info(ChatColor.DARK_GREEN + "Loading storage");
     var storageType = configManager.get().getString("storage");
-    if (storageType.equalsIgnoreCase("mysql")) {
+    if ("mysql".equalsIgnoreCase(storageType)) {
       storage = MySQLStorage.create(log, configManager);
-    } else if (storageType.equalsIgnoreCase("file")) {
+    } else if ("file".equalsIgnoreCase(storageType)) {
       storage = new FileStorage(log, getDataFolder().toPath());
     }
 

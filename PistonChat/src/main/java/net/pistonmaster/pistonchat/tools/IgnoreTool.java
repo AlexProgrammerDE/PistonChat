@@ -20,7 +20,9 @@ public class IgnoreTool {
     if (receiver instanceof Player player) {
       if (plugin.getSoftignoreTool().isSoftIgnored(chatter, player)) {
         return true;
-      } else return plugin.getHardIgnoreTool().isHardIgnored(chatter, player);
+      } else {
+        return plugin.getHardIgnoreTool().isHardIgnored(chatter, player);
+      }
     } else {
       return false;
     }
