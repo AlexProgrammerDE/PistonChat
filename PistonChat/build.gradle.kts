@@ -8,7 +8,7 @@ description = "Advanced chat plugin for survival/anarchy servers."
 dependencies {
     compileOnly("com.google.code.findbugs:jsr305:3.0.2")
     compileOnly("io.github.miniplaceholders:miniplaceholders-api:3.1.0")
-    compileOnly("jakarta.annotation:jakarta.annotation-api:1.3.5")
+    compileOnly("jakarta.annotation:jakarta.annotation-api:3.0.0")
     compileOnly("org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT")
 
     implementation("net.pistonmaster:PistonUtils:1.4.0")
