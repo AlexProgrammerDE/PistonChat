@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Date;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -96,19 +97,20 @@ public final class StorageTool {
   }
 
   private static void manageMute(OfflinePlayer player) {
-    Date now = new Date();
+    Instant now = Instant.now();
 
     if (dataConfig.contains(player.getUniqueId().toString())) {
       SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.US);
 
       try {
         Date date = sdf.parse(dataConfig.getString(player.getUniqueId().toString()));
+        Instant muteUntil = date.toInstant();
 
-        if (now.after(date) || (now.equals(date))) {
+        if (now.isAfter(muteUntil) || now.equals(muteUntil)) {
           unMutePlayer(player);
         }
       } catch (ParseException e) {
-        e.printStackTrace();
+        plugin.getLogger().warning("Failed to parse mute date for player " + player.getUniqueId() + ": " + e.getMessage());
       }
     }
   }
@@ -125,24 +127,27 @@ public final class StorageTool {
     try {
       dataConfig.save(dataFile);
     } catch (IOException e) {
-      e.printStackTrace();
+      plugin.getLogger().warning("Failed to save mute data: " + e.getMessage());
     }
   }
 
   private static void generateFile() {
-    if (!plugin.getDataFolder().exists() && !plugin.getDataFolder().mkdir())
-      new IOException("File already exists.").printStackTrace();
+    if (!plugin.getDataFolder().exists() && !plugin.getDataFolder().mkdir()) {
+      plugin.getLogger().warning("Failed to create plugin data folder.");
+    }
 
     if (!dataFile.exists()) {
       try {
-        if (!dataFile.createNewFile())
-          new IOException("File already exists.").printStackTrace();
+        if (!dataFile.createNewFile()) {
+          plugin.getLogger().warning("Mute data file already exists.");
+        }
       } catch (IOException e) {
-        e.printStackTrace();
+        plugin.getLogger().warning("Failed to create mute data file: " + e.getMessage());
       }
     }
   }
 
+  @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "MS_EXPOSE_REP", justification = "Plugin singleton pattern - intentional API design")
   public static void setupTool(PistonMute plugin) {
     if (plugin == null || StorageTool.plugin != null)
       return;

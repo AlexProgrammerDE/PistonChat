@@ -97,7 +97,7 @@ public class IgnoreListCommand implements CommandExecutor, TabExecutor {
   @Override
   public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
     if (args.length == 1) {
-      return StringUtil.copyPartialMatches(args[0], List.of("clear"), new ArrayList<>());
+      return List.copyOf(StringUtil.copyPartialMatches(args[0], List.of("clear"), new ArrayList<>()));
     } else {
       return Collections.emptyList();
     }

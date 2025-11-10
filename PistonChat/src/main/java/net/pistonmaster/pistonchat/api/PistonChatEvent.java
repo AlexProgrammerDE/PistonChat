@@ -15,6 +15,7 @@ public final class PistonChatEvent extends Event implements Cancellable {
   private boolean isCancelled;
   private String message;
 
+  @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Bukkit API convention - Player objects are meant to be shared")
   public PistonChatEvent(Player player, String message, boolean isAsync) {
     super(isAsync);
 
@@ -59,6 +60,7 @@ public final class PistonChatEvent extends Event implements Cancellable {
    *
    * @return the player who sends the message
    */
+  @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "Bukkit API convention - Player objects are meant to be shared")
   public Player getPlayer() {
     return player;
   }

@@ -96,7 +96,7 @@ public class CacheTool {
 
   @RequiredArgsConstructor
   private static class MessageData {
-    public UUID sentTo = null;
-    public UUID messagedOf = null;
+    UUID sentTo = null;
+    UUID messagedOf = null;
   }
 }

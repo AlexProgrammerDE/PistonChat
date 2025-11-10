@@ -38,7 +38,7 @@ public class FilterCommand implements CommandExecutor, TabExecutor {
         try {
           config.save(new File(plugin.getDataFolder(), "config.yml"));
         } catch (IOException e) {
-          e.printStackTrace();
+          plugin.getLogger().warning("Failed to save config: " + e.getMessage());
         }
 
         sender.sendMessage(ChatColor.GOLD + "Successfully added the config entry!");

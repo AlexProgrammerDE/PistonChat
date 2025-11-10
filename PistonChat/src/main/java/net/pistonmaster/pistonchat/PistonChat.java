@@ -172,6 +172,6 @@ public final class PistonChat extends JavaPlugin {
   }
 
   public void runAsync(Runnable runnable) {
-    foliaLib.getScheduler().runAsync(task -> runnable.run());
+    var unused = foliaLib.getScheduler().runAsync(task -> runnable.run());
   }
 }

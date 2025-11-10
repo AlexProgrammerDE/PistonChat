@@ -29,6 +29,7 @@ public class ConfigManager {
     config.save(getConfigFile());
   }
 
+  @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "EI_EXPOSE_REP", justification = "Bukkit API convention - FileConfiguration is meant to be mutable")
   public FileConfiguration get() {
     return config;
   }
@@ -38,7 +39,7 @@ public class ConfigManager {
 
     try (
         InputStream inputStream = getDefaultInput();
-        InputStreamReader reader = new InputStreamReader(inputStream)
+        InputStreamReader reader = new InputStreamReader(inputStream, java.nio.charset.StandardCharsets.UTF_8)
     ) {
       config.load(reader);
     } catch (IOException | InvalidConfigurationException ex) {

@@ -29,7 +29,7 @@ public class MainCommand implements CommandExecutor, TabExecutor {
       return false;
     }
 
-    switch (args[0].toLowerCase()) {
+    switch (args[0].toLowerCase(Locale.ROOT)) {
       case "help" -> {
         if (!sender.hasPermission("pistonchat.help")) {
           sender.sendMessage(command.getPermissionMessage());
@@ -93,7 +93,6 @@ public class MainCommand implements CommandExecutor, TabExecutor {
   public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
     if (args.length == 1) {
       List<String> possibleCommands = new ArrayList<>();
-      List<String> completions = new ArrayList<>();
 
       if (sender.hasPermission("pistonchat.help")) {
         possibleCommands.add("help");
@@ -103,10 +102,11 @@ public class MainCommand implements CommandExecutor, TabExecutor {
         possibleCommands.add("reload");
       }
 
+      List<String> completions = new ArrayList<>();
       StringUtil.copyPartialMatches(args[0], possibleCommands, completions);
       Collections.sort(completions);
 
-      return completions;
+      return List.copyOf(completions);
     } else {
       return Collections.emptyList();
     }
