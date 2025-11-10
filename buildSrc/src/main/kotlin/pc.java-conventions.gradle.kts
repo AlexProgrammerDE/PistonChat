@@ -1,3 +1,6 @@
+import com.github.spotbugs.snom.SpotBugsTask
+import org.gradle.api.tasks.SourceSetContainer
+
 plugins {
     `java-library`
     `maven-publish`
@@ -23,6 +26,7 @@ dependencies {
     rewrite("org.openrewrite.recipe:rewrite-rewrite:0.14.1")
 
     compileOnly("net.luckperms:api:5.5")
+    compileOnly("com.github.spotbugs:spotbugs-annotations:4.8.6")
 
     compileOnly("org.projectlombok:lombok:1.18.42")
     annotationProcessor("org.projectlombok:lombok:1.18.42")
@@ -67,6 +71,12 @@ tasks.withType<JavaCompile> {
 
 tasks.withType<Javadoc> {
     enabled = false
+}
+
+val sourceSets = extensions.getByType<SourceSetContainer>()
+
+tasks.withType<SpotBugsTask>().configureEach {
+    auxClassPaths.from(sourceSets.map { it.compileClasspath })
 }
 
 val repoName = if (version.toString().endsWith("SNAPSHOT")) "maven-snapshots" else "maven-releases"

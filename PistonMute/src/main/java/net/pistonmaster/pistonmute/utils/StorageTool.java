@@ -8,16 +8,18 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.Date;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Locale;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class StorageTool {
-  private static PistonMute plugin;
+  private static final AtomicReference<PistonMute> PLUGIN = new AtomicReference<>();
+  private static final DateTimeFormatter LEGACY_FORMATTER = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss zzz yyyy", Locale.US);
   private static FileConfiguration dataConfig;
   private static File dataFile;
 
@@ -28,14 +30,16 @@ public final class StorageTool {
    * Mute a player temporarily!
    *
    * @param player The player to mute.
-   * @param date   The date when the player will be unmuted.
+   * @param muteUntil The instant when the player will be unmuted.
    * @return true if player got muted and if already muted false.
    */
-  public static boolean tempMutePlayer(Player player, Date date) {
+  public static boolean tempMutePlayer(Player player, Instant muteUntil) {
     manageMute(player);
 
-    if (!dataConfig.contains(player.getUniqueId().toString())) {
-      dataConfig.set(player.getUniqueId().toString(), date.toString());
+    String key = player.getUniqueId().toString();
+
+    if (!dataConfig.contains(key)) {
+      dataConfig.set(key, Objects.requireNonNull(muteUntil, "muteUntil").toString());
 
       saveData();
 
@@ -97,21 +101,18 @@ public final class StorageTool {
   }
 
   private static void manageMute(OfflinePlayer player) {
-    Instant now = Instant.now();
+    String key = player.getUniqueId().toString();
+    if (!dataConfig.contains(key)) {
+      return;
+    }
 
-    if (dataConfig.contains(player.getUniqueId().toString())) {
-      SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.US);
+    Instant muteUntil = parseMuteUntil(dataConfig.getString(key), key);
+    if (muteUntil == null) {
+      return;
+    }
 
-      try {
-        Date date = sdf.parse(dataConfig.getString(player.getUniqueId().toString()));
-        Instant muteUntil = date.toInstant();
-
-        if (now.isAfter(muteUntil) || now.equals(muteUntil)) {
-          unMutePlayer(player);
-        }
-      } catch (ParseException e) {
-        plugin.getLogger().warning("Failed to parse mute date for player " + player.getUniqueId() + ": " + e.getMessage());
-      }
+    if (!Instant.now().isBefore(muteUntil)) {
+      unMutePlayer(player);
     }
   }
 
@@ -127,34 +128,63 @@ public final class StorageTool {
     try {
       dataConfig.save(dataFile);
     } catch (IOException e) {
-      plugin.getLogger().warning("Failed to save mute data: " + e.getMessage());
+      logWarning("Failed to save mute data: " + e.getMessage());
     }
   }
 
   private static void generateFile() {
-    if (!plugin.getDataFolder().exists() && !plugin.getDataFolder().mkdir()) {
-      plugin.getLogger().warning("Failed to create plugin data folder.");
+    File dataFolder = plugin().getDataFolder();
+    if (!dataFolder.exists() && !dataFolder.mkdir()) {
+      logWarning("Failed to create plugin data folder.");
     }
 
     if (!dataFile.exists()) {
       try {
         if (!dataFile.createNewFile()) {
-          plugin.getLogger().warning("Mute data file already exists.");
+          logWarning("Mute data file already exists.");
         }
       } catch (IOException e) {
-        plugin.getLogger().warning("Failed to create mute data file: " + e.getMessage());
+        logWarning("Failed to create mute data file: " + e.getMessage());
       }
     }
   }
 
-  @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "MS_EXPOSE_REP", justification = "Plugin singleton pattern - intentional API design")
   public static void setupTool(PistonMute plugin) {
-    if (plugin == null || StorageTool.plugin != null)
+    if (plugin == null) {
       return;
+    }
 
-    StorageTool.plugin = plugin;
+    if (!PLUGIN.compareAndSet(null, plugin)) {
+      return;
+    }
+
     StorageTool.dataFile = new File(plugin.getDataFolder(), "data.yml");
 
     loadData();
+  }
+
+  private static PistonMute plugin() {
+    return Objects.requireNonNull(PLUGIN.get(), "StorageTool has not been initialized");
+  }
+
+  private static void logWarning(String message) {
+    plugin().getLogger().warning(message);
+  }
+
+  private static Instant parseMuteUntil(String raw, String playerId) {
+    if (raw == null) {
+      return null;
+    }
+
+    try {
+      return Instant.parse(raw);
+    } catch (DateTimeParseException ignored) {
+      try {
+        return Instant.from(LEGACY_FORMATTER.parse(raw));
+      } catch (DateTimeParseException e) {
+        logWarning("Failed to parse mute date for player " + playerId + ": " + e.getMessage());
+        return null;
+      }
+    }
   }
 }

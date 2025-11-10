@@ -29,6 +29,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Getter
@@ -73,7 +74,7 @@ public final class PistonChat extends JavaPlugin {
     log.info(ChatColor.DARK_GREEN + "Loading storage");
     var storageType = configManager.get().getString("storage");
     if (storageType.equalsIgnoreCase("mysql")) {
-      storage = new MySQLStorage(log, configManager);
+      storage = MySQLStorage.create(log, configManager);
     } else if (storageType.equalsIgnoreCase("file")) {
       storage = new FileStorage(log, getDataFolder().toPath());
     }
@@ -172,6 +173,11 @@ public final class PistonChat extends JavaPlugin {
   }
 
   public void runAsync(Runnable runnable) {
-    var unused = foliaLib.getScheduler().runAsync(task -> runnable.run());
+    foliaLib.getScheduler()
+        .runAsync(task -> runnable.run())
+        .exceptionally(throwable -> {
+          getLogger().log(Level.SEVERE, "Async task failed", throwable);
+          return null;
+        });
   }
 }

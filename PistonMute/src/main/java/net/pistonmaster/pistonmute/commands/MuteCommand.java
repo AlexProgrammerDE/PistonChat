@@ -51,7 +51,7 @@ public final class MuteCommand implements CommandExecutor, TabExecutor {
               return false;
             }
 
-            if (StorageTool.tempMutePlayer(player, Date.from(muteUntil))) {
+            if (StorageTool.tempMutePlayer(player, muteUntil)) {
               successMessage(sender, player);
             } else {
               alreadyMutedMessage(sender, player);

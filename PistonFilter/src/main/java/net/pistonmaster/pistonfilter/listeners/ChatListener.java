@@ -10,7 +10,6 @@ import net.pistonmaster.pistonchat.api.PistonWhisperEvent;
 import net.pistonmaster.pistonchat.utils.UniqueSender;
 import net.pistonmaster.pistonfilter.PistonFilter;
 import net.pistonmaster.pistonfilter.hooks.PistonMuteHook;
-import net.pistonmaster.pistonfilter.utils.FilteredPlayer;
 import net.pistonmaster.pistonfilter.utils.MaxSizeDeque;
 import net.pistonmaster.pistonfilter.utils.MessageInfo;
 import net.pistonmaster.pistonfilter.utils.StringHelper;
@@ -32,7 +31,7 @@ import java.util.function.Consumer;
 public class ChatListener implements Listener {
   private final PistonFilter plugin;
   private final Deque<MessageInfo> globalMessages;
-  private final Map<UUID, FilteredPlayer> players = new ConcurrentHashMap<>();
+  private final Map<UUID, Deque<MessageInfo>> players = new ConcurrentHashMap<>();
   private final Cache<UUID, AtomicInteger> violationsCache;
 
   @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Plugin instance is intentionally shared")
@@ -97,13 +96,10 @@ public class ChatListener implements Listener {
 
     if (plugin.getConfig().getBoolean("no-repeat")) {
       UUID uuid = new UniqueSender(sender).getUniqueId();
-      FilteredPlayer filteredPlayerCached = players.compute(uuid, (k, v) ->
-          Objects.requireNonNullElseGet(v, () -> new FilteredPlayer(new UniqueSender(sender).getUniqueId(),
-              new MaxSizeDeque<>(plugin.getConfig().getInt("no-repeat-stack-size")))));
-
       int noRepeatTime = plugin.getConfig().getInt("no-repeat-time");
       int similarRatio = plugin.getConfig().getInt("no-repeat-similar-ratio");
-      Deque<MessageInfo> lastMessages = filteredPlayerCached.lastMessages();
+      Deque<MessageInfo> lastMessages = players.compute(uuid, (k, v) ->
+          Objects.requireNonNullElseGet(v, () -> new MaxSizeDeque<>(plugin.getConfig().getInt("no-repeat-stack-size"))));
 
       boolean blocked = isBlocked(sender, message, cancelEvent, sendEmpty, noRepeatTime, similarRatio, lastMessages, false);
 
@@ -112,7 +108,7 @@ public class ChatListener implements Listener {
       }
 
       if (!blocked) {
-        filteredPlayerCached.lastMessages().add(message);
+        lastMessages.add(message);
         globalMessages.add(message);
       }
     }
@@ -194,7 +190,7 @@ public class ChatListener implements Listener {
         if (violations > plugin.getConfig().getInt("mute-violations")) {
           violationsCache.invalidate(uniqueSender.getUniqueId());
           int muteTime = plugin.getConfig().getInt("mute-time");
-          PistonMuteHook.mute(player, Date.from(Instant.now().plus(muteTime, ChronoUnit.SECONDS)));
+          PistonMuteHook.mute(player, Instant.now().plus(muteTime, ChronoUnit.SECONDS));
           if (plugin.getConfig().getBoolean("verbose")) {
             plugin.getLogger().info(ChatColor.RED + "[AntiSpam] Muted " + uniqueSender.sender().getName() + " for " + muteTime + " seconds.");
           }

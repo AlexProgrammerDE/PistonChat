@@ -13,24 +13,29 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MySQLStorage implements PCStorage {
   private final MariaDbPoolDataSource ds;
 
-  public MySQLStorage(Logger log, ConfigManager configManager) {
+  private MySQLStorage(MariaDbPoolDataSource dataSource) {
+    this.ds = dataSource;
+  }
+
+  public static MySQLStorage create(Logger log, ConfigManager configManager) {
     log.info(ChatColor.DARK_GREEN + "Connecting to database");
-    ds = new MariaDbPoolDataSource();
+    MariaDbPoolDataSource dataSource = new MariaDbPoolDataSource();
     FileConfiguration config = configManager.get();
     try {
-      ds.setUser(config.getString("mysql.username"));
-      ds.setPassword(config.getString("mysql.password"));
-      ds.setUrl("jdbc:mariadb://" + config.getString("mysql.host") + ":" + config.getInt("mysql.port") +
+      dataSource.setUser(config.getString("mysql.username"));
+      dataSource.setPassword(config.getString("mysql.password"));
+      dataSource.setUrl("jdbc:mariadb://" + config.getString("mysql.host") + ":" + config.getInt("mysql.port") +
           "/" + config.getString("mysql.database")
           + "?sslMode=disable&serverTimezone=UTC&maxPoolSize=10"
       );
 
-      try (Connection connection = ds.getConnection();
+      try (Connection connection = dataSource.getConnection();
            var stmt1 = connection.createStatement();
            var stmt2 = connection.createStatement();
            var stmt3 = connection.createStatement()) {
@@ -45,10 +50,13 @@ public class MySQLStorage implements PCStorage {
             "PRIMARY KEY (`uuid`, `ignored_uuid`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      log.log(Level.SEVERE, "Failed to initialize database connection", e);
+      throw new IllegalStateException("Unable to initialize PistonChat database", e);
     }
 
     log.info(ChatColor.DARK_GREEN + "Connected to database");
+
+    return new MySQLStorage(dataSource);
   }
 
   @Override
