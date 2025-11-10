@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class LastCommand extends MessageCommandHelper implements CommandExecutor, TabExecutor {
+public class LastCommand implements CommandExecutor, TabExecutor {
   private final PistonChat plugin;
 
   @Override

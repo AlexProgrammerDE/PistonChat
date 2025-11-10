@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class WhisperCommand extends MessageCommandHelper implements CommandExecutor, TabExecutor {
+public class WhisperCommand implements CommandExecutor, TabExecutor {
   private final PistonChat plugin;
 
   @Override
