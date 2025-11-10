@@ -18,6 +18,7 @@ public final class PistonChatAPI {
     return Objects.requireNonNull(plugin, "plugin is null");
   }
 
+  @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "MS_EXPOSE_REP", justification = "Plugin singleton pattern - intentional API design")
   public static void setInstance(PistonChat plugin) {
     if (plugin != null && PistonChatAPI.plugin == null)
       PistonChatAPI.plugin = plugin;

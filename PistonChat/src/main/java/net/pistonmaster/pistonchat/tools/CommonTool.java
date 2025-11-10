@@ -146,8 +146,8 @@ public class CommonTool {
       ConfigurationSection section = config.getConfigurationSection("prefixes." + str);
       String prefix = section.getString("prefix");
       if (!prefix.equalsIgnoreCase("/")
-          && message.toLowerCase().startsWith(prefix)
-          && player.hasPermission("pistonchat.prefix." + str.toLowerCase())) {
+          && message.toLowerCase(Locale.ROOT).startsWith(prefix)
+          && player.hasPermission("pistonchat.prefix." + str.toLowerCase(Locale.ROOT))) {
         return Optional.of(NamedTextColor.NAMES.valueOrThrow(section.getString("color").toLowerCase(Locale.ROOT)));
       }
     }

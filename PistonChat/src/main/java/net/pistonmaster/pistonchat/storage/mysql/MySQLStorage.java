@@ -30,14 +30,17 @@ public class MySQLStorage implements PCStorage {
           + "?sslMode=disable&serverTimezone=UTC&maxPoolSize=10"
       );
 
-      try (Connection connection = ds.getConnection()) {
-        connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `pistonchat_settings_chat` (`uuid` VARCHAR(36) NOT NULL," +
+      try (Connection connection = ds.getConnection();
+           var stmt1 = connection.createStatement();
+           var stmt2 = connection.createStatement();
+           var stmt3 = connection.createStatement()) {
+        stmt1.execute("CREATE TABLE IF NOT EXISTS `pistonchat_settings_chat` (`uuid` VARCHAR(36) NOT NULL," +
             "`chat_enabled` tinyint(1) NOT NULL," +
             "PRIMARY KEY (`uuid`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
-        connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `pistonchat_settings_whisper` (`uuid` VARCHAR(36) NOT NULL," +
+        stmt2.execute("CREATE TABLE IF NOT EXISTS `pistonchat_settings_whisper` (`uuid` VARCHAR(36) NOT NULL," +
             "`whisper_enabled` tinyint(1) NOT NULL," +
             "PRIMARY KEY (`uuid`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
-        connection.createStatement().execute("CREATE TABLE IF NOT EXISTS `pistonchat_hard_ignores` (`uuid` VARCHAR(36) NOT NULL," +
+        stmt3.execute("CREATE TABLE IF NOT EXISTS `pistonchat_hard_ignores` (`uuid` VARCHAR(36) NOT NULL," +
             "`ignored_uuid` VARCHAR(36) NOT NULL," +
             "PRIMARY KEY (`uuid`, `ignored_uuid`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
       }
@@ -50,8 +53,8 @@ public class MySQLStorage implements PCStorage {
 
   @Override
   public void setChatEnabled(UUID uuid, boolean enabled) {
-    try (Connection connection = ds.getConnection()) {
-      PreparedStatement statement = connection.prepareStatement("INSERT INTO `pistonchat_settings_chat` (`uuid`, `chat_enabled`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `chat_enabled` = ?;");
+    try (Connection connection = ds.getConnection();
+         PreparedStatement statement = connection.prepareStatement("INSERT INTO `pistonchat_settings_chat` (`uuid`, `chat_enabled`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `chat_enabled` = ?;")) {
       statement.setString(1, uuid.toString());
       statement.setBoolean(2, enabled);
       statement.setBoolean(3, enabled);
@@ -63,16 +66,17 @@ public class MySQLStorage implements PCStorage {
 
   @Override
   public boolean isChatEnabled(UUID uuid) {
-    try (Connection connection = ds.getConnection()) {
-      PreparedStatement statement = connection.prepareStatement("SELECT `chat_enabled` FROM `pistonchat_settings_chat` WHERE `uuid` = ?;");
+    try (Connection connection = ds.getConnection();
+         PreparedStatement statement = connection.prepareStatement("SELECT `chat_enabled` FROM `pistonchat_settings_chat` WHERE `uuid` = ?;")) {
       statement.setString(1, uuid.toString());
 
-      ResultSet resultSet = statement.executeQuery();
-      if (!resultSet.next()) {
-        return true;
-      }
+      try (ResultSet resultSet = statement.executeQuery()) {
+        if (!resultSet.next()) {
+          return true;
+        }
 
-      return resultSet.getBoolean("chat_enabled");
+        return resultSet.getBoolean("chat_enabled");
+      }
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
@@ -80,8 +84,8 @@ public class MySQLStorage implements PCStorage {
 
   @Override
   public void setWhisperingEnabled(UUID uuid, boolean enabled) {
-    try (Connection connection = ds.getConnection()) {
-      PreparedStatement statement = connection.prepareStatement("INSERT INTO `pistonchat_settings_whisper` (`uuid`, `whisper_enabled`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `whisper_enabled` = ?;");
+    try (Connection connection = ds.getConnection();
+         PreparedStatement statement = connection.prepareStatement("INSERT INTO `pistonchat_settings_whisper` (`uuid`, `whisper_enabled`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `whisper_enabled` = ?;")) {
       statement.setString(1, uuid.toString());
       statement.setBoolean(2, enabled);
       statement.setBoolean(3, enabled);
@@ -93,16 +97,17 @@ public class MySQLStorage implements PCStorage {
 
   @Override
   public boolean isWhisperingEnabled(UUID uuid) {
-    try (Connection connection = ds.getConnection()) {
-      PreparedStatement statement = connection.prepareStatement("SELECT `whisper_enabled` FROM `pistonchat_settings_whisper` WHERE `uuid` = ?;");
+    try (Connection connection = ds.getConnection();
+         PreparedStatement statement = connection.prepareStatement("SELECT `whisper_enabled` FROM `pistonchat_settings_whisper` WHERE `uuid` = ?;")) {
       statement.setString(1, uuid.toString());
 
-      ResultSet resultSet = statement.executeQuery();
-      if (!resultSet.next()) {
-        return true;
-      }
+      try (ResultSet resultSet = statement.executeQuery()) {
+        if (!resultSet.next()) {
+          return true;
+        }
 
-      return resultSet.getBoolean("whisper_enabled");
+        return resultSet.getBoolean("whisper_enabled");
+      }
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
@@ -110,25 +115,27 @@ public class MySQLStorage implements PCStorage {
 
   @Override
   public HardReturn hardIgnorePlayer(UUID ignoringReceiver, UUID ignoredChatter) {
-    try (Connection connection = ds.getConnection()) {
-      PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `pistonchat_hard_ignores` WHERE `uuid`=? AND `ignored_uuid`=?");
+    try (Connection connection = ds.getConnection();
+         PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `pistonchat_hard_ignores` WHERE `uuid`=? AND `ignored_uuid`=?")) {
       preparedStatement.setString(1, ignoringReceiver.toString());
       preparedStatement.setString(2, ignoredChatter.toString());
 
-      if (preparedStatement.executeQuery().next()) {
-        preparedStatement = connection.prepareStatement("DELETE FROM `pistonchat_hard_ignores` WHERE `uuid`=? AND `ignored_uuid`=?");
-        preparedStatement.setString(1, ignoringReceiver.toString());
-        preparedStatement.setString(2, ignoredChatter.toString());
-        preparedStatement.execute();
-
-        return HardReturn.UN_IGNORE;
-      } else {
-        preparedStatement = connection.prepareStatement("INSERT INTO `pistonchat_hard_ignores` (`uuid`, `ignored_uuid`) VALUES (?, ?)");
-        preparedStatement.setString(1, ignoringReceiver.toString());
-        preparedStatement.setString(2, ignoredChatter.toString());
-        preparedStatement.execute();
-
-        return HardReturn.IGNORE;
+      try (ResultSet resultSet = preparedStatement.executeQuery()) {
+        if (resultSet.next()) {
+          try (PreparedStatement deleteStmt = connection.prepareStatement("DELETE FROM `pistonchat_hard_ignores` WHERE `uuid`=? AND `ignored_uuid`=?")) {
+            deleteStmt.setString(1, ignoringReceiver.toString());
+            deleteStmt.setString(2, ignoredChatter.toString());
+            deleteStmt.execute();
+          }
+          return HardReturn.UN_IGNORE;
+        } else {
+          try (PreparedStatement insertStmt = connection.prepareStatement("INSERT INTO `pistonchat_hard_ignores` (`uuid`, `ignored_uuid`) VALUES (?, ?)")) {
+            insertStmt.setString(1, ignoringReceiver.toString());
+            insertStmt.setString(2, ignoredChatter.toString());
+            insertStmt.execute();
+          }
+          return HardReturn.IGNORE;
+        }
       }
     } catch (SQLException e) {
       throw new RuntimeException(e);
@@ -137,11 +144,13 @@ public class MySQLStorage implements PCStorage {
 
   @Override
   public boolean isHardIgnored(UUID chatter, UUID receiver) {
-    try (Connection connection = ds.getConnection()) {
-      PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `pistonchat_hard_ignores` WHERE `uuid`=? AND `ignored_uuid`=?");
+    try (Connection connection = ds.getConnection();
+         PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `pistonchat_hard_ignores` WHERE `uuid`=? AND `ignored_uuid`=?")) {
       preparedStatement.setString(1, receiver.toString());
       preparedStatement.setString(2, chatter.toString());
-      return preparedStatement.executeQuery().next();
+      try (ResultSet resultSet = preparedStatement.executeQuery()) {
+        return resultSet.next();
+      }
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
@@ -149,18 +158,18 @@ public class MySQLStorage implements PCStorage {
 
   @Override
   public List<UUID> getIgnoredList(UUID uuid) {
-    try (Connection connection = ds.getConnection()) {
-      PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `pistonchat_hard_ignores` WHERE `uuid`=?");
+    try (Connection connection = ds.getConnection();
+         PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM `pistonchat_hard_ignores` WHERE `uuid`=?")) {
       preparedStatement.setString(1, uuid.toString());
 
-      ResultSet resultSet = preparedStatement.executeQuery();
+      try (ResultSet resultSet = preparedStatement.executeQuery()) {
+        List<UUID> uuids = new ArrayList<>();
+        while (resultSet.next()) {
+          uuids.add(UUID.fromString(resultSet.getString("ignored_uuid")));
+        }
 
-      List<UUID> uuids = new ArrayList<>();
-      while (resultSet.next()) {
-        uuids.add(UUID.fromString(resultSet.getString("ignored_uuid")));
+        return uuids;
       }
-
-      return uuids;
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
@@ -168,11 +177,10 @@ public class MySQLStorage implements PCStorage {
 
   @Override
   public void clearIgnoredPlayers(UUID player) {
-    try (Connection connection = ds.getConnection()) {
-      PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM `pistonchat_hard_ignores` WHERE `uuid`=?");
+    try (Connection connection = ds.getConnection();
+         PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM `pistonchat_hard_ignores` WHERE `uuid`=?")) {
       preparedStatement.setString(1, player.toString());
       preparedStatement.execute();
-
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }

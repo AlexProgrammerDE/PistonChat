@@ -13,6 +13,8 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @RequiredArgsConstructor
@@ -27,34 +29,29 @@ public final class MuteCommand implements CommandExecutor, TabExecutor {
       if (player != null) {
         if (player != sender) {
           if (args.length > 1) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(new Date());
-
-            if (args[1].toLowerCase().endsWith("y")) {
-              int d = Integer.parseInt(args[1].toLowerCase().replace("y", ""));
-
-              calendar.add(Calendar.YEAR, d);
-            } else if (args[1].toLowerCase().endsWith("d")) {
-              int d = Integer.parseInt(args[1].toLowerCase().replace("d", ""));
-
-              calendar.add(Calendar.DAY_OF_WEEK, d);
-            } else if (args[1].toLowerCase().endsWith("h")) {
-              int h = Integer.parseInt(args[1].toLowerCase().replace("h", ""));
-
-              calendar.add(Calendar.HOUR_OF_DAY, h);
-            } else if (args[1].toLowerCase().endsWith("m")) {
-              int m = Integer.parseInt(args[1].toLowerCase().replace("m", ""));
-
-              calendar.add(Calendar.MINUTE, m);
-            } else if (args[1].toLowerCase().endsWith("s")) {
-              int s = Integer.parseInt(args[1].toLowerCase().replace("s", ""));
-
-              calendar.add(Calendar.SECOND, s);
+            String timeSuffix = args[1].toLowerCase(Locale.ROOT);
+            Instant muteUntil = Instant.now();
+            
+            if (timeSuffix.endsWith("y")) {
+              int years = Integer.parseInt(timeSuffix.replace("y", ""));
+              muteUntil = muteUntil.plus(years * 365L, ChronoUnit.DAYS);
+            } else if (timeSuffix.endsWith("d")) {
+              int days = Integer.parseInt(timeSuffix.replace("d", ""));
+              muteUntil = muteUntil.plus(days, ChronoUnit.DAYS);
+            } else if (timeSuffix.endsWith("h")) {
+              int hours = Integer.parseInt(timeSuffix.replace("h", ""));
+              muteUntil = muteUntil.plus(hours, ChronoUnit.HOURS);
+            } else if (timeSuffix.endsWith("m")) {
+              int minutes = Integer.parseInt(timeSuffix.replace("m", ""));
+              muteUntil = muteUntil.plus(minutes, ChronoUnit.MINUTES);
+            } else if (timeSuffix.endsWith("s")) {
+              int seconds = Integer.parseInt(timeSuffix.replace("s", ""));
+              muteUntil = muteUntil.plus(seconds, ChronoUnit.SECONDS);
             } else {
               return false;
             }
 
-            if (StorageTool.tempMutePlayer(player, calendar.getTime())) {
+            if (StorageTool.tempMutePlayer(player, Date.from(muteUntil))) {
               successMessage(sender, player);
             } else {
               alreadyMutedMessage(sender, player);

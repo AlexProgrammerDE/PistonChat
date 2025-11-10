@@ -35,6 +35,7 @@ public class ChatListener implements Listener {
   private final Map<UUID, FilteredPlayer> players = new ConcurrentHashMap<>();
   private final Cache<UUID, AtomicInteger> violationsCache;
 
+  @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Plugin instance is intentionally shared")
   public ChatListener(PistonFilter plugin) {
     this.plugin = plugin;
     this.globalMessages = new MaxSizeDeque<>(plugin.getConfig().getInt("global-message-stack-size"));
@@ -137,7 +138,7 @@ public class ChatListener implements Listener {
       if (foundDigits >= noRepeatNumberAmount) {
         cancelMessage(sender, message, cancelEvent, sendEmpty, "Contains too many numbers.");
         return true;
-      } else if (noRepeatTime == -1 || Duration.between(pair.getTime(), message.getTime()).getSeconds() < noRepeatTime) {
+      } else if (noRepeatTime == -1 || Duration.between(pair.getTime(), message.getTime()).toSeconds() < noRepeatTime) {
         int similarity;
         if ((similarity = FuzzySearch.weightedRatio(pair.getStrippedMessage(), message.getStrippedMessage())) > similarRatio) {
           cancelMessage(sender, message, cancelEvent, sendEmpty,
@@ -186,20 +187,20 @@ public class ChatListener implements Listener {
 
     if (plugin.getConfig().getBoolean("mute-on-fail")
         && plugin.getServer().getPluginManager().isPluginEnabled("PistonMute")
-        && sender instanceof Player) {
+        && sender instanceof Player player) {
       try {
         UniqueSender uniqueSender = new UniqueSender(sender);
         int violations = violationsCache.get(uniqueSender.getUniqueId(), AtomicInteger::new).incrementAndGet();
         if (violations > plugin.getConfig().getInt("mute-violations")) {
           violationsCache.invalidate(uniqueSender.getUniqueId());
           int muteTime = plugin.getConfig().getInt("mute-time");
-          PistonMuteHook.mute((Player) sender, Date.from(Instant.now().plus(muteTime, ChronoUnit.SECONDS)));
+          PistonMuteHook.mute(player, Date.from(Instant.now().plus(muteTime, ChronoUnit.SECONDS)));
           if (plugin.getConfig().getBoolean("verbose")) {
             plugin.getLogger().info(ChatColor.RED + "[AntiSpam] Muted " + uniqueSender.sender().getName() + " for " + muteTime + " seconds.");
           }
         }
       } catch (Exception e) {
-        e.printStackTrace();
+        plugin.getLogger().warning("Failed to mute player: " + e.getMessage());
       }
     }
   }

@@ -32,6 +32,7 @@ public class FileStorage implements PCStorage {
   private final Map<UUID, Boolean> whisperSettings = new ConcurrentHashMap<>();
   private final Map<UUID, List<UUID>> ignoreList = new ConcurrentHashMap<>();
 
+  @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Logger is a shared resource by design")
   public FileStorage(Logger log, Path dataFolder) {
     this.log = log;
 
@@ -93,7 +94,10 @@ public class FileStorage implements PCStorage {
 
   private synchronized void saveMap(Map<?, ?> data, Path file) {
     try {
-      Files.createDirectories(file.getParent());
+      Path parent = file.getParent();
+      if (parent != null) {
+        Files.createDirectories(parent);
+      }
       try (Writer writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
         gson.toJson(data, writer);
       }
@@ -105,9 +109,7 @@ public class FileStorage implements PCStorage {
   @Override
   public void setChatEnabled(UUID uuid, boolean enabled) {
     chatSettings.put(uuid, enabled);
-    synchronized (chatSettings) {
-      saveMap(chatSettings, chatSettingsFile);
-    }
+    saveMap(chatSettings, chatSettingsFile);
   }
 
   @Override
@@ -118,9 +120,7 @@ public class FileStorage implements PCStorage {
   @Override
   public void setWhisperingEnabled(UUID uuid, boolean enabled) {
     whisperSettings.put(uuid, enabled);
-    synchronized (whisperSettings) {
-      saveMap(whisperSettings, whisperSettingsFile);
-    }
+    saveMap(whisperSettings, whisperSettingsFile);
   }
 
   @Override
@@ -134,15 +134,11 @@ public class FileStorage implements PCStorage {
 
     if (ignored.contains(ignoredChatter)) {
       ignored.remove(ignoredChatter);
-      synchronized (ignored) {
-        saveMap(ignoreList, ignoreListFile);
-      }
+      saveMap(ignoreList, ignoreListFile);
       return HardReturn.UN_IGNORE;
     } else {
       ignored.add(ignoredChatter);
-      synchronized (ignored) {
-        saveMap(ignoreList, ignoreListFile);
-      }
+      saveMap(ignoreList, ignoreListFile);
       return HardReturn.IGNORE;
     }
   }
@@ -162,8 +158,6 @@ public class FileStorage implements PCStorage {
   @Override
   public void clearIgnoredPlayers(UUID player) {
     ignoreList.remove(player);
-    synchronized (ignoreList) {
-      saveMap(ignoreList, ignoreListFile);
-    }
+    saveMap(ignoreList, ignoreListFile);
   }
 }

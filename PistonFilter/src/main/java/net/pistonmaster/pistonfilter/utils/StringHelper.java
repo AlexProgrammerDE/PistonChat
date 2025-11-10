@@ -1,11 +1,12 @@
 package net.pistonmaster.pistonfilter.utils;
 
 import java.text.Normalizer;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 public class StringHelper {
   public static String revertLeet(String str) {
-    str = str.toLowerCase();
+    str = str.toLowerCase(Locale.ROOT);
 
     str = str.replace("0", "o");
     str = str.replace("1", "i");
@@ -33,8 +34,8 @@ public class StringHelper {
   }
 
   public static boolean containsDigit(String s) {
-    for (char c : s.toCharArray()) {
-      if (Character.isDigit(c)) {
+    for (int i = 0; i < s.length(); i++) {
+      if (Character.isDigit(s.charAt(i))) {
         return true;
       }
     }
