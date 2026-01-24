@@ -5,6 +5,7 @@ website: ${url}
 api-version: 1.13
 main: net.pistonmaster.pistonfilter.PistonFilter
 authors: [ AlexProgrammerDE ]
+folia-supported: true
 depend: [ "PistonChat" ]
 softdepend: [ "PistonMute" ]
 commands:

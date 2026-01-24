@@ -12,8 +12,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
 import java.util.logging.Logger;
+import java.util.concurrent.CompletableFuture;
 
 public final class PistonMute extends JavaPlugin {
+  private CompletableFuture<Void> updateCheckTask;
+
   @Override
   public void onEnable() {
     Logger log = getLogger();
@@ -36,24 +39,37 @@ public final class PistonMute extends JavaPlugin {
     new Metrics(this, 11559);
 
     log.info(ChatColor.YELLOW + "Checking for a newer version");
-    try {
-      String currentVersionString = this.getDescription().getVersion();
-      SemanticVersion gitHubVersion = new GitHubUpdateChecker()
-          .getVersion("https://api.github.com/repos/AlexProgrammerDE/PistonChat/releases/latest");
-      SemanticVersion currentVersion = SemanticVersion.fromString(currentVersionString);
+    String currentVersionString = this.getDescription().getVersion();
+    updateCheckTask = CompletableFuture.runAsync(() -> {
+      try {
+        SemanticVersion gitHubVersion = new GitHubUpdateChecker()
+            .getVersion("https://api.github.com/repos/AlexProgrammerDE/PistonChat/releases/latest");
+        SemanticVersion currentVersion = SemanticVersion.fromString(currentVersionString);
 
-      if (gitHubVersion.isNewerThan(currentVersion)) {
-        log.info(ChatColor.RED + "There is an update available!");
-        log.info(ChatColor.RED + "Current version: " + currentVersionString + " New version: " + gitHubVersion);
-        log.info(ChatColor.RED + "Download it at: https://modrinth.com/plugin/pistonchat");
-      } else {
-        log.info(ChatColor.YELLOW + "You're up to date!");
+        if (gitHubVersion.isNewerThan(currentVersion)) {
+          log.info(ChatColor.RED + "There is an update available!");
+          log.info(ChatColor.RED + "Current version: " + currentVersionString + " New version: " + gitHubVersion);
+          log.info(ChatColor.RED + "Download it at: https://modrinth.com/plugin/pistonchat");
+        } else {
+          log.info(ChatColor.YELLOW + "You're up to date!");
+        }
+      } catch (IOException e) {
+        throw new RuntimeException(e);
       }
-    } catch (IOException e) {
+    }).exceptionally(throwable -> {
       log.severe("Could not check for updates!");
-      e.printStackTrace();
-    }
+      throwable.printStackTrace();
+      return null;
+    });
 
     getLogger().info(ChatColor.YELLOW + "Done! :D");
+  }
+
+  @Override
+  public void onDisable() {
+    if (updateCheckTask != null) {
+      updateCheckTask.cancel(true);
+      updateCheckTask = null;
+    }
   }
 }

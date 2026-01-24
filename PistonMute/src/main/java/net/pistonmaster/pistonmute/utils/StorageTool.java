@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 public final class StorageTool {
   private static final AtomicReference<PistonMute> PLUGIN = new AtomicReference<>();
   private static final DateTimeFormatter LEGACY_FORMATTER = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss zzz yyyy", Locale.US);
+  private static final Object LOCK = new Object();
   private static FileConfiguration dataConfig;
   private static File dataFile;
 
@@ -34,18 +35,21 @@ public final class StorageTool {
    * @return true if player got muted and if already muted false.
    */
   public static boolean tempMutePlayer(Player player, Instant muteUntil) {
-    manageMute(player);
+    synchronized (LOCK) {
+      ensureLoaded();
+      manageMute(player);
 
-    String key = player.getUniqueId().toString();
+      String key = player.getUniqueId().toString();
 
-    if (!dataConfig.contains(key)) {
-      dataConfig.set(key, Objects.requireNonNull(muteUntil, "muteUntil").toString());
+      if (!dataConfig.contains(key)) {
+        dataConfig.set(key, Objects.requireNonNull(muteUntil, "muteUntil").toString());
 
-      saveData();
+        saveData();
 
-      return true;
-    } else {
-      return false;
+        return true;
+      } else {
+        return false;
+      }
     }
   }
 
@@ -56,16 +60,19 @@ public final class StorageTool {
    * @return true if player got muted and if already muted false.
    */
   public static boolean hardMutePlayer(Player player) {
-    manageMute(player);
+    synchronized (LOCK) {
+      ensureLoaded();
+      manageMute(player);
 
-    if (!dataConfig.getStringList("hardmutes").contains(player.getUniqueId().toString())) {
-      dataConfig.set("hardmutes", Stream.concat(dataConfig.getStringList("hardmutes").stream(), Stream.of(player.getUniqueId().toString())).collect(Collectors.toList()));
+      if (!dataConfig.getStringList("hardmutes").contains(player.getUniqueId().toString())) {
+        dataConfig.set("hardmutes", Stream.concat(dataConfig.getStringList("hardmutes").stream(), Stream.of(player.getUniqueId().toString())).collect(Collectors.toList()));
 
-      saveData();
+        saveData();
 
-      return true;
-    } else {
-      return false;
+        return true;
+      } else {
+        return false;
+      }
     }
   }
 
@@ -76,28 +83,34 @@ public final class StorageTool {
    * @return true if player got unmuted and false if not was muted.
    */
   public static boolean unMutePlayer(OfflinePlayer player) {
-    if (dataConfig.contains(player.getUniqueId().toString())) {
-      dataConfig.set(player.getUniqueId().toString(), null);
+    synchronized (LOCK) {
+      ensureLoaded();
+      if (dataConfig.contains(player.getUniqueId().toString())) {
+        dataConfig.set(player.getUniqueId().toString(), null);
 
-      saveData();
+        saveData();
 
-      return true;
-    } else if (dataConfig.getStringList("hardmutes").contains(player.getUniqueId().toString())) {
-      dataConfig.set("hardmutes", dataConfig.getStringList("hardmutes").stream().filter(uuid -> !uuid.equals(player.getUniqueId().toString())).collect(Collectors.toList()));
+        return true;
+      } else if (dataConfig.getStringList("hardmutes").contains(player.getUniqueId().toString())) {
+        dataConfig.set("hardmutes", dataConfig.getStringList("hardmutes").stream().filter(uuid -> !uuid.equals(player.getUniqueId().toString())).collect(Collectors.toList()));
 
-      saveData();
+        saveData();
 
-      return true;
-    } else {
+        return true;
+      } else {
 
-      return false;
+        return false;
+      }
     }
   }
 
   public static boolean isMuted(OfflinePlayer player) {
-    manageMute(player);
+    synchronized (LOCK) {
+      ensureLoaded();
+      manageMute(player);
 
-    return dataConfig.contains(player.getUniqueId().toString()) || dataConfig.getStringList("hardmutes").contains(player.getUniqueId().toString());
+      return dataConfig.contains(player.getUniqueId().toString()) || dataConfig.getStringList("hardmutes").contains(player.getUniqueId().toString());
+    }
   }
 
   private static void manageMute(OfflinePlayer player) {
@@ -116,8 +129,44 @@ public final class StorageTool {
     }
   }
 
+  public static void setupTool(PistonMute plugin) {
+    if (plugin == null) {
+      return;
+    }
+
+    synchronized (LOCK) {
+      if (!PLUGIN.compareAndSet(null, plugin)) {
+        return;
+      }
+
+      StorageTool.dataFile = new File(plugin.getDataFolder(), "data.yml");
+
+      loadData();
+    }
+  }
+
+  private static PistonMute plugin() {
+    return Objects.requireNonNull(PLUGIN.get(), "StorageTool has not been initialized");
+  }
+
+  private static void logWarning(String message) {
+    plugin().getLogger().warning(message);
+  }
+
+  private static void ensureLoaded() {
+    plugin();
+    if (dataConfig == null) {
+      loadData();
+    }
+  }
+
   private static void loadData() {
     generateFile();
+
+    if (dataFile == null) {
+      logWarning("Mute data file not initialized.");
+      return;
+    }
 
     dataConfig = YamlConfiguration.loadConfiguration(dataFile);
   }
@@ -138,6 +187,11 @@ public final class StorageTool {
       logWarning("Failed to create plugin data folder.");
     }
 
+    if (dataFile == null) {
+      logWarning("Mute data file not initialized.");
+      return;
+    }
+
     if (!dataFile.exists()) {
       try {
         if (!dataFile.createNewFile()) {
@@ -147,28 +201,6 @@ public final class StorageTool {
         logWarning("Failed to create mute data file: " + e.getMessage());
       }
     }
-  }
-
-  public static void setupTool(PistonMute plugin) {
-    if (plugin == null) {
-      return;
-    }
-
-    if (!PLUGIN.compareAndSet(null, plugin)) {
-      return;
-    }
-
-    StorageTool.dataFile = new File(plugin.getDataFolder(), "data.yml");
-
-    loadData();
-  }
-
-  private static PistonMute plugin() {
-    return Objects.requireNonNull(PLUGIN.get(), "StorageTool has not been initialized");
-  }
-
-  private static void logWarning(String message) {
-    plugin().getLogger().warning(message);
   }
 
   private static Instant parseMuteUntil(String raw, String playerId) {
