@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.pistonmaster.pistonmute.PistonMute;
+import net.pistonmaster.pistonmute.utils.MuteDateUtils;
 import net.pistonmaster.pistonmute.utils.StorageTool;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -14,7 +15,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @RequiredArgsConstructor
@@ -29,29 +29,13 @@ public final class MuteCommand implements CommandExecutor, TabExecutor {
       if (player != null) {
         if (player != sender) {
           if (args.length > 1) {
-            String timeSuffix = args[1].toLowerCase(Locale.ROOT);
-            Instant muteUntil = Instant.now();
-            
-            if (timeSuffix.endsWith("y")) {
-              int years = Integer.parseInt(timeSuffix.replace("y", ""));
-              muteUntil = muteUntil.plus(years * 365L, ChronoUnit.DAYS);
-            } else if (timeSuffix.endsWith("d")) {
-              int days = Integer.parseInt(timeSuffix.replace("d", ""));
-              muteUntil = muteUntil.plus(days, ChronoUnit.DAYS);
-            } else if (timeSuffix.endsWith("h")) {
-              int hours = Integer.parseInt(timeSuffix.replace("h", ""));
-              muteUntil = muteUntil.plus(hours, ChronoUnit.HOURS);
-            } else if (timeSuffix.endsWith("m")) {
-              int minutes = Integer.parseInt(timeSuffix.replace("m", ""));
-              muteUntil = muteUntil.plus(minutes, ChronoUnit.MINUTES);
-            } else if (timeSuffix.endsWith("s")) {
-              int seconds = Integer.parseInt(timeSuffix.replace("s", ""));
-              muteUntil = muteUntil.plus(seconds, ChronoUnit.SECONDS);
-            } else {
+            Optional<Instant> muteUntilOpt = MuteDateUtils.parseTimeSuffix(args[1]);
+
+            if (muteUntilOpt.isEmpty()) {
               return false;
             }
 
-            if (StorageTool.tempMutePlayer(player, muteUntil)) {
+            if (StorageTool.tempMutePlayer(player, muteUntilOpt.get())) {
               successMessage(sender, player);
             } else {
               alreadyMutedMessage(sender, player);

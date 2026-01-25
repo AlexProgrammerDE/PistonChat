@@ -16,14 +16,15 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.pistonmaster.pistonchat.PistonChat;
 import net.pistonmaster.pistonchat.api.PistonWhisperEvent;
 import net.pistonmaster.pistonchat.config.PistonChatConfig;
+import net.pistonmaster.pistonchat.utils.MessageKeyResolver;
+import net.pistonmaster.pistonchat.utils.PlayerUtils;
+import net.pistonmaster.pistonchat.utils.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.metadata.MetadataValue;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
@@ -33,17 +34,11 @@ public class CommonTool {
   private final PistonChat plugin;
 
   public static String mergeArgs(String[] args, int start) {
-    return String.join(" ", Arrays.copyOfRange(args, start, args.length));
+    return StringUtils.mergeArgs(args, start);
   }
 
   private static boolean isVanished(Player player) {
-    for (MetadataValue meta : player.getMetadata("vanished")) {
-      if (meta.asBoolean()) {
-        return true;
-      }
-    }
-
-    return false;
+    return PlayerUtils.isVanished(player);
   }
 
   public static TagResolver getStrippedNameResolver(Player player) {
@@ -133,30 +128,7 @@ public class CommonTool {
   }
 
   private String getMessageByKey(String key) {
-    var messages = plugin.getPluginConfig().messages;
-    return switch (key) {
-      case "help-header" -> messages.helpHeader;
-      case "playeronly" -> messages.playeronly;
-      case "notonline" -> messages.notonline;
-      case "nooneignored" -> messages.nooneignored;
-      case "chaton" -> messages.chaton;
-      case "chatoff" -> messages.chatoff;
-      case "pmson" -> messages.pmson;
-      case "pmsoff" -> messages.pmsoff;
-      case "pmself" -> messages.pmself;
-      case "chatisoff" -> messages.chatisoff;
-      case "source-ignored" -> messages.sourceIgnored;
-      case "target-ignored" -> messages.targetIgnored;
-      case "page-not-exists" -> messages.pageNotExists;
-      case "not-a-number" -> messages.notANumber;
-      case "whispering-disabled" -> messages.whisperingDisabled;
-      case "ignore" -> messages.ignore;
-      case "unignore" -> messages.unignore;
-      case "ignorehard" -> messages.ignorehard;
-      case "unignorehard" -> messages.unignorehard;
-      case "ignorelistcleared" -> messages.ignorelistcleared;
-      default -> throw new IllegalArgumentException("Unknown message key: " + key);
-    };
+    return MessageKeyResolver.getMessageByKey(plugin.getPluginConfig().messages, key);
   }
 
   public void sendLanguageMessage(CommandSender sender, String messageKey, TagResolver... tagResolvers) {

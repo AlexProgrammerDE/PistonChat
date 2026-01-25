@@ -9,9 +9,6 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -19,7 +16,6 @@ import java.util.stream.Stream;
 
 public final class StorageTool {
   private static final AtomicReference<PistonMute> PLUGIN = new AtomicReference<>();
-  private static final DateTimeFormatter LEGACY_FORMATTER = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss zzz yyyy", Locale.US);
   private static final Object LOCK = new Object();
   private static FileConfiguration dataConfig;
   private static File dataFile;
@@ -119,14 +115,15 @@ public final class StorageTool {
       return;
     }
 
-    Instant muteUntil = parseMuteUntil(dataConfig.getString(key), key);
-    if (muteUntil == null) {
-      return;
-    }
-
-    if (!Instant.now().isBefore(muteUntil)) {
-      unMutePlayer(player);
-    }
+    MuteDateUtils.parseMuteUntil(dataConfig.getString(key))
+        .ifPresentOrElse(
+            muteUntil -> {
+              if (MuteDateUtils.isMuteExpired(muteUntil)) {
+                unMutePlayer(player);
+              }
+            },
+            () -> logWarning("Failed to parse mute date for player " + key)
+        );
   }
 
   public static void setupTool(PistonMute plugin) {
@@ -199,23 +196,6 @@ public final class StorageTool {
         }
       } catch (IOException e) {
         logWarning("Failed to create mute data file: " + e.getMessage());
-      }
-    }
-  }
-
-  private static Instant parseMuteUntil(String raw, String playerId) {
-    if (raw == null) {
-      return null;
-    }
-
-    try {
-      return Instant.parse(raw);
-    } catch (DateTimeParseException ignored) {
-      try {
-        return Instant.from(LEGACY_FORMATTER.parse(raw));
-      } catch (DateTimeParseException e) {
-        logWarning("Failed to parse mute date for player " + playerId + ": " + e.getMessage());
-        return null;
       }
     }
   }

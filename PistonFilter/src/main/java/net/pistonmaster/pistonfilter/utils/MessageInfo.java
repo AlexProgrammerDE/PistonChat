@@ -1,8 +1,6 @@
 package net.pistonmaster.pistonfilter.utils;
 
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import net.md_5.bungee.api.ChatColor;
 
@@ -11,7 +9,6 @@ import java.util.Arrays;
 
 @Getter
 @ToString
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class MessageInfo {
   private final Instant time;
   private final String originalMessage;
@@ -19,6 +16,31 @@ public class MessageInfo {
   private final String[] words;
   private final String[] strippedWords;
   private final boolean containsDigit;
+
+  private MessageInfo(Instant time, String originalMessage, String strippedMessage,
+                      String[] words, String[] strippedWords, boolean containsDigit) {
+    this.time = time;
+    this.originalMessage = originalMessage;
+    this.strippedMessage = strippedMessage;
+    this.words = words;
+    this.strippedWords = strippedWords;
+    this.containsDigit = containsDigit;
+  }
+
+  /**
+   * Protected constructor for testing purposes.
+   * Allows creating MessageInfo without Bukkit color code processing.
+   */
+  protected MessageInfo(Instant time, String message) {
+    this.time = time;
+    this.originalMessage = message;
+    this.words = Arrays.stream(message.split("\\s+")).toArray(String[]::new);
+    this.strippedWords = Arrays.stream(words)
+        .map(StringHelper::revertLeet)
+        .toArray(String[]::new);
+    this.strippedMessage = String.join("", strippedWords);
+    this.containsDigit = message.matches(".*\\d.*");
+  }
 
   public static MessageInfo of(Instant time, String message) {
     String[] words = Arrays.stream(message.split("\\s+")).toArray(String[]::new);
