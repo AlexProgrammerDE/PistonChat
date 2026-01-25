@@ -8,13 +8,13 @@ import net.md_5.bungee.api.ChatColor;
 import net.pistonmaster.pistonchat.api.PistonChatAPI;
 import net.pistonmaster.pistonchat.api.PistonChatEvent;
 import net.pistonmaster.pistonchat.api.PistonWhisperEvent;
-import net.pistonmaster.pistonchat.utils.UniqueSender;
 import net.pistonmaster.pistonfilter.PistonFilter;
 import net.pistonmaster.pistonfilter.hooks.PistonMuteHook;
 import net.pistonmaster.pistonfilter.utils.MaxSizeDeque;
 import net.pistonmaster.pistonfilter.utils.MessageInfo;
 import net.pistonmaster.pistonfilter.utils.StringHelper;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,18 +27,20 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class ChatListener implements Listener {
   private final PistonFilter plugin;
-  private final Deque<MessageInfo> globalMessages;
-  private final Map<UUID, Deque<MessageInfo>> players = new ConcurrentHashMap<>();
+  private final MessageHistory globalMessages;
+  private final Map<UUID, MessageHistory> players = new ConcurrentHashMap<>();
   private final Cache<UUID, AtomicInteger> violationsCache;
 
   @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Plugin instance is intentionally shared")
   public ChatListener(PistonFilter plugin) {
     this.plugin = plugin;
-    this.globalMessages = new MaxSizeDeque<>(plugin.getConfig().getInt("global-message-stack-size"));
+    this.globalMessages = new MessageHistory(plugin.getConfig().getInt("global-message-stack-size"));
     this.violationsCache = CacheBuilder.newBuilder()
         .expireAfterWrite(plugin.getConfig().getInt("mute-violations-timeframe"), TimeUnit.SECONDS)
         .build();
@@ -68,24 +70,30 @@ public class ChatListener implements Listener {
   }
 
   public void handleMessage(CommandSender sender, MessageInfo message, Runnable cancelEvent, Consumer<String> sendEmpty) {
+    FileConfiguration config = plugin.getConfig();
+
     if (sender.hasPermission("pistonfilter.bypass")) {
       return;
     }
 
-    for (String str : plugin.getConfig().getStringList("banned-text")) {
-      if (FuzzySearch.partialRatio(message.getStrippedMessage(), StringHelper.revertLeet(str)) > plugin.getConfig().getInt("banned-text-partial-ratio")) {
-        cancelMessage(sender, message, cancelEvent, sendEmpty, "Contains banned text: %s".formatted(str));
+    int bannedPartialRatio = config.getInt("banned-text-partial-ratio");
+    for (String str : config.getStringList("banned-text")) {
+      if (FuzzySearch.partialRatio(message.getStrippedMessage(), StringHelper.revertLeet(str)) > bannedPartialRatio) {
+        cancelMessage(sender, message, cancelEvent, sendEmpty, "Contains banned text: %s".formatted(str), config);
         return;
       }
     }
 
+    int maxWordLength = config.getInt("max-word-length");
+    int maxSeparatedNumbers = config.getInt("max-separated-numbers");
+    int maxWordsWithNumbers = config.getInt("max-words-with-numbers");
     int wordsWithNumbers = 0;
     for (String word : message.getWords()) {
-      if (word.length() > plugin.getConfig().getInt("max-word-length")) {
-        cancelMessage(sender, message, cancelEvent, sendEmpty, "Contains a word with length (%d) \"%s\".".formatted(word.length(), word));
+      if (word.length() > maxWordLength) {
+        cancelMessage(sender, message, cancelEvent, sendEmpty, "Contains a word with length (%d) \"%s\".".formatted(word.length(), word), config);
         return;
-      } else if (hasInvalidSeparators(word)) {
-        cancelMessage(sender, message, cancelEvent, sendEmpty, "Has a word with invalid separators (%s).".formatted(word));
+      } else if (hasInvalidSeparators(word, maxSeparatedNumbers)) {
+        cancelMessage(sender, message, cancelEvent, sendEmpty, "Has a word with invalid separators (%s).".formatted(word), config);
         return;
       }
 
@@ -94,27 +102,38 @@ public class ChatListener implements Listener {
       }
     }
 
-    if (wordsWithNumbers > plugin.getConfig().getInt("max-words-with-numbers")) {
-      cancelMessage(sender, message, cancelEvent, sendEmpty, "Used %d words with numbers.".formatted(wordsWithNumbers));
+    if (wordsWithNumbers > maxWordsWithNumbers) {
+      cancelMessage(sender, message, cancelEvent, sendEmpty, "Used %d words with numbers.".formatted(wordsWithNumbers), config);
       return;
     }
 
-    if (plugin.getConfig().getBoolean("no-repeat")) {
-      UUID uuid = new UniqueSender(sender).getUniqueId();
-      int noRepeatTime = plugin.getConfig().getInt("no-repeat-time");
-      int similarRatio = plugin.getConfig().getInt("no-repeat-similar-ratio");
-      Deque<MessageInfo> lastMessages = players.compute(uuid, (k, v) ->
-          Objects.requireNonNullElseGet(v, () -> new MaxSizeDeque<>(plugin.getConfig().getInt("no-repeat-stack-size"))));
+    if (config.getBoolean("no-repeat")) {
+      UUID uuid = senderUuid(sender);
+      int noRepeatTime = config.getInt("no-repeat-time");
+      int similarRatio = config.getInt("no-repeat-similar-ratio");
+      int noRepeatNumberMessages = config.getInt("no-repeat-number-messages");
+      int noRepeatNumberAmount = config.getInt("no-repeat-number-amount");
+      int noRepeatWordRatio = config.getInt("no-repeat-word-ratio");
+      MessageHistory lastMessages = players.compute(uuid, (k, v) ->
+          Objects.requireNonNullElseGet(v, () -> new MessageHistory(config.getInt("no-repeat-stack-size"))));
 
-      boolean blocked = isBlocked(sender, message, cancelEvent, sendEmpty, noRepeatTime, similarRatio, lastMessages, false);
+      boolean blocked = lastMessages.withLock(() ->
+          isBlocked(sender, message, cancelEvent, sendEmpty, noRepeatTime, similarRatio, noRepeatNumberMessages,
+              noRepeatNumberAmount, noRepeatWordRatio, lastMessages.messages, false, config));
 
-      if (!blocked && plugin.getConfig().getBoolean("global-repeat-check")) {
-        blocked = isBlocked(sender, message, cancelEvent, sendEmpty, noRepeatTime, similarRatio, globalMessages, true);
+      if (!blocked && config.getBoolean("global-repeat-check")) {
+        blocked = globalMessages.withLock(() ->
+            isBlocked(sender, message, cancelEvent, sendEmpty, noRepeatTime, similarRatio, noRepeatNumberMessages,
+                noRepeatNumberAmount, noRepeatWordRatio, globalMessages.messages, true, config));
       }
 
       if (!blocked) {
-        lastMessages.add(message);
-        globalMessages.add(message);
+        lastMessages.withLock(() -> {
+          lastMessages.messages.add(message);
+        });
+        globalMessages.withLock(() -> {
+          globalMessages.messages.add(message);
+        });
       }
     }
   }
@@ -122,11 +141,10 @@ public class ChatListener implements Listener {
   private boolean isBlocked(CommandSender sender, MessageInfo message,
                             Runnable cancelEvent, Consumer<String> sendEmpty,
                             int noRepeatTime,
-                            int similarRatio, Deque<MessageInfo> lastMessages,
-                            boolean global) {
-    int noRepeatNumberMessages = plugin.getConfig().getInt("no-repeat-number-messages");
-    int noRepeatNumberAmount = plugin.getConfig().getInt("no-repeat-number-amount");
-    int noRepeatWordRatio = plugin.getConfig().getInt("no-repeat-word-ratio");
+                            int similarRatio, int noRepeatNumberMessages,
+                            int noRepeatNumberAmount, int noRepeatWordRatio,
+                            Deque<MessageInfo> lastMessages,
+                            boolean global, FileConfiguration config) {
     int i = 0;
     int foundDigits = 0;
     for (Iterator<MessageInfo> it = lastMessages.descendingIterator(); it.hasNext(); ) {
@@ -137,17 +155,17 @@ public class ChatListener implements Listener {
       }
 
       if (foundDigits >= noRepeatNumberAmount) {
-        cancelMessage(sender, message, cancelEvent, sendEmpty, "Contains too many numbers.");
+        cancelMessage(sender, message, cancelEvent, sendEmpty, "Contains too many numbers.", config);
         return true;
       } else if (noRepeatTime == -1 || Duration.between(pair.getTime(), message.getTime()).toSeconds() < noRepeatTime) {
         int similarity;
         if ((similarity = FuzzySearch.weightedRatio(pair.getStrippedMessage(), message.getStrippedMessage())) > similarRatio) {
           cancelMessage(sender, message, cancelEvent, sendEmpty,
-              "Similar to previous message (%d%%) (%s)".formatted(similarity, pair.getOriginalMessage()));
+              "Similar to previous message (%d%%) (%s)".formatted(similarity, pair.getOriginalMessage()), config);
           return true;
         } else if (noRepeatWordRatio > -1 && (similarity = getAverageEqualRatio(pair.getStrippedWords(), message.getStrippedWords())) > noRepeatWordRatio) {
           cancelMessage(sender, message, cancelEvent, sendEmpty,
-              "Word similarity to previous message (%d%%) (%s)".formatted(similarity, pair.getOriginalMessage()));
+              "Word similarity to previous message (%d%%) (%s)".formatted(similarity, pair.getOriginalMessage()), config);
           return true;
         }
         return true;
@@ -157,9 +175,8 @@ public class ChatListener implements Listener {
     return false;
   }
 
-  private boolean hasInvalidSeparators(String word) {
+  private boolean hasInvalidSeparators(String word, int maxSeparators) {
     List<Character> chars = word.chars().mapToObj(c -> (char) c).toList();
-    int maxSeparators = plugin.getConfig().getInt("max-separated-numbers");
     int separators = 0;
     int index = 0;
     for (char c : chars) {
@@ -175,29 +192,30 @@ public class ChatListener implements Listener {
     return false;
   }
 
-  private void cancelMessage(CommandSender sender, MessageInfo message, Runnable cancelEvent, Consumer<String> sendEmpty, String reason) {
+  private void cancelMessage(CommandSender sender, MessageInfo message, Runnable cancelEvent, Consumer<String> sendEmpty,
+                             String reason, FileConfiguration config) {
     cancelEvent.run();
 
-    if (plugin.getConfig().getBoolean("message-sender")) {
+    if (config.getBoolean("message-sender")) {
       sendEmpty.accept(message.getOriginalMessage());
     }
 
-    if (plugin.getConfig().getBoolean("verbose")) {
+    if (config.getBoolean("verbose")) {
       plugin.getLogger().info(ChatColor.RED + "[AntiSpam] <" + sender.getName() + "> " + message.getOriginalMessage() + " (" + reason + ")");
     }
 
-    if (plugin.getConfig().getBoolean("mute-on-fail")
+    if (config.getBoolean("mute-on-fail")
         && plugin.getServer().getPluginManager().isPluginEnabled("PistonMute")
         && sender instanceof Player player) {
       try {
-        UniqueSender uniqueSender = new UniqueSender(sender);
-        int violations = violationsCache.get(uniqueSender.getUniqueId(), AtomicInteger::new).incrementAndGet();
-        if (violations > plugin.getConfig().getInt("mute-violations")) {
-          violationsCache.invalidate(uniqueSender.getUniqueId());
-          int muteTime = plugin.getConfig().getInt("mute-time");
+        UUID senderUuid = senderUuid(sender);
+        int violations = violationsCache.get(senderUuid, AtomicInteger::new).incrementAndGet();
+        if (violations > config.getInt("mute-violations")) {
+          violationsCache.invalidate(senderUuid);
+          int muteTime = config.getInt("mute-time");
           PistonMuteHook.mute(player, Instant.now().plus(muteTime, ChronoUnit.SECONDS));
-          if (plugin.getConfig().getBoolean("verbose")) {
-            plugin.getLogger().info(ChatColor.RED + "[AntiSpam] Muted " + uniqueSender.sender().getName() + " for " + muteTime + " seconds.");
+          if (config.getBoolean("verbose")) {
+            plugin.getLogger().info(ChatColor.RED + "[AntiSpam] Muted " + sender.getName() + " for " + muteTime + " seconds.");
           }
         }
       } catch (Exception e) {
@@ -217,5 +235,40 @@ public class ChatListener implements Listener {
       }
     }
     return (int) ((total / sentWords.length) * 100);
+  }
+
+  private static UUID senderUuid(CommandSender sender) {
+    if (sender instanceof Player player) {
+      return player.getUniqueId();
+    }
+
+    return UUID.nameUUIDFromBytes(("pistonfilter:" + sender.getName()).getBytes(java.nio.charset.StandardCharsets.UTF_8));
+  }
+
+  private static final class MessageHistory {
+    private final Deque<MessageInfo> messages;
+    private final ReentrantLock lock = new ReentrantLock();
+
+    private MessageHistory(int maxSize) {
+      this.messages = new MaxSizeDeque<>(maxSize);
+    }
+
+    private <T> T withLock(Supplier<T> action) {
+      lock.lock();
+      try {
+        return action.get();
+      } finally {
+        lock.unlock();
+      }
+    }
+
+    private void withLock(Runnable action) {
+      lock.lock();
+      try {
+        action.run();
+      } finally {
+        lock.unlock();
+      }
+    }
   }
 }
