@@ -208,6 +208,225 @@ class StringHelperTest {
   }
 
   @Nested
+  @DisplayName("getUppercasePercentage tests")
+  class GetUppercasePercentageTests {
+
+    @Test
+    @DisplayName("Returns 0 for empty string")
+    void emptyString() {
+      assertEquals(0, StringHelper.getUppercasePercentage(""));
+    }
+
+    @Test
+    @DisplayName("Returns 0 for null")
+    void nullString() {
+      assertEquals(0, StringHelper.getUppercasePercentage(null));
+    }
+
+    @Test
+    @DisplayName("Returns 100 for all uppercase")
+    void allUppercase() {
+      assertEquals(100, StringHelper.getUppercasePercentage("HELLO"));
+    }
+
+    @Test
+    @DisplayName("Returns 0 for all lowercase")
+    void allLowercase() {
+      assertEquals(0, StringHelper.getUppercasePercentage("hello"));
+    }
+
+    @Test
+    @DisplayName("Returns 50 for half uppercase")
+    void halfUppercase() {
+      // "HeLo" has H, L uppercase (2) and e, o lowercase (2) = 50%
+      assertEquals(50, StringHelper.getUppercasePercentage("HeLo"));
+      // "HEllo" has H, E uppercase (2) and l, l, o lowercase (3) = 40%
+      assertEquals(40, StringHelper.getUppercasePercentage("HEllo"));
+    }
+
+    @Test
+    @DisplayName("Ignores numbers")
+    void ignoresNumbers() {
+      // "AB12cd" has A, B uppercase (2), c, d lowercase (2) = 50%
+      assertEquals(50, StringHelper.getUppercasePercentage("AB12cd"));
+    }
+
+    @Test
+    @DisplayName("Ignores spaces")
+    void ignoresSpaces() {
+      assertEquals(100, StringHelper.getUppercasePercentage("HELLO WORLD"));
+      assertEquals(0, StringHelper.getUppercasePercentage("hello world"));
+    }
+
+    @Test
+    @DisplayName("Ignores special characters")
+    void ignoresSpecialCharacters() {
+      assertEquals(50, StringHelper.getUppercasePercentage("AB!@#cd"));
+    }
+
+    @Test
+    @DisplayName("Returns 0 for string with only numbers")
+    void onlyNumbers() {
+      assertEquals(0, StringHelper.getUppercasePercentage("12345"));
+    }
+
+    @Test
+    @DisplayName("Returns 0 for string with only special chars")
+    void onlySpecialChars() {
+      assertEquals(0, StringHelper.getUppercasePercentage("!@#$%"));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "hello, 0",
+        "HELLO, 100",
+        "HeLLo, 60",
+        "Hello, 20",
+        "hELLO, 80",
+        "123, 0",
+        "'   ', 0"
+    })
+    @DisplayName("Parameterized uppercase percentage tests")
+    void parameterizedTests(String input, int expected) {
+      assertEquals(expected, StringHelper.getUppercasePercentage(input));
+    }
+  }
+
+  @Nested
+  @DisplayName("hasExcessiveRepetition tests")
+  class HasExcessiveRepetitionTests {
+
+    @Test
+    @DisplayName("Returns false for normal text")
+    void normalText() {
+      assertFalse(StringHelper.hasExcessiveRepetition("hello", 3));
+    }
+
+    @Test
+    @DisplayName("Returns true for excessive repetition")
+    void excessiveRepetition() {
+      assertTrue(StringHelper.hasExcessiveRepetition("heeeey", 3)); // 4 e's
+    }
+
+    @Test
+    @DisplayName("Returns false for allowed repetition")
+    void allowedRepetition() {
+      assertFalse(StringHelper.hasExcessiveRepetition("heey", 3)); // 2 e's
+      assertFalse(StringHelper.hasExcessiveRepetition("heeey", 3)); // 3 e's (exactly max)
+    }
+
+    @Test
+    @DisplayName("Returns false for null")
+    void nullString() {
+      assertFalse(StringHelper.hasExcessiveRepetition(null, 3));
+    }
+
+    @Test
+    @DisplayName("Returns false for empty string")
+    void emptyString() {
+      assertFalse(StringHelper.hasExcessiveRepetition("", 3));
+    }
+
+    @Test
+    @DisplayName("Returns false for short string")
+    void shortString() {
+      assertFalse(StringHelper.hasExcessiveRepetition("aa", 3));
+    }
+
+    @Test
+    @DisplayName("Handles mixed case")
+    void mixedCase() {
+      assertTrue(StringHelper.hasExcessiveRepetition("hEeEey", 3)); // 4 e's (case insensitive)
+    }
+
+    @Test
+    @DisplayName("Only checks letters")
+    void onlyChecksLetters() {
+      // Numbers can repeat
+      assertFalse(StringHelper.hasExcessiveRepetition("111222333", 3));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "hello, 3, false",
+        "heeeeey, 3, true",
+        "noooooo, 3, true",
+        "yaaay, 3, false",
+        "yaaaay, 3, true",
+        "HELLOOOO, 3, true"
+    })
+    @DisplayName("Parameterized excessive repetition tests")
+    void parameterizedTests(String input, int maxChars, boolean expected) {
+      assertEquals(expected, StringHelper.hasExcessiveRepetition(input, maxChars));
+    }
+  }
+
+  @Nested
+  @DisplayName("fixRepetition tests")
+  class FixRepetitionTests {
+
+    @Test
+    @DisplayName("Returns null for null input")
+    void nullInput() {
+      assertNull(StringHelper.fixRepetition(null, 3));
+    }
+
+    @Test
+    @DisplayName("Returns same string for normal text")
+    void normalText() {
+      assertEquals("hello", StringHelper.fixRepetition("hello", 3));
+    }
+
+    @Test
+    @DisplayName("Fixes excessive repetition")
+    void fixesExcessiveRepetition() {
+      assertEquals("heeey", StringHelper.fixRepetition("heeeeeey", 3));
+    }
+
+    @Test
+    @DisplayName("Preserves allowed repetition")
+    void preservesAllowedRepetition() {
+      assertEquals("heey", StringHelper.fixRepetition("heey", 3));
+      assertEquals("heeey", StringHelper.fixRepetition("heeey", 3));
+    }
+
+    @Test
+    @DisplayName("Handles mixed case preservation")
+    void mixedCasePreservation() {
+      // Preserves case of first N characters (where N = maxChars)
+      // "hEeEeEy" -> h, E (new), e, E (count 4 - skipped), e (skipped), E (skipped), y
+      // Result: "hEeEy" - keeps first 3 Es as they appear: E, e, E
+      assertEquals("hEeEy", StringHelper.fixRepetition("hEeEeEy", 3));
+    }
+
+    @Test
+    @DisplayName("Fixes multiple repetitions")
+    void fixesMultipleRepetitions() {
+      assertEquals("nooo waaay", StringHelper.fixRepetition("nooooooo waaaaaay", 3));
+    }
+
+    @Test
+    @DisplayName("Returns short strings unchanged")
+    void shortStrings() {
+      assertEquals("aa", StringHelper.fixRepetition("aa", 3));
+      assertEquals("aaa", StringHelper.fixRepetition("aaa", 3));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "heeeey, 3, heeey",
+        "noooooo, 3, nooo",
+        "yaaay, 3, yaaay",
+        "yaaaay, 3, yaaay",
+        "HELLOOOO, 3, HELLOOO"
+    })
+    @DisplayName("Parameterized fix repetition tests")
+    void parameterizedTests(String input, int maxChars, String expected) {
+      assertEquals(expected, StringHelper.fixRepetition(input, maxChars));
+    }
+  }
+
+  @Nested
   @DisplayName("Edge cases and integration")
   class EdgeCasesAndIntegration {
 

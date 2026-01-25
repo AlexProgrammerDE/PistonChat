@@ -4,6 +4,7 @@ import me.xdrop.fuzzywuzzy.FuzzySearch;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
@@ -14,7 +15,174 @@ import java.util.List;
  */
 public final class FilterLogic {
 
+  // Mathematical Alphanumeric Symbols block (U+1D400-U+1D7FF) - commonly used by hacked clients
+  private static final int MATH_ALPHANUMERIC_START = 0x1D400;
+  private static final int MATH_ALPHANUMERIC_END = 0x1D7FF;
+
+  // Other common hacked client font ranges
+  private static final int[][] HACKED_CLIENT_RANGES = {
+      {0xFF00, 0xFFEF},   // Halfwidth and Fullwidth Forms
+      {0x2460, 0x24FF},   // Enclosed Alphanumerics (circled numbers/letters)
+      {0x2070, 0x209F},   // Superscripts and Subscripts
+      {0x2100, 0x214F},   // Letterlike Symbols
+      {0x2150, 0x218F},   // Number Forms
+      {0x2200, 0x22FF},   // Mathematical Operators
+      {0x2300, 0x23FF},   // Miscellaneous Technical
+      {0xFB00, 0xFB4F},   // Alphabetic Presentation Forms
+      {0x1F100, 0x1F1FF}, // Enclosed Alphanumeric Supplement
+  };
+
   private FilterLogic() {
+  }
+
+  /**
+   * Represents a parsed Unicode range (start-end in hex).
+   */
+  public static final class UnicodeRange {
+    private final int start;
+    private final int end;
+
+    public UnicodeRange(int start, int end) {
+      this.start = start;
+      this.end = end;
+    }
+
+    /**
+     * Parse a Unicode range from a string like "0400-04FF".
+     *
+     * @param rangeStr the range string in format "start-end" (hex values)
+     * @return the parsed range, or null if invalid
+     */
+    public static UnicodeRange parse(String rangeStr) {
+      if (rangeStr == null || !rangeStr.contains("-")) {
+        return null;
+      }
+      try {
+        String[] parts = rangeStr.split("-");
+        if (parts.length != 2) {
+          return null;
+        }
+        int start = Integer.parseInt(parts[0].trim(), 16);
+        int end = Integer.parseInt(parts[1].trim(), 16);
+        return new UnicodeRange(start, end);
+      } catch (NumberFormatException e) {
+        return null;
+      }
+    }
+
+    public boolean contains(int codePoint) {
+      return codePoint >= start && codePoint <= end;
+    }
+  }
+
+  /**
+   * Parse a list of Unicode range strings into UnicodeRange objects.
+   *
+   * @param rangeStrings the list of range strings
+   * @return the list of parsed ranges (invalid ranges are skipped)
+   */
+  public static List<UnicodeRange> parseUnicodeRanges(List<String> rangeStrings) {
+    List<UnicodeRange> ranges = new ArrayList<>();
+    for (String rangeStr : rangeStrings) {
+      UnicodeRange range = UnicodeRange.parse(rangeStr);
+      if (range != null) {
+        ranges.add(range);
+      }
+    }
+    return ranges;
+  }
+
+  /**
+   * Result of Unicode character filtering.
+   */
+  public static final class UnicodeFilterResult {
+    private final boolean blocked;
+    private final String reason;
+    private final int offendingCodePoint;
+
+    private UnicodeFilterResult(boolean blocked, String reason, int offendingCodePoint) {
+      this.blocked = blocked;
+      this.reason = reason;
+      this.offendingCodePoint = offendingCodePoint;
+    }
+
+    public static UnicodeFilterResult allowed() {
+      return new UnicodeFilterResult(false, null, -1);
+    }
+
+    public static UnicodeFilterResult blocked(String reason, int codePoint) {
+      return new UnicodeFilterResult(true, reason, codePoint);
+    }
+
+    public boolean isBlocked() {
+      return blocked;
+    }
+
+    public String getReason() {
+      return reason;
+    }
+
+    public int getOffendingCodePoint() {
+      return offendingCodePoint;
+    }
+  }
+
+  /**
+   * Check if a message contains blocked Unicode characters.
+   *
+   * @param message               the message to check
+   * @param blockNonAscii         whether to block all non-ASCII characters
+   * @param blockMathAlphanumeric whether to block Mathematical Alphanumeric Symbols
+   * @param blockHackedClientFonts whether to block other hacked client font ranges
+   * @param allowedRanges         allowed Unicode ranges (only used when blockNonAscii is true)
+   * @return the result of the Unicode filter check
+   */
+  public static UnicodeFilterResult checkUnicodeCharacters(
+      String message,
+      boolean blockNonAscii,
+      boolean blockMathAlphanumeric,
+      boolean blockHackedClientFonts,
+      List<UnicodeRange> allowedRanges) {
+
+    for (int i = 0; i < message.length(); ) {
+      int codePoint = message.codePointAt(i);
+
+      // Check for Mathematical Alphanumeric Symbols
+      if (blockMathAlphanumeric && codePoint >= MATH_ALPHANUMERIC_START && codePoint <= MATH_ALPHANUMERIC_END) {
+        return UnicodeFilterResult.blocked(
+            "Contains Mathematical Alphanumeric Symbol (U+%04X)".formatted(codePoint), codePoint);
+      }
+
+      // Check for other hacked client font ranges
+      if (blockHackedClientFonts) {
+        for (int[] range : HACKED_CLIENT_RANGES) {
+          if (codePoint >= range[0] && codePoint <= range[1]) {
+            return UnicodeFilterResult.blocked(
+                "Contains blocked Unicode character (U+%04X)".formatted(codePoint), codePoint);
+          }
+        }
+      }
+
+      // Check for non-ASCII characters
+      if (blockNonAscii && codePoint > 0x7F) {
+        // Check if this code point is in an allowed range
+        boolean allowed = false;
+        for (UnicodeRange range : allowedRanges) {
+          if (range.contains(codePoint)) {
+            allowed = true;
+            break;
+          }
+        }
+        if (!allowed) {
+          return UnicodeFilterResult.blocked(
+              "Contains non-ASCII character (U+%04X)".formatted(codePoint), codePoint);
+        }
+      }
+
+      i += Character.charCount(codePoint);
+    }
+
+    return UnicodeFilterResult.allowed();
   }
 
   /**
@@ -99,6 +267,50 @@ public final class FilterLogic {
       }
     }
     return null;
+  }
+
+  /**
+   * Check if a message contains any whitelisted word/phrase.
+   * If a whitelisted word is found, certain filter checks should be bypassed.
+   *
+   * @param message         the original message
+   * @param whitelistedWords the list of whitelisted words/phrases
+   * @return true if the message contains a whitelisted word
+   */
+  public static boolean containsWhitelistedWord(String message, List<String> whitelistedWords) {
+    if (whitelistedWords == null || whitelistedWords.isEmpty()) {
+      return false;
+    }
+
+    String lowerMessage = message.toLowerCase(java.util.Locale.ROOT);
+    for (String word : whitelistedWords) {
+      if (lowerMessage.contains(word.toLowerCase(java.util.Locale.ROOT))) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Remove whitelisted words from a message for filtering purposes.
+   * This allows the rest of the message to still be filtered.
+   *
+   * @param message         the original message
+   * @param whitelistedWords the list of whitelisted words/phrases
+   * @return the message with whitelisted words replaced with placeholders
+   */
+  public static String maskWhitelistedWords(String message, List<String> whitelistedWords) {
+    if (whitelistedWords == null || whitelistedWords.isEmpty()) {
+      return message;
+    }
+
+    String result = message;
+    for (String word : whitelistedWords) {
+      // Case-insensitive replacement with a placeholder of equal length
+      String placeholder = " ".repeat(word.length());
+      result = result.replaceAll("(?i)" + java.util.regex.Pattern.quote(word), placeholder);
+    }
+    return result;
   }
 
   /**

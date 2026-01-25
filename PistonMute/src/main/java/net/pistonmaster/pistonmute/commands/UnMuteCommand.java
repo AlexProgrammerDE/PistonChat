@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.pistonmaster.pistonmute.PistonMute;
+import net.pistonmaster.pistonmute.utils.PunishmentLogger;
 import net.pistonmaster.pistonmute.utils.StorageTool;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -33,6 +34,7 @@ public final class UnMuteCommand implements CommandExecutor, TabExecutor {
             sender.spigot().sendMessage(new ComponentBuilder("PistonMute").color(ChatColor.GOLD).create());
             sender.spigot().sendMessage(new ComponentBuilder("Successfully unmuted " + player.getName() + "!").color(ChatColor.GREEN).create());
             sender.spigot().sendMessage(new ComponentBuilder("----------------").color(ChatColor.DARK_BLUE).create());
+            PunishmentLogger.logUnmute(sender.getName(), player.getName());
           } else {
             sender.spigot().sendMessage(new ComponentBuilder("----------------").color(ChatColor.DARK_BLUE).create());
             sender.spigot().sendMessage(new ComponentBuilder("PistonMute").color(ChatColor.GOLD).create());

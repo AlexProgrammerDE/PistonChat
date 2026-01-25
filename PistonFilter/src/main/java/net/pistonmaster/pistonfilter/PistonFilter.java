@@ -7,7 +7,12 @@ import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
 import net.pistonmaster.pistonfilter.commands.FilterCommand;
 import net.pistonmaster.pistonfilter.config.PistonFilterConfig;
+import net.pistonmaster.pistonfilter.listeners.AnvilListener;
+import net.pistonmaster.pistonfilter.listeners.BookListener;
 import net.pistonmaster.pistonfilter.listeners.ChatListener;
+import net.pistonmaster.pistonfilter.listeners.CommandListener;
+import net.pistonmaster.pistonfilter.listeners.SignListener;
+import net.pistonmaster.pistonfilter.managers.ChatPauseManager;
 import net.pistonmaster.pistonutils.update.GitHubUpdateChecker;
 import net.pistonmaster.pistonutils.update.SemanticVersion;
 import org.bstats.bukkit.Metrics;
@@ -30,6 +35,9 @@ public class PistonFilter extends JavaPlugin {
   @Getter
   private PistonFilterConfig pluginConfig;
 
+  @Getter
+  private final ChatPauseManager chatPauseManager = new ChatPauseManager();
+
   @Override
   public void onEnable() {
     Logger log = getLogger();
@@ -47,6 +55,10 @@ public class PistonFilter extends JavaPlugin {
 
     log.info(ChatColor.AQUA + "Registering listeners");
     getServer().getPluginManager().registerEvents(new ChatListener(this), this);
+    getServer().getPluginManager().registerEvents(new SignListener(this), this);
+    getServer().getPluginManager().registerEvents(new BookListener(this), this);
+    getServer().getPluginManager().registerEvents(new AnvilListener(this), this);
+    getServer().getPluginManager().registerEvents(new CommandListener(this), this);
 
     log.info(ChatColor.AQUA + "Loading metrics");
     new Metrics(this, 11561);

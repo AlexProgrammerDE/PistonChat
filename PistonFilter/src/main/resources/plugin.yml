@@ -11,12 +11,50 @@ softdepend: [ "PistonMute" ]
 commands:
   pistonfilter:
     description: Main command for PistonFilter
-    permission: pistonfilter.admin
+    aliases: [ filter, pf ]
 permissions:
   pistonfilter.admin:
     description: Admin permission for PistonFilter
     default: op
     children:
       pistonfilter.bypass: true
+      pistonfilter.notify: true
+      pistonfilter.pausechat: true
+      pistonfilter.clearchat: true
+      pistonfilter.clearchat.bypass: true
   pistonfilter.bypass:
-    description: Permission to bypass the chatfilter
+    description: Permission to bypass all filters (chat, signs, books, anvil, commands)
+    children:
+      pistonfilter.bypass.signs: true
+      pistonfilter.bypass.books: true
+      pistonfilter.bypass.anvil: true
+      pistonfilter.bypass.commands: true
+      pistonfilter.bypass.cooldown: true
+      pistonfilter.bypass.caps: true
+      pistonfilter.bypass.repetition: true
+  pistonfilter.bypass.signs:
+    description: Permission to bypass sign filtering
+  pistonfilter.bypass.books:
+    description: Permission to bypass book filtering
+  pistonfilter.bypass.anvil:
+    description: Permission to bypass anvil rename filtering
+  pistonfilter.bypass.commands:
+    description: Permission to bypass command filtering
+  pistonfilter.bypass.cooldown:
+    description: Permission to bypass message cooldown
+  pistonfilter.bypass.caps:
+    description: Permission to bypass anti-caps filter
+  pistonfilter.bypass.repetition:
+    description: Permission to bypass character repetition filter
+  pistonfilter.notify:
+    description: Permission to receive staff notifications when messages are blocked
+    default: op
+  pistonfilter.pausechat:
+    description: Permission to pause and resume chat
+    default: op
+  pistonfilter.clearchat:
+    description: Permission to clear the chat
+    default: op
+  pistonfilter.clearchat.bypass:
+    description: Permission to bypass chat clear (your chat won't be cleared)
+    default: op

@@ -453,6 +453,103 @@ class FilterLogicTest {
   }
 
   @Nested
+  @DisplayName("containsWhitelistedWord tests")
+  class ContainsWhitelistedWordTests {
+
+    @Test
+    @DisplayName("Returns false for null whitelist")
+    void nullWhitelist() {
+      assertFalse(FilterLogic.containsWhitelistedWord("hello world", null));
+    }
+
+    @Test
+    @DisplayName("Returns false for empty whitelist")
+    void emptyWhitelist() {
+      assertFalse(FilterLogic.containsWhitelistedWord("hello world", List.of()));
+    }
+
+    @Test
+    @DisplayName("Returns true when message contains whitelisted word")
+    void containsWhitelistedWord() {
+      List<String> whitelist = List.of("discord.gg/myserver", "example.com");
+      assertTrue(FilterLogic.containsWhitelistedWord("join us at discord.gg/myserver", whitelist));
+    }
+
+    @Test
+    @DisplayName("Returns false when message does not contain whitelisted word")
+    void doesNotContainWhitelistedWord() {
+      List<String> whitelist = List.of("discord.gg/myserver", "example.com");
+      assertFalse(FilterLogic.containsWhitelistedWord("hello world", whitelist));
+    }
+
+    @Test
+    @DisplayName("Case insensitive matching")
+    void caseInsensitive() {
+      List<String> whitelist = List.of("Discord.gg/MyServer");
+      assertTrue(FilterLogic.containsWhitelistedWord("join us at discord.gg/myserver", whitelist));
+      assertTrue(FilterLogic.containsWhitelistedWord("join us at DISCORD.GG/MYSERVER", whitelist));
+    }
+
+    @Test
+    @DisplayName("Partial match works")
+    void partialMatch() {
+      List<String> whitelist = List.of("example");
+      assertTrue(FilterLogic.containsWhitelistedWord("this is an example message", whitelist));
+    }
+  }
+
+  @Nested
+  @DisplayName("maskWhitelistedWords tests")
+  class MaskWhitelistedWordsTests {
+
+    @Test
+    @DisplayName("Returns original message for null whitelist")
+    void nullWhitelist() {
+      assertEquals("hello world", FilterLogic.maskWhitelistedWords("hello world", null));
+    }
+
+    @Test
+    @DisplayName("Returns original message for empty whitelist")
+    void emptyWhitelist() {
+      assertEquals("hello world", FilterLogic.maskWhitelistedWords("hello world", List.of()));
+    }
+
+    @Test
+    @DisplayName("Masks whitelisted word with spaces")
+    void masksWhitelistedWord() {
+      List<String> whitelist = List.of("example.com");
+      String result = FilterLogic.maskWhitelistedWords("visit example.com today", whitelist);
+      assertEquals("visit             today", result);
+    }
+
+    @Test
+    @DisplayName("Masks multiple whitelisted words")
+    void masksMultipleWhitelistedWords() {
+      List<String> whitelist = List.of("foo", "bar");
+      String result = FilterLogic.maskWhitelistedWords("foo and bar", whitelist);
+      assertEquals("    and    ", result);
+    }
+
+    @Test
+    @DisplayName("Case insensitive masking")
+    void caseInsensitiveMasking() {
+      List<String> whitelist = List.of("Example");
+      String result = FilterLogic.maskWhitelistedWords("This is an EXAMPLE test", whitelist);
+      // EXAMPLE should be replaced with 7 spaces
+      assertEquals("This is an         test", result);
+    }
+
+    @Test
+    @DisplayName("Preserves message length")
+    void preservesMessageLength() {
+      List<String> whitelist = List.of("test");
+      String original = "this is a test message";
+      String result = FilterLogic.maskWhitelistedWords(original, whitelist);
+      assertEquals(original.length(), result.length());
+    }
+  }
+
+  @Nested
   @DisplayName("Integration-style tests")
   class IntegrationTests {
 

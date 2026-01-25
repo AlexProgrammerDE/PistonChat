@@ -9,13 +9,53 @@ folia-supported: true
 depend: [ PistonChat ]
 commands:
   mute:
-    description: Mute a player!
-    usage: /<command> [player] <time>
+    description: Mute a player (online or offline)! Supports --template for escalation.
+    usage: /<command> <player> [duration] [reason] OR /<command> <player> --template <name>
     permission: pistonmute.mute
   unmute:
     description: Unmute a player!
     usage: /<command> [player]
     permission: pistonmute.unmute
+  mutelist:
+    description: View all currently muted players
+    usage: /<command> [page]
+    permission: pistonmute.mutelist
+  muteinfo:
+    description: View detailed mute information for a player
+    usage: /<command> <player>
+    permission: pistonmute.muteinfo
+  warn:
+    description: Issue a warning to a player
+    usage: /<command> <player> <reason>
+    permission: pistonmute.warn
+  warnings:
+    description: View a player's warnings
+    usage: /<command> <player>
+    permission: pistonmute.warnings
+  unwarn:
+    description: Remove a warning from a player
+    usage: /<command> <player> [warning_id]
+    permission: pistonmute.unwarn
+  history:
+    description: View a player's punishment history
+    usage: /<command> <player> [page]
+    permission: pistonmute.history
+  note:
+    description: Add a note to a player
+    usage: /<command> <player> <text>
+    permission: pistonmute.note
+  notes:
+    description: View all notes for a player
+    usage: /<command> <player>
+    permission: pistonmute.notes
+  delnote:
+    description: Delete a note from a player
+    usage: /<command> <player> <id>
+    permission: pistonmute.delnote
+  alts:
+    description: View known alt accounts for a player
+    usage: /<command> <player>
+    permission: pistonmute.alts
 permissions:
   pistonmute.mute:
     description: Permission to mute!
@@ -23,3 +63,48 @@ permissions:
   pistonmute.unmute:
     description: Permission to unmute!
     default: op
+  pistonmute.mutelist:
+    description: Permission to view the mute list
+    default: op
+  pistonmute.muteinfo:
+    description: Permission to view mute details
+    default: op
+  pistonmute.warn:
+    description: Permission to warn players
+    default: op
+  pistonmute.warnings:
+    description: Permission to view player warnings
+    default: op
+  pistonmute.unwarn:
+    description: Permission to remove warnings
+    default: op
+  pistonmute.history:
+    description: Permission to view punishment history
+    default: op
+  pistonmute.note:
+    description: Permission to add notes to players
+    default: op
+  pistonmute.notes:
+    description: Permission to view player notes
+    default: op
+  pistonmute.delnote:
+    description: Permission to delete player notes
+    default: op
+  pistonmute.immune:
+    description: Makes the player immune to being muted (when hierarchy mode is 'immune')
+    default: false
+  pistonmute.weight.*:
+    description: Staff weight permission for hierarchy (higher weight can mute lower weight)
+    default: false
+  pistonmute.alts:
+    description: Permission to view alt accounts
+    default: op
+  pistonmute.alts.showip:
+    description: Permission to see IP addresses in alt lookup
+    default: op
+  pistonmute.notify:
+    description: Receive notifications when muted players' alts join
+    default: op
+  pistonmute.bypass.commands:
+    description: Bypass command blocking when muted
+    default: false
