@@ -18,7 +18,7 @@ public final class PistonChatListener implements Listener {
   @EventHandler
   public void onChat(PistonChatEvent event) {
     if (StorageTool.isMuted(event.getPlayer())) {
-      if (plugin.getConfig().getBoolean("shadowMute")) {
+      if (plugin.getPluginConfig().shadowMute) {
         pistonChat.getCommonTool().sendChatMessage(event.getPlayer(), event.getMessage(), event.getPlayer());
       }
 
@@ -33,7 +33,7 @@ public final class PistonChatListener implements Listener {
     }
 
     if (event.getSender() instanceof Player && StorageTool.isMuted((Player) event.getSender())) {
-      if (plugin.getConfig().getBoolean("shadowMute")) {
+      if (plugin.getPluginConfig().shadowMute) {
         pistonChat.getCommonTool().sendSender(event.getSender(), event.getMessage(), event.getReceiver());
       }
 

@@ -13,7 +13,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.util.StringUtil;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -73,12 +72,7 @@ public class MainCommand implements CommandExecutor, TabExecutor {
           sender.sendMessage(command.getPermissionMessage());
         }
 
-        try {
-          plugin.getConfigManager().create();
-        } catch (IOException e) {
-          plugin.getLogger().severe("Could not create config!");
-          e.printStackTrace();
-        }
+        plugin.loadConfig();
         sender.sendMessage("Reloaded the config!");
       }
       default -> {

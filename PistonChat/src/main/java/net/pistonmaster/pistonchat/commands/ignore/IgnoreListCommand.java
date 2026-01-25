@@ -104,12 +104,13 @@ public class IgnoreListCommand implements CommandExecutor, TabExecutor {
   }
 
   private void showList(int page, Player player) {
-    int maxValue = page * plugin.getConfig().getInt("ignore-list-size");
-    int minValue = maxValue - plugin.getConfig().getInt("ignore-list-size");
+    int ignoreListSize = plugin.getPluginConfig().ignoreListSize;
+    int maxValue = page * ignoreListSize;
+    int minValue = maxValue - ignoreListSize;
 
     Map<OfflinePlayer, IgnoreTool.IgnoreType> map = plugin.getIgnoreTool().getIgnoredPlayers(player);
 
-    int allPages = IntMath.divide(map.size(), plugin.getConfig().getInt("ignore-list-size"), RoundingMode.CEILING);
+    int allPages = IntMath.divide(map.size(), ignoreListSize, RoundingMode.CEILING);
 
     ComponentBuilder navigation = new ComponentBuilder("[ Ignored players ").color(ChatColor.GOLD);
 

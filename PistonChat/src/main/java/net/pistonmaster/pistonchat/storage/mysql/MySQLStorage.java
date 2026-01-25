@@ -1,9 +1,8 @@
 package net.pistonmaster.pistonchat.storage.mysql;
 
 import net.md_5.bungee.api.ChatColor;
+import net.pistonmaster.pistonchat.config.PistonChatConfig;
 import net.pistonmaster.pistonchat.storage.PCStorage;
-import net.pistonmaster.pistonchat.utils.ConfigManager;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.mariadb.jdbc.MariaDbPoolDataSource;
 
 import java.sql.Connection;
@@ -23,15 +22,15 @@ public class MySQLStorage implements PCStorage {
     this.ds = dataSource;
   }
 
-  public static MySQLStorage create(Logger log, ConfigManager configManager) {
+  public static MySQLStorage create(Logger log, PistonChatConfig config) {
     log.info(ChatColor.DARK_GREEN + "Connecting to database");
     MariaDbPoolDataSource dataSource = new MariaDbPoolDataSource();
-    FileConfiguration config = configManager.get();
+    var mysqlConfig = config.mysql;
     try {
-      dataSource.setUser(config.getString("mysql.username"));
-      dataSource.setPassword(config.getString("mysql.password"));
-      dataSource.setUrl("jdbc:mariadb://" + config.getString("mysql.host") + ":" + config.getInt("mysql.port")
-          + "/" + config.getString("mysql.database")
+      dataSource.setUser(mysqlConfig.username);
+      dataSource.setPassword(mysqlConfig.password);
+      dataSource.setUrl("jdbc:mariadb://" + mysqlConfig.host + ":" + mysqlConfig.port
+          + "/" + mysqlConfig.database
           + "?sslMode=disable&serverTimezone=UTC&maxPoolSize=10"
       );
 

@@ -19,6 +19,7 @@ dependencies {
     implementation("org.bstats:bstats-bukkit:3.1.0")
     implementation("org.mariadb.jdbc:mariadb-java-client:3.5.7")
     implementation("com.github.ben-manes.caffeine:caffeine:3.2.3")
+    implementation("de.exlll:configlib-paper:4.8.0")
 }
 
 tasks {

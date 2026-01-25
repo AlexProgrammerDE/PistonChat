@@ -1,6 +1,9 @@
 package net.pistonmaster.pistonchat;
 
 import com.tcoded.folialib.FoliaLib;
+import de.exlll.configlib.ConfigLib;
+import de.exlll.configlib.YamlConfigurationProperties;
+import de.exlll.configlib.YamlConfigurations;
 import lombok.Getter;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.md_5.bungee.api.ChatColor;
@@ -14,27 +17,29 @@ import net.pistonmaster.pistonchat.commands.toggle.ToggleWhisperingCommand;
 import net.pistonmaster.pistonchat.commands.whisper.LastCommand;
 import net.pistonmaster.pistonchat.commands.whisper.ReplyCommand;
 import net.pistonmaster.pistonchat.commands.whisper.WhisperCommand;
+import net.pistonmaster.pistonchat.config.PistonChatConfig;
 import net.pistonmaster.pistonchat.events.ChatEvent;
 import net.pistonmaster.pistonchat.storage.PCStorage;
 import net.pistonmaster.pistonchat.storage.file.FileStorage;
 import net.pistonmaster.pistonchat.storage.mysql.MySQLStorage;
 import net.pistonmaster.pistonchat.tools.*;
-import net.pistonmaster.pistonchat.utils.ConfigManager;
 import net.pistonmaster.pistonutils.update.GitHubUpdateChecker;
 import net.pistonmaster.pistonutils.update.SemanticVersion;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Server;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Getter
 public final class PistonChat extends JavaPlugin {
-  private final ConfigManager configManager = new ConfigManager(this, "config.yml");
+  private static final YamlConfigurationProperties CONFIG_PROPERTIES = ConfigLib.BUKKIT_DEFAULT_PROPERTIES.toBuilder()
+      .header("PistonChat Configuration")
+      .build();
   private final TempDataTool tempDataTool = new TempDataTool(this);
   private final SoftIgnoreTool softignoreTool = new SoftIgnoreTool(this);
   private final CacheTool cacheTool = new CacheTool(this);
@@ -42,6 +47,7 @@ public final class PistonChat extends JavaPlugin {
   private final HardIgnoreTool hardIgnoreTool = new HardIgnoreTool(this);
   private final CommonTool commonTool = new CommonTool(this);
   private final FoliaLib foliaLib = new FoliaLib(this);
+  private PistonChatConfig pluginConfig;
   private PCStorage storage;
   private BukkitAudiences adventure;
 
@@ -62,18 +68,12 @@ public final class PistonChat extends JavaPlugin {
     log.info("                                                             ");
 
     log.info(ChatColor.DARK_GREEN + "Loading config");
-    try {
-      configManager.create();
-    } catch (IOException e) {
-      e.printStackTrace();
-      getServer().getPluginManager().disablePlugin(this);
-    }
+    loadConfig();
 
     log.info(ChatColor.DARK_GREEN + "Loading storage");
-    var storageType = configManager.get().getString("storage");
-    if ("mysql".equalsIgnoreCase(storageType)) {
-      storage = MySQLStorage.create(log, configManager);
-    } else if ("file".equalsIgnoreCase(storageType)) {
+    if ("mysql".equalsIgnoreCase(pluginConfig.storage)) {
+      storage = MySQLStorage.create(log, pluginConfig);
+    } else if ("file".equalsIgnoreCase(pluginConfig.storage)) {
       storage = new FileStorage(log, getDataFolder().toPath());
     }
 
@@ -161,9 +161,9 @@ public final class PistonChat extends JavaPlugin {
     }
   }
 
-  @Override
-  public FileConfiguration getConfig() {
-    return configManager.get();
+  public void loadConfig() {
+    Path configPath = getDataFolder().toPath().resolve("config.yml");
+    pluginConfig = YamlConfigurations.update(configPath, PistonChatConfig.class, CONFIG_PROPERTIES);
   }
 
   public void runAsync(Runnable runnable) {

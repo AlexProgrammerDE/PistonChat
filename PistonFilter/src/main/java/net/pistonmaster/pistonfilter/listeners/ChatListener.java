@@ -9,12 +9,12 @@ import net.pistonmaster.pistonchat.api.PistonChatAPI;
 import net.pistonmaster.pistonchat.api.PistonChatEvent;
 import net.pistonmaster.pistonchat.api.PistonWhisperEvent;
 import net.pistonmaster.pistonfilter.PistonFilter;
+import net.pistonmaster.pistonfilter.config.PistonFilterConfig;
 import net.pistonmaster.pistonfilter.hooks.PistonMuteHook;
 import net.pistonmaster.pistonfilter.utils.MaxSizeDeque;
 import net.pistonmaster.pistonfilter.utils.MessageInfo;
 import net.pistonmaster.pistonfilter.utils.StringHelper;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -40,9 +40,10 @@ public class ChatListener implements Listener {
   @SuppressFBWarnings(value = "EI_EXPOSE_REP2", justification = "Plugin instance is intentionally shared")
   public ChatListener(PistonFilter plugin) {
     this.plugin = plugin;
-    this.globalMessages = new MessageHistory(plugin.getConfig().getInt("global-message-stack-size"));
+    PistonFilterConfig config = plugin.getPluginConfig();
+    this.globalMessages = new MessageHistory(config.globalMessageStackSize);
     this.violationsCache = CacheBuilder.newBuilder()
-        .expireAfterWrite(plugin.getConfig().getInt("mute-violations-timeframe"), TimeUnit.SECONDS)
+        .expireAfterWrite(config.muteViolationsTimeframe, TimeUnit.SECONDS)
         .build();
   }
 
@@ -70,23 +71,23 @@ public class ChatListener implements Listener {
   }
 
   public void handleMessage(CommandSender sender, MessageInfo message, Runnable cancelEvent, Consumer<String> sendEmpty) {
-    FileConfiguration config = plugin.getConfig();
+    PistonFilterConfig config = plugin.getPluginConfig();
 
     if (sender.hasPermission("pistonfilter.bypass")) {
       return;
     }
 
-    int bannedPartialRatio = config.getInt("banned-text-partial-ratio");
-    for (String str : config.getStringList("banned-text")) {
+    int bannedPartialRatio = config.bannedTextPartialRatio;
+    for (String str : config.bannedText) {
       if (FuzzySearch.partialRatio(message.getStrippedMessage(), StringHelper.revertLeet(str)) > bannedPartialRatio) {
         cancelMessage(sender, message, cancelEvent, sendEmpty, "Contains banned text: %s".formatted(str), config);
         return;
       }
     }
 
-    int maxWordLength = config.getInt("max-word-length");
-    int maxSeparatedNumbers = config.getInt("max-separated-numbers");
-    int maxWordsWithNumbers = config.getInt("max-words-with-numbers");
+    int maxWordLength = config.maxWordLength;
+    int maxSeparatedNumbers = config.maxSeparatedNumbers;
+    int maxWordsWithNumbers = config.maxWordsWithNumbers;
     int wordsWithNumbers = 0;
     for (String word : message.getWords()) {
       if (word.length() > maxWordLength) {
@@ -107,21 +108,21 @@ public class ChatListener implements Listener {
       return;
     }
 
-    if (config.getBoolean("no-repeat")) {
+    if (config.noRepeat) {
       UUID uuid = senderUuid(sender);
-      int noRepeatTime = config.getInt("no-repeat-time");
-      int similarRatio = config.getInt("no-repeat-similar-ratio");
-      int noRepeatNumberMessages = config.getInt("no-repeat-number-messages");
-      int noRepeatNumberAmount = config.getInt("no-repeat-number-amount");
-      int noRepeatWordRatio = config.getInt("no-repeat-word-ratio");
+      int noRepeatTime = config.noRepeatTime;
+      int similarRatio = config.noRepeatSimilarRatio;
+      int noRepeatNumberMessages = config.noRepeatNumberMessages;
+      int noRepeatNumberAmount = config.noRepeatNumberAmount;
+      int noRepeatWordRatio = config.noRepeatWordRatio;
       MessageHistory lastMessages = players.compute(uuid, (k, v) ->
-          Objects.requireNonNullElseGet(v, () -> new MessageHistory(config.getInt("no-repeat-stack-size"))));
+          Objects.requireNonNullElseGet(v, () -> new MessageHistory(config.noRepeatStackSize)));
 
       boolean blocked = lastMessages.withLock(() ->
           isBlocked(sender, message, cancelEvent, sendEmpty, noRepeatTime, similarRatio, noRepeatNumberMessages,
               noRepeatNumberAmount, noRepeatWordRatio, lastMessages.messages, false, config));
 
-      if (!blocked && config.getBoolean("global-repeat-check")) {
+      if (!blocked && config.globalRepeatCheck) {
         blocked = globalMessages.withLock(() ->
             isBlocked(sender, message, cancelEvent, sendEmpty, noRepeatTime, similarRatio, noRepeatNumberMessages,
                 noRepeatNumberAmount, noRepeatWordRatio, globalMessages.messages, true, config));
@@ -144,7 +145,7 @@ public class ChatListener implements Listener {
                             int similarRatio, int noRepeatNumberMessages,
                             int noRepeatNumberAmount, int noRepeatWordRatio,
                             Deque<MessageInfo> lastMessages,
-                            boolean global, FileConfiguration config) {
+                            boolean global, PistonFilterConfig config) {
     int i = 0;
     int foundDigits = 0;
     for (Iterator<MessageInfo> it = lastMessages.descendingIterator(); it.hasNext(); ) {
@@ -193,28 +194,28 @@ public class ChatListener implements Listener {
   }
 
   private void cancelMessage(CommandSender sender, MessageInfo message, Runnable cancelEvent, Consumer<String> sendEmpty,
-                             String reason, FileConfiguration config) {
+                             String reason, PistonFilterConfig config) {
     cancelEvent.run();
 
-    if (config.getBoolean("message-sender")) {
+    if (config.messageSender) {
       sendEmpty.accept(message.getOriginalMessage());
     }
 
-    if (config.getBoolean("verbose")) {
+    if (config.verbose) {
       plugin.getLogger().info(ChatColor.RED + "[AntiSpam] <" + sender.getName() + "> " + message.getOriginalMessage() + " (" + reason + ")");
     }
 
-    if (config.getBoolean("mute-on-fail")
+    if (config.muteOnFail
         && plugin.getServer().getPluginManager().isPluginEnabled("PistonMute")
         && sender instanceof Player player) {
       try {
         UUID senderUuid = senderUuid(sender);
         int violations = violationsCache.get(senderUuid, AtomicInteger::new).incrementAndGet();
-        if (violations > config.getInt("mute-violations")) {
+        if (violations > config.muteViolations) {
           violationsCache.invalidate(senderUuid);
-          int muteTime = config.getInt("mute-time");
+          int muteTime = config.muteTime;
           PistonMuteHook.mute(player, Instant.now().plus(muteTime, ChronoUnit.SECONDS));
-          if (config.getBoolean("verbose")) {
+          if (config.verbose) {
             plugin.getLogger().info(ChatColor.RED + "[AntiSpam] Muted " + sender.getName() + " for " + muteTime + " seconds.");
           }
         }

@@ -1,12 +1,14 @@
 package net.pistonmaster.pistonchat.commands.whisper;
 
 import net.pistonmaster.pistonchat.PistonChat;
+import net.pistonmaster.pistonchat.config.PistonChatConfig;
 import org.bukkit.command.CommandSender;
 
 public class MessageCommandHelper {
   public static void sendWhisper(PistonChat plugin, CommandSender sender, CommandSender receiver, String message) {
+    PistonChatConfig config = plugin.getPluginConfig();
     if (plugin.getIgnoreTool().isIgnored(sender, receiver)) {
-      if (plugin.getConfig().getBoolean("only-hide-pms")) {
+      if (config.onlyHidePms) {
         plugin.getCommonTool().sendSender(sender, message, receiver);
       } else {
         plugin.getCommonTool().sendLanguageMessage(sender, "source-ignored");
@@ -14,7 +16,7 @@ public class MessageCommandHelper {
       return;
     }
 
-    if (!plugin.getConfig().getBoolean("allow-pm-ignored") && plugin.getIgnoreTool().isIgnored(receiver, sender)) {
+    if (!config.allowPmIgnored && plugin.getIgnoreTool().isIgnored(receiver, sender)) {
       plugin.getCommonTool().sendLanguageMessage(sender, "target-ignored");
       return;
     }

@@ -1,7 +1,12 @@
 package net.pistonmaster.pistonfilter;
 
+import de.exlll.configlib.ConfigLib;
+import de.exlll.configlib.YamlConfigurationProperties;
+import de.exlll.configlib.YamlConfigurations;
+import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
 import net.pistonmaster.pistonfilter.commands.FilterCommand;
+import net.pistonmaster.pistonfilter.config.PistonFilterConfig;
 import net.pistonmaster.pistonfilter.listeners.ChatListener;
 import net.pistonmaster.pistonutils.update.GitHubUpdateChecker;
 import net.pistonmaster.pistonutils.update.SemanticVersion;
@@ -11,11 +16,19 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.logging.Logger;
 import java.util.concurrent.CompletableFuture;
 
 public class PistonFilter extends JavaPlugin {
+  private static final YamlConfigurationProperties CONFIG_PROPERTIES = ConfigLib.BUKKIT_DEFAULT_PROPERTIES.toBuilder()
+      .header("PistonFilter Configuration")
+      .build();
+
   private CompletableFuture<Void> updateCheckTask;
+
+  @Getter
+  private PistonFilterConfig pluginConfig;
 
   @Override
   public void onEnable() {
@@ -23,7 +36,7 @@ public class PistonFilter extends JavaPlugin {
     Server server = getServer();
 
     log.info(ChatColor.AQUA + "Loading config");
-    saveDefaultConfig();
+    loadConfig();
 
     log.info(ChatColor.AQUA + "Registering commands");
     PluginCommand main = server.getPluginCommand("pistonfilter");
@@ -71,5 +84,16 @@ public class PistonFilter extends JavaPlugin {
       updateCheckTask.cancel(true);
       updateCheckTask = null;
     }
+  }
+
+  public void loadConfig() {
+    Path configPath = getDataFolder().toPath().resolve("config.yml");
+    pluginConfig = YamlConfigurations.update(configPath, PistonFilterConfig.class, CONFIG_PROPERTIES);
+  }
+
+  public void saveConfig(PistonFilterConfig config) {
+    Path configPath = getDataFolder().toPath().resolve("config.yml");
+    YamlConfigurations.save(configPath, PistonFilterConfig.class, config, CONFIG_PROPERTIES);
+    this.pluginConfig = config;
   }
 }

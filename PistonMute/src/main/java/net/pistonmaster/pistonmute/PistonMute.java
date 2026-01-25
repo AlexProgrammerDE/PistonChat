@@ -1,8 +1,13 @@
 package net.pistonmaster.pistonmute;
 
+import de.exlll.configlib.ConfigLib;
+import de.exlll.configlib.YamlConfigurationProperties;
+import de.exlll.configlib.YamlConfigurations;
+import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
 import net.pistonmaster.pistonmute.commands.MuteCommand;
 import net.pistonmaster.pistonmute.commands.UnMuteCommand;
+import net.pistonmaster.pistonmute.config.PistonMuteConfig;
 import net.pistonmaster.pistonmute.listeners.PistonChatListener;
 import net.pistonmaster.pistonmute.utils.StorageTool;
 import net.pistonmaster.pistonutils.update.GitHubUpdateChecker;
@@ -11,18 +16,24 @@ import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.logging.Logger;
 import java.util.concurrent.CompletableFuture;
 
 public final class PistonMute extends JavaPlugin {
+  private static final YamlConfigurationProperties CONFIG_PROPERTIES = ConfigLib.BUKKIT_DEFAULT_PROPERTIES.toBuilder()
+      .header("PistonMute Configuration")
+      .build();
   private CompletableFuture<Void> updateCheckTask;
+  @Getter
+  private PistonMuteConfig pluginConfig;
 
   @Override
   public void onEnable() {
     Logger log = getLogger();
 
     log.info(ChatColor.YELLOW + "Loading config");
-    saveDefaultConfig();
+    loadConfig();
     StorageTool.setupTool(this);
 
     log.info(ChatColor.YELLOW + "Registering commands");
@@ -71,5 +82,10 @@ public final class PistonMute extends JavaPlugin {
       updateCheckTask.cancel(true);
       updateCheckTask = null;
     }
+  }
+
+  public void loadConfig() {
+    Path configPath = getDataFolder().toPath().resolve("config.yml");
+    pluginConfig = YamlConfigurations.update(configPath, PistonMuteConfig.class, CONFIG_PROPERTIES);
   }
 }

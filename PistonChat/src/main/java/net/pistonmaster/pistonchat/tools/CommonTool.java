@@ -15,17 +15,17 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.pistonmaster.pistonchat.PistonChat;
 import net.pistonmaster.pistonchat.api.PistonWhisperEvent;
+import net.pistonmaster.pistonchat.config.PistonChatConfig;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -51,14 +51,15 @@ public class CommonTool {
   }
 
   public void sendWhisperTo(CommandSender sender, String message, CommandSender receiver) {
-    if (!plugin.getConfig().getBoolean("allow-pm-self") && sender == receiver) {
+    PistonChatConfig config = plugin.getPluginConfig();
+    if (!config.allowPmSelf && sender == receiver) {
       sendLanguageMessage(sender, "pmself");
       return;
     }
 
     if (!sender.hasPermission("pistonchat.bypass")) {
       if (receiver instanceof Player player && !plugin.getTempDataTool().isWhisperingEnabled(player)) {
-        if (plugin.getConfig().getBoolean("only-hide-pms")) {
+        if (config.onlyHidePms) {
           sendSender(sender, message, receiver);
         } else {
           sendLanguageMessage(sender, "whispering-disabled");
@@ -91,7 +92,7 @@ public class CommonTool {
   public void sendSender(CommandSender sender, String message, CommandSender receiver) {
     Audience senderAudience = senderAudience(sender);
     Audience receiverAudience = senderAudience(receiver);
-    String senderString = plugin.getConfig().getString("whisper.to");
+    String senderString = plugin.getPluginConfig().whisper.to;
     TagResolver tagResolver = TagResolver.resolver(
         miniPlaceholdersTagResolver(),
         Placeholder.unparsed("message", message),
@@ -104,7 +105,7 @@ public class CommonTool {
   private void sendReceiver(CommandSender sender, String message, CommandSender receiver) {
     Audience senderAudience = senderAudience(sender);
     Audience receiverAudience = senderAudience(receiver);
-    String senderString = plugin.getConfig().getString("whisper.from");
+    String senderString = plugin.getPluginConfig().whisper.from;
     TagResolver tagResolver = TagResolver.resolver(
         miniPlaceholdersTagResolver(),
         Placeholder.unparsed("message", message),
@@ -115,20 +116,47 @@ public class CommonTool {
   }
 
   public Component getLanguageMessage(String messageKey, boolean prefix, TagResolver... tagResolvers) {
-    String messageString = plugin.getConfig().getString("messages." + messageKey);
+    String messageString = getMessageByKey(messageKey);
     Component messageComponent = MiniMessage.miniMessage().deserialize(messageString, tagResolvers);
 
     if (!prefix) {
       return messageComponent;
     }
 
-    String formatString = plugin.getConfig().getString("messages.format");
+    String formatString = plugin.getPluginConfig().messages.format;
 
     TagResolver tagResolver = TagResolver.resolver(
         Placeholder.component("message", messageComponent)
     );
 
     return MiniMessage.miniMessage().deserialize(formatString, tagResolver);
+  }
+
+  private String getMessageByKey(String key) {
+    var messages = plugin.getPluginConfig().messages;
+    return switch (key) {
+      case "help-header" -> messages.helpHeader;
+      case "playeronly" -> messages.playeronly;
+      case "notonline" -> messages.notonline;
+      case "nooneignored" -> messages.nooneignored;
+      case "chaton" -> messages.chaton;
+      case "chatoff" -> messages.chatoff;
+      case "pmson" -> messages.pmson;
+      case "pmsoff" -> messages.pmsoff;
+      case "pmself" -> messages.pmself;
+      case "chatisoff" -> messages.chatisoff;
+      case "source-ignored" -> messages.sourceIgnored;
+      case "target-ignored" -> messages.targetIgnored;
+      case "page-not-exists" -> messages.pageNotExists;
+      case "not-a-number" -> messages.notANumber;
+      case "whispering-disabled" -> messages.whisperingDisabled;
+      case "ignore" -> messages.ignore;
+      case "unignore" -> messages.unignore;
+      case "ignorehard" -> messages.ignorehard;
+      case "unignorehard" -> messages.unignorehard;
+      case "ignorelistcleared" -> messages.ignorelistcleared;
+      default -> throw new IllegalArgumentException("Unknown message key: " + key);
+    };
   }
 
   public void sendLanguageMessage(CommandSender sender, String messageKey, TagResolver... tagResolvers) {
@@ -140,15 +168,16 @@ public class CommonTool {
   }
 
   public Optional<TextColor> getChatColorFor(String message, Player player) {
-    FileConfiguration config = plugin.getConfig();
+    PistonChatConfig config = plugin.getPluginConfig();
 
-    for (String str : config.getConfigurationSection("prefixes").getKeys(false)) {
-      ConfigurationSection section = config.getConfigurationSection("prefixes." + str);
-      String prefix = section.getString("prefix");
+    for (Map.Entry<String, PistonChatConfig.PrefixConfig> entry : config.prefixes.entrySet()) {
+      String name = entry.getKey();
+      PistonChatConfig.PrefixConfig prefixConfig = entry.getValue();
+      String prefix = prefixConfig.prefix;
       if (!"/".equalsIgnoreCase(prefix)
           && message.toLowerCase(Locale.ROOT).startsWith(prefix)
-          && player.hasPermission("pistonchat.prefix." + str.toLowerCase(Locale.ROOT))) {
-        return Optional.of(NamedTextColor.NAMES.valueOrThrow(section.getString("color").toLowerCase(Locale.ROOT)));
+          && player.hasPermission("pistonchat.prefix." + name.toLowerCase(Locale.ROOT))) {
+        return Optional.of(NamedTextColor.NAMES.valueOrThrow(prefixConfig.color.toLowerCase(Locale.ROOT)));
       }
     }
 
@@ -168,7 +197,7 @@ public class CommonTool {
       : getFormat(chatter, miniPlaceholderResolver);
 
     if (receiver.hasPermission("pistonchat.playernamereply")) {
-      String hoverText = plugin.getConfig().getString("hover-text");
+      String hoverText = plugin.getPluginConfig().hoverText;
 
       formatComponent = formatComponent
           .clickEvent(ClickEvent.suggestCommand("/w %s ".formatted(chatter.getName())))
@@ -184,7 +213,7 @@ public class CommonTool {
       messageComponent = messageComponent.color(messagePrefixColor.get());
     }
 
-    String messageFormat = plugin.getConfig().getString("message-format");
+    String messageFormat = plugin.getPluginConfig().messageFormat;
 
     receiverAudience.sendMessage(MiniMessage.miniMessage().deserialize(messageFormat, TagResolver.resolver(
         miniPlaceholderResolver,
@@ -194,10 +223,11 @@ public class CommonTool {
   }
 
   public Component getFormat(Player chatter, TagResolver miniPlaceholderResolver) {
+    PistonChatConfig config = plugin.getPluginConfig();
     String formatString = "<player_name>";
-    for (String s : plugin.getConfig().getConfigurationSection("chat-formats").getKeys(false)) {
-      if (chatter.hasPermission("pistonchat.chatformat." + s.toLowerCase(Locale.ROOT))) {
-        formatString = plugin.getConfig().getString("chat-formats." + s);
+    for (Map.Entry<String, String> entry : config.chatFormats.entrySet()) {
+      if (chatter.hasPermission("pistonchat.chatformat." + entry.getKey().toLowerCase(Locale.ROOT))) {
+        formatString = entry.getValue();
         break;
       }
     }
@@ -209,15 +239,16 @@ public class CommonTool {
   }
 
   public TagResolver getDisplayNameResolver(CommandSender sender) {
+    PistonChatConfig config = plugin.getPluginConfig();
     if (sender instanceof Player player) {
-      if (plugin.getConfig().getBoolean("strip-name-color")) {
+      if (config.stripNameColor) {
         return getStrippedNameResolver(player);
       } else {
         return Placeholder.component("player_name",
             LegacyComponentSerializer.legacyAmpersand().deserialize(player.getDisplayName()));
       }
     } else if (sender instanceof ConsoleCommandSender) {
-      return Placeholder.parsed("player_name", plugin.getConfig().getString("console-name"));
+      return Placeholder.parsed("player_name", config.consoleName);
     } else {
       return Placeholder.unparsed("player_name", sender.getName());
     }
