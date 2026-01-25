@@ -7,13 +7,16 @@ import java.util.List;
 
 @Configuration
 public class PistonFilterConfig {
+  @Comment("Enable verbose logging for debugging")
   public boolean verbose = true;
 
+  @Comment("Send a message to the player when their message is blocked")
   public boolean messageSender = true;
 
+  @Comment("Enable repeat message detection")
   public boolean noRepeat = true;
 
-  @Comment("How many times after sending a message should the player wait before sending the same message again")
+  @Comment("How many seconds after sending a message should the player wait before sending the same message again")
   public int noRepeatTime = 60;
 
   @Comment("How many messages are stored that are not allowed to be repeated?")
@@ -25,9 +28,10 @@ public class PistonFilterConfig {
   @Comment("Check words of previous messages for repeated word ratio. -1 to disable. Value means how many percent of the messages has repeated words.")
   public int noRepeatWordRatio = 40;
 
-  @Comment("How many of the last message of a user are allowed to have a number inside them?")
+  @Comment("How many of the last messages of a user to check for number patterns")
   public int noRepeatNumberMessages = 5;
 
+  @Comment("How many messages with numbers are allowed before blocking")
   public int noRepeatNumberAmount = 3;
 
   @Comment("Store last global messages and compare them for no repeat as well")
@@ -48,15 +52,19 @@ public class PistonFilterConfig {
   @Comment("For how long do we mute someone? (seconds)")
   public int muteTime = 60;
 
-  @Comment("Example: \"2 5f gg 8b 33 hj 6zb 6573\" has 8 words and 6 words with numbers")
+  @Comment("Maximum words containing numbers allowed in a message (e.g. \"2 5f gg 8b\" has 3 words with numbers)")
   public int maxWordsWithNumbers = 5;
 
+  @Comment("Maximum separated number groups allowed in a single word")
   public int maxSeparatedNumbers = 3;
 
+  @Comment("Maximum length of a single word before it's considered spam")
   public int maxWordLength = 20;
 
+  @Comment("Fuzzy match ratio (1-100) for banned text detection. Higher = stricter matching")
   public int bannedTextPartialRatio = 95;
 
+  @Comment("List of banned text patterns (URLs, domains, etc.)")
   public List<String> bannedText = List.of(
       "http",
       "https",
