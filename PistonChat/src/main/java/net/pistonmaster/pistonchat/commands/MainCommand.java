@@ -75,7 +75,6 @@ public class MainCommand implements CommandExecutor, TabExecutor {
 
         try {
           plugin.getConfigManager().create();
-          plugin.getLanguageManager().create();
         } catch (IOException e) {
           plugin.getLogger().severe("Could not create config!");
           e.printStackTrace();

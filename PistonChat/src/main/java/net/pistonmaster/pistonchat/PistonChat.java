@@ -35,7 +35,6 @@ import java.util.logging.Logger;
 @Getter
 public final class PistonChat extends JavaPlugin {
   private final ConfigManager configManager = new ConfigManager(this, "config.yml");
-  private final ConfigManager languageManager = new ConfigManager(this, "language.yml");
   private final TempDataTool tempDataTool = new TempDataTool(this);
   private final SoftIgnoreTool softignoreTool = new SoftIgnoreTool(this);
   private final CacheTool cacheTool = new CacheTool(this);
@@ -65,7 +64,6 @@ public final class PistonChat extends JavaPlugin {
     log.info(ChatColor.DARK_GREEN + "Loading config");
     try {
       configManager.create();
-      languageManager.create();
     } catch (IOException e) {
       e.printStackTrace();
       getServer().getPluginManager().disablePlugin(this);
@@ -166,10 +164,6 @@ public final class PistonChat extends JavaPlugin {
   @Override
   public FileConfiguration getConfig() {
     return configManager.get();
-  }
-
-  public FileConfiguration getLanguage() {
-    return languageManager.get();
   }
 
   public void runAsync(Runnable runnable) {

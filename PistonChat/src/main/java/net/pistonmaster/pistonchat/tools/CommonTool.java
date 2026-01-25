@@ -115,14 +115,14 @@ public class CommonTool {
   }
 
   public Component getLanguageMessage(String messageKey, boolean prefix, TagResolver... tagResolvers) {
-    String messageString = plugin.getLanguage().getString(messageKey);
+    String messageString = plugin.getConfig().getString("messages." + messageKey);
     Component messageComponent = MiniMessage.miniMessage().deserialize(messageString, tagResolvers);
 
     if (!prefix) {
       return messageComponent;
     }
 
-    String formatString = plugin.getLanguage().getString("format");
+    String formatString = plugin.getConfig().getString("messages.format");
 
     TagResolver tagResolver = TagResolver.resolver(
         Placeholder.component("message", messageComponent)
