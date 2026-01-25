@@ -50,8 +50,8 @@ public class FilterCommand implements CommandExecutor, TabExecutor {
           return true;
         }
         PistonFilterConfig config = plugin.getPluginConfig();
-        List<String> newBannedText = Stream.concat(config.bannedText.stream(), Stream.of(args[1])).toList();
-        config.bannedText = newBannedText;
+        List<String> newBannedText = Stream.concat(config.content.bannedPatterns.stream(), Stream.of(args[1])).toList();
+        config.content.bannedPatterns = newBannedText;
         plugin.saveConfig(config);
         sender.sendMessage(ChatColor.GOLD + "Successfully added the config entry!");
       }
@@ -110,7 +110,7 @@ public class FilterCommand implements CommandExecutor, TabExecutor {
 
   private void notifyStaffChatPaused(CommandSender executor, boolean paused) {
     PistonFilterConfig config = plugin.getPluginConfig();
-    String message = paused ? config.chatPausedStaffMessage : config.chatUnpausedStaffMessage;
+    String message = paused ? config.staff.chatPausedStaffMessage : config.staff.chatUnpausedStaffMessage;
     message = ChatColor.translateAlternateColorCodes('&', message.replace("%player%", executor.getName()));
 
     for (Player player : Bukkit.getOnlinePlayers()) {
@@ -122,7 +122,7 @@ public class FilterCommand implements CommandExecutor, TabExecutor {
 
   private void clearChat() {
     PistonFilterConfig config = plugin.getPluginConfig();
-    int lines = config.clearChatLines;
+    int lines = config.staff.clearChatLines;
 
     StringBuilder blankLines = new StringBuilder();
     for (int i = 0; i < lines; i++) {

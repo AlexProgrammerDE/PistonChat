@@ -30,7 +30,7 @@ public final class CommandBlockListener implements Listener {
     PistonMuteConfig config = plugin.getPluginConfig();
 
     // Check if command blocking is enabled
-    if (!config.blockCommands) {
+    if (!config.commandBlocking.enabled) {
       return;
     }
 
@@ -51,11 +51,11 @@ public final class CommandBlockListener implements Listener {
     String commandName = extractCommandName(commandLine);
 
     // Check if this command is blocked
-    if (isCommandBlocked(commandName, config.blockedCommands)) {
+    if (isCommandBlocked(commandName, config.commandBlocking.blockedCommands)) {
       event.setCancelled(true);
 
       // Send blocked message to player
-      String message = ChatColor.translateAlternateColorCodes('&', config.blockedCommandMessage);
+      String message = ChatColor.translateAlternateColorCodes('&', config.commandBlocking.message);
       player.sendMessage(message);
     }
   }

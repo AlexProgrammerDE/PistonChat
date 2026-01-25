@@ -57,7 +57,7 @@ public final class MuteInfoCommand implements CommandExecutor, TabExecutor {
     Optional<MuteRecord> recordOpt = StorageTool.getMuteRecord(target.getUniqueId());
 
     // Send header
-    String header = plugin.getPluginConfig().muteInfoHeader
+    String header = plugin.getPluginConfig().muteInfo.header
         .replace("%player%", playerName)
         .replace("&", "\u00A7");
     sender.sendMessage(header);
@@ -67,32 +67,32 @@ public final class MuteInfoCommand implements CommandExecutor, TabExecutor {
 
       // Reason
       String reason = record.getReason() != null ? record.getReason() : "No reason specified";
-      String reasonMsg = plugin.getPluginConfig().muteInfoReason
+      String reasonMsg = plugin.getPluginConfig().muteInfo.reason
           .replace("%reason%", reason)
           .replace("&", "\u00A7");
       sender.sendMessage(reasonMsg);
 
       // Issuer
       String issuer = record.getIssuerName() != null ? record.getIssuerName() : "Console";
-      String issuerMsg = plugin.getPluginConfig().muteInfoIssuer
+      String issuerMsg = plugin.getPluginConfig().muteInfo.issuer
           .replace("%issuer%", issuer)
           .replace("&", "\u00A7");
       sender.sendMessage(issuerMsg);
 
       // Duration / Permanent
       if (record.isPermanent()) {
-        String permanentMsg = plugin.getPluginConfig().muteInfoPermanent
+        String permanentMsg = plugin.getPluginConfig().muteInfo.permanent
             .replace("&", "\u00A7");
         sender.sendMessage(permanentMsg);
       } else if (record.getExpiresAt() != null) {
         String duration = formatDuration(record.getIssuedAt(), record.getExpiresAt());
-        String durationMsg = plugin.getPluginConfig().muteInfoDuration
+        String durationMsg = plugin.getPluginConfig().muteInfo.duration
             .replace("%duration%", duration)
             .replace("&", "\u00A7");
         sender.sendMessage(durationMsg);
 
         String expires = formatExpires(record.getExpiresAt());
-        String expiresMsg = plugin.getPluginConfig().muteInfoExpires
+        String expiresMsg = plugin.getPluginConfig().muteInfo.expires
             .replace("%expires%", expires)
             .replace("&", "\u00A7");
         sender.sendMessage(expiresMsg);
@@ -100,7 +100,7 @@ public final class MuteInfoCommand implements CommandExecutor, TabExecutor {
 
       // Template
       if (record.getTemplate() != null) {
-        String templateMsg = plugin.getPluginConfig().muteInfoTemplate
+        String templateMsg = plugin.getPluginConfig().muteInfo.template
             .replace("%template%", record.getTemplate())
             .replace("&", "\u00A7");
         sender.sendMessage(templateMsg);
@@ -115,7 +115,7 @@ public final class MuteInfoCommand implements CommandExecutor, TabExecutor {
       // Legacy mute - limited info
       String reason = StorageTool.getMuteReason(target.getUniqueId());
       if (reason != null) {
-        String reasonMsg = plugin.getPluginConfig().muteInfoReason
+        String reasonMsg = plugin.getPluginConfig().muteInfo.reason
             .replace("%reason%", reason)
             .replace("&", "\u00A7");
         sender.sendMessage(reasonMsg);
@@ -124,14 +124,14 @@ public final class MuteInfoCommand implements CommandExecutor, TabExecutor {
       }
 
       if (StorageTool.isPermanentlyMuted(target.getUniqueId())) {
-        String permanentMsg = plugin.getPluginConfig().muteInfoPermanent
+        String permanentMsg = plugin.getPluginConfig().muteInfo.permanent
             .replace("&", "\u00A7");
         sender.sendMessage(permanentMsg);
       } else {
         Optional<Instant> expiresOpt = StorageTool.getMuteExpiration(target.getUniqueId());
         if (expiresOpt.isPresent()) {
           String expires = formatExpires(expiresOpt.get());
-          String expiresMsg = plugin.getPluginConfig().muteInfoExpires
+          String expiresMsg = plugin.getPluginConfig().muteInfo.expires
               .replace("%expires%", expires)
               .replace("&", "\u00A7");
           sender.sendMessage(expiresMsg);

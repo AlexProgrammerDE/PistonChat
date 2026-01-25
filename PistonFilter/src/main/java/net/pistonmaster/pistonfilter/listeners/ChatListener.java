@@ -43,9 +43,9 @@ public class ChatListener implements Listener {
   public ChatListener(PistonFilter plugin) {
     this.plugin = plugin;
     PistonFilterConfig config = plugin.getPluginConfig();
-    this.globalMessages = new MessageHistory(config.globalMessageStackSize);
+    this.globalMessages = new MessageHistory(config.repeat.globalStackSize);
     this.violationsCache = CacheBuilder.newBuilder()
-        .expireAfterWrite(config.muteViolationsTimeframe, TimeUnit.SECONDS)
+        .expireAfterWrite(config.autoMute.violationTimeframe, TimeUnit.SECONDS)
         .build();
   }
 
@@ -62,7 +62,7 @@ public class ChatListener implements Listener {
     if (plugin.getChatPauseManager().isPaused() && !event.getPlayer().hasPermission("pistonfilter.pausechat")) {
       event.setCancelled(true);
       PistonFilterConfig config = plugin.getPluginConfig();
-      String pausedMessage = ChatColor.translateAlternateColorCodes('&', config.chatPausedMessage);
+      String pausedMessage = ChatColor.translateAlternateColorCodes('&', config.staff.chatPausedMessage);
       event.getPlayer().sendMessage(pausedMessage);
       return;
     }
@@ -84,7 +84,7 @@ public class ChatListener implements Listener {
         && !player.hasPermission("pistonfilter.pausechat")) {
       event.setCancelled(true);
       PistonFilterConfig config = plugin.getPluginConfig();
-      String pausedMessage = ChatColor.translateAlternateColorCodes('&', config.chatPausedMessage);
+      String pausedMessage = ChatColor.translateAlternateColorCodes('&', config.staff.chatPausedMessage);
       player.sendMessage(pausedMessage);
       return;
     }
@@ -104,18 +104,18 @@ public class ChatListener implements Listener {
     UUID uuid = senderUuid(sender);
 
     // Check whitelist - if message contains whitelisted content, some checks may be bypassed
-    boolean containsWhitelisted = config.whitelistEnabled
-        && FilterLogic.containsWhitelistedWord(message.getOriginalMessage(), config.whitelistedWords);
+    boolean containsWhitelisted = config.whitelist.enabled
+        && FilterLogic.containsWhitelistedWord(message.getOriginalMessage(), config.whitelist.words);
 
     // Message cooldown check (bypass: pistonfilter.bypass.cooldown)
-    if (config.cooldownEnabled && !sender.hasPermission("pistonfilter.bypass.cooldown")) {
+    if (config.cooldown.enabled && !sender.hasPermission("pistonfilter.bypass.cooldown")) {
       long now = System.currentTimeMillis();
       Long lastTime = lastMessageTime.get(uuid);
-      if (lastTime != null && (now - lastTime) < config.cooldownTime) {
-        long remaining = config.cooldownTime - (now - lastTime);
+      if (lastTime != null && (now - lastTime) < config.cooldown.timeMillis) {
+        long remaining = config.cooldown.timeMillis - (now - lastTime);
         cancelEvent.run();
         if (sender instanceof Player player) {
-          String cooldownMsg = ChatColor.translateAlternateColorCodes('&', config.cooldownMessage);
+          String cooldownMsg = ChatColor.translateAlternateColorCodes('&', config.cooldown.message);
           player.sendMessage(cooldownMsg);
         }
         if (config.verbose) {
@@ -127,11 +127,11 @@ public class ChatListener implements Listener {
     }
 
     // Anti-caps check (bypass: pistonfilter.bypass.caps)
-    if (config.antiCapsEnabled && !sender.hasPermission("pistonfilter.bypass.caps")
-        && message.getOriginalMessage().length() >= config.antiCapsMinLength) {
+    if (config.caps.enabled && !sender.hasPermission("pistonfilter.bypass.caps")
+        && message.getOriginalMessage().length() >= config.caps.minLength) {
       int capsPercent = StringHelper.getUppercasePercentage(message.getOriginalMessage());
-      if (capsPercent > config.antiCapsMaxPercent) {
-        if (config.antiCapsAutoLowercase) {
+      if (capsPercent > config.caps.maxPercent) {
+        if (config.caps.autoLowercase) {
           // Log the auto-lowercase action
           if (config.verbose) {
             plugin.getLogger().info(ChatColor.YELLOW + "[AntiSpam] <" + sender.getName() + "> Auto-lowercased message (" + capsPercent + "% caps)");
@@ -146,9 +146,9 @@ public class ChatListener implements Listener {
     }
 
     // Character repetition check (bypass: pistonfilter.bypass.repetition)
-    if (config.repetitionEnabled && !sender.hasPermission("pistonfilter.bypass.repetition")) {
-      if (StringHelper.hasExcessiveRepetition(message.getOriginalMessage(), config.repetitionMaxChars)) {
-        if (config.repetitionAutoFix) {
+    if (config.repetition.enabled && !sender.hasPermission("pistonfilter.bypass.repetition")) {
+      if (StringHelper.hasExcessiveRepetition(message.getOriginalMessage(), config.repetition.maxChars)) {
+        if (config.repetition.autoFix) {
           // Log the auto-fix action
           if (config.verbose) {
             plugin.getLogger().info(ChatColor.YELLOW + "[AntiSpam] <" + sender.getName() + "> Auto-fixed character repetition");
@@ -163,18 +163,18 @@ public class ChatListener implements Listener {
 
     // For banned text checks, mask whitelisted words if whitelist is enabled
     String messageToCheck = containsWhitelisted
-        ? FilterLogic.maskWhitelistedWords(message.getStrippedMessage(), config.whitelistedWords)
+        ? FilterLogic.maskWhitelistedWords(message.getStrippedMessage(), config.whitelist.words)
         : message.getStrippedMessage();
 
-    String bannedText = FilterLogic.findBannedText(messageToCheck, config.bannedText, config.bannedTextPartialRatio);
+    String bannedText = FilterLogic.findBannedText(messageToCheck, config.content.bannedPatterns, config.content.bannedTextMatchRatio);
     if (bannedText != null) {
       cancelMessage(sender, message, cancelEvent, sendEmpty, "Contains banned text: %s".formatted(bannedText), config);
       return;
     }
 
-    int maxWordLength = config.maxWordLength;
-    int maxSeparatedNumbers = config.maxSeparatedNumbers;
-    int maxWordsWithNumbers = config.maxWordsWithNumbers;
+    int maxWordLength = config.content.maxWordLength;
+    int maxSeparatedNumbers = config.content.maxSeparatedNumbers;
+    int maxWordsWithNumbers = config.content.maxWordsWithNumbers;
     for (String word : message.getWords()) {
       if (FilterLogic.isWordTooLong(word, maxWordLength)) {
         cancelMessage(sender, message, cancelEvent, sendEmpty, "Contains a word with length (%d) \"%s\".".formatted(word.length(), word), config);
@@ -192,31 +192,31 @@ public class ChatListener implements Listener {
     }
 
     // Check Unicode filtering
-    if (config.filterUnicode) {
-      List<FilterLogic.UnicodeRange> allowedRanges = FilterLogic.parseUnicodeRanges(config.allowedUnicodeRanges);
+    if (config.unicode.enabled) {
+      List<FilterLogic.UnicodeRange> allowedRanges = FilterLogic.parseUnicodeRanges(config.unicode.allowedRanges);
       FilterLogic.UnicodeFilterResult unicodeResult = FilterLogic.checkUnicodeCharacters(
-          message.getOriginalMessage(), config.blockNonAscii, config.blockMathAlphanumeric,
-          config.blockHackedClientFonts, allowedRanges);
+          message.getOriginalMessage(), config.unicode.blockNonAscii, config.unicode.blockMathAlphanumeric,
+          config.unicode.blockHackedClientFonts, allowedRanges);
       if (unicodeResult.isBlocked()) {
         cancelMessage(sender, message, cancelEvent, sendEmpty, unicodeResult.getReason(), config);
         return;
       }
     }
 
-    if (config.noRepeat) {
-      int noRepeatTime = config.noRepeatTime;
-      int similarRatio = config.noRepeatSimilarRatio;
-      int noRepeatNumberMessages = config.noRepeatNumberMessages;
-      int noRepeatNumberAmount = config.noRepeatNumberAmount;
-      int noRepeatWordRatio = config.noRepeatWordRatio;
+    if (config.repeat.enabled) {
+      int noRepeatTime = config.repeat.timeSeconds;
+      int similarRatio = config.repeat.similarityRatio;
+      int noRepeatNumberMessages = config.repeat.numberPatternMessages;
+      int noRepeatNumberAmount = config.repeat.numberPatternAmount;
+      int noRepeatWordRatio = config.repeat.wordRatio;
       MessageHistory lastMessages = players.compute(uuid, (k, v) ->
-          Objects.requireNonNullElseGet(v, () -> new MessageHistory(config.noRepeatStackSize)));
+          Objects.requireNonNullElseGet(v, () -> new MessageHistory(config.repeat.stackSize)));
 
       boolean blocked = lastMessages.withLock(() ->
           isBlocked(sender, message, cancelEvent, sendEmpty, noRepeatTime, similarRatio, noRepeatNumberMessages,
               noRepeatNumberAmount, noRepeatWordRatio, lastMessages.messages, false, config));
 
-      if (!blocked && config.globalRepeatCheck) {
+      if (!blocked && config.repeat.globalCheck) {
         blocked = globalMessages.withLock(() ->
             isBlocked(sender, message, cancelEvent, sendEmpty, noRepeatTime, similarRatio, noRepeatNumberMessages,
                 noRepeatNumberAmount, noRepeatWordRatio, globalMessages.messages, true, config));
@@ -264,19 +264,19 @@ public class ChatListener implements Listener {
     }
 
     // Notify staff members about the blocked message
-    if (config.notifyStaff) {
+    if (config.staff.notifyOnBlock) {
       notifyStaff(sender, message.getOriginalMessage(), reason, config);
     }
 
-    if (config.muteOnFail
+    if (config.autoMute.enabled
         && plugin.getServer().getPluginManager().isPluginEnabled("PistonMute")
         && sender instanceof Player player) {
       try {
         UUID senderUuid = senderUuid(sender);
         int violations = violationsCache.get(senderUuid, AtomicInteger::new).incrementAndGet();
-        if (violations > config.muteViolations) {
+        if (violations > config.autoMute.violationThreshold) {
           violationsCache.invalidate(senderUuid);
-          int muteTime = config.muteTime;
+          int muteTime = config.autoMute.muteDuration;
           PistonMuteHook.mute(player, Instant.now().plus(muteTime, ChronoUnit.SECONDS));
           if (config.verbose) {
             plugin.getLogger().info(ChatColor.RED + "[AntiSpam] Muted " + sender.getName() + " for " + muteTime + " seconds.");
@@ -305,7 +305,7 @@ public class ChatListener implements Listener {
    * @param config  The plugin configuration
    */
   private void notifyStaff(CommandSender sender, String message, String reason, PistonFilterConfig config) {
-    String notification = config.staffNotificationFormat
+    String notification = config.staff.notificationFormat
         .replace("%player%", sender.getName())
         .replace("%message%", message)
         .replace("%reason%", reason);

@@ -30,7 +30,7 @@ public class SignListener implements Listener {
   public void onSignChange(SignChangeEvent event) {
     PistonFilterConfig config = plugin.getPluginConfig();
 
-    if (!config.filterSigns) {
+    if (!config.signs.enabled) {
       return;
     }
 
@@ -56,7 +56,7 @@ public class SignListener implements Listener {
           plugin.getLogger().info(ChatColor.RED + "[SignFilter] <" + player.getName() + "> Line " + (i + 1) + ": " + line + " (" + filterResult + ")");
         }
 
-        if (config.cancelSignOnFilter) {
+        if (config.signs.cancelOnFilter) {
           event.setCancelled(true);
           player.sendMessage(ChatColor.RED + "Your sign contains filtered content.");
           return;
@@ -67,7 +67,7 @@ public class SignListener implements Listener {
       }
     }
 
-    if (foundViolation && !config.cancelSignOnFilter) {
+    if (foundViolation && !config.signs.cancelOnFilter) {
       player.sendMessage(ChatColor.RED + "Some text on your sign was filtered.");
     }
   }
@@ -83,26 +83,26 @@ public class SignListener implements Listener {
     MessageInfo messageInfo = MessageInfo.of(Instant.now(), line);
 
     // Check banned text
-    String bannedText = FilterLogic.findBannedText(messageInfo.getStrippedMessage(), config.bannedText, config.bannedTextPartialRatio);
+    String bannedText = FilterLogic.findBannedText(messageInfo.getStrippedMessage(), config.content.bannedPatterns, config.content.bannedTextMatchRatio);
     if (bannedText != null) {
       return "Contains banned text: " + bannedText;
     }
 
     // Check word length
     for (String word : messageInfo.getWords()) {
-      if (FilterLogic.isWordTooLong(word, config.maxWordLength)) {
+      if (FilterLogic.isWordTooLong(word, config.content.maxWordLength)) {
         return "Contains a word that is too long: " + word;
       }
-      if (FilterLogic.hasInvalidSeparators(word, config.maxSeparatedNumbers)) {
+      if (FilterLogic.hasInvalidSeparators(word, config.content.maxSeparatedNumbers)) {
         return "Has a word with invalid separators: " + word;
       }
     }
 
     // Check Unicode filtering
-    if (config.filterUnicode) {
-      List<FilterLogic.UnicodeRange> allowedRanges = FilterLogic.parseUnicodeRanges(config.allowedUnicodeRanges);
+    if (config.unicode.enabled) {
+      List<FilterLogic.UnicodeRange> allowedRanges = FilterLogic.parseUnicodeRanges(config.unicode.allowedRanges);
       FilterLogic.UnicodeFilterResult unicodeResult = FilterLogic.checkUnicodeCharacters(
-          line, config.blockNonAscii, config.blockMathAlphanumeric, config.blockHackedClientFonts, allowedRanges);
+          line, config.unicode.blockNonAscii, config.unicode.blockMathAlphanumeric, config.unicode.blockHackedClientFonts, allowedRanges);
       if (unicodeResult.isBlocked()) {
         return unicodeResult.getReason();
       }

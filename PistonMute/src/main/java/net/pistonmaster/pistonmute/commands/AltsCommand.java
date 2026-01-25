@@ -34,7 +34,7 @@ public final class AltsCommand implements CommandExecutor, TabExecutor {
     }
 
     // Check if alt detection is enabled
-    if (!plugin.getPluginConfig().enableAltDetection) {
+    if (!plugin.getPluginConfig().altDetection.enabled) {
       sender.spigot().sendMessage(new ComponentBuilder("----------------").color(ChatColor.DARK_BLUE).create());
       sender.spigot().sendMessage(new ComponentBuilder("PistonMute").color(ChatColor.GOLD).create());
       sender.spigot().sendMessage(new ComponentBuilder("Alt detection is disabled in the config!").color(ChatColor.RED).create());

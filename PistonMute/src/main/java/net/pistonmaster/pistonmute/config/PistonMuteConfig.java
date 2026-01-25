@@ -15,145 +15,26 @@ public class PistonMuteConfig {
   })
   public boolean shadowMute = true;
 
-  @Comment({
-      "",
-      "Staff Hierarchy Settings",
-      "Enable staff immunity/hierarchy system to prevent lower-ranked staff from muting higher-ranked."
-  })
-  public boolean staffHierarchyEnabled = true;
+  @Comment({"", "Staff hierarchy settings to prevent lower-ranked staff from muting higher-ranked."})
+  public StaffConfig staff = new StaffConfig();
 
-  @Comment({
-      "Hierarchy mode: 'immune' or 'weight'",
-      "immune: Players with pistonmute.immune permission cannot be muted",
-      "weight: Players with higher pistonmute.weight.<number> can mute those with lower weights"
-  })
-  public String hierarchyMode = "immune";
+  @Comment({"", "Command logging settings"})
+  public LoggingConfig logging = new LoggingConfig();
 
-  @Comment({
-      "",
-      "Command Logging Settings",
-      "Enable logging of all punishment commands to punishments.log"
-  })
-  public boolean commandLoggingEnabled = true;
+  @Comment({"", "Staff notes system settings"})
+  public NotesConfig notes = new NotesConfig();
 
-  @Comment("Format for log entries. Placeholders: %timestamp%, %staff%, %command%, %target%, %details%")
-  public String logFormat = "[%timestamp%] [%staff%] [%command%] [%target%] %details%";
+  @Comment({"", "Command blocking settings for muted players"})
+  public CommandBlockingConfig commandBlocking = new CommandBlockingConfig();
 
-  @Comment({
-      "",
-      "Notes System Settings",
-      "Enable the staff notes system for players"
-  })
-  public boolean notesEnabled = true;
+  @Comment({"", "Alt account detection settings"})
+  public AltDetectionConfig altDetection = new AltDetectionConfig();
 
-  @Comment({
-      "",
-      "Command Blocking Settings",
-      "Block muted players from using chat-related commands."
-  })
-  public boolean blockCommands = true;
+  @Comment({"", "Mute notification settings"})
+  public MuteNotificationConfig muteNotification = new MuteNotificationConfig();
 
-  @Comment({
-      "List of commands that muted players cannot use.",
-      "Commands should be listed without the leading slash.",
-      "Aliases are automatically handled (e.g., 'msg' also blocks 'tell', 'w', etc.)"
-  })
-  public List<String> blockedCommands = List.of(
-      "me",
-      "say",
-      "msg",
-      "tell",
-      "w",
-      "whisper",
-      "reply",
-      "r",
-      "mail",
-      "m",
-      "pm",
-      "dm",
-      "message"
-  );
-
-  @Comment({
-      "Message shown to muted players when they try to use a blocked command.",
-      "Supports color codes with &."
-  })
-  public String blockedCommandMessage = "&cYou cannot use this command while muted!";
-
-  @Comment({
-      "",
-      "Alt Account Detection Settings",
-      "Track player IPs to detect and manage alt accounts."
-  })
-  public boolean enableAltDetection = true;
-
-  @Comment({
-      "Automatically mute all known alt accounts when muting a player.",
-      "This uses IP tracking to identify alt accounts."
-  })
-  public boolean autoMuteAlts = false;
-
-  @Comment({
-      "Notify staff when a muted player's alt joins the server.",
-      "Players with pistonmute.notify permission will be notified."
-  })
-  public boolean notifyStaffOnAltJoin = true;
-
-  @Comment({
-      "Message shown to staff when a muted player's alt joins.",
-      "Placeholders: %player%, %alt%, %ip%"
-  })
-  public String altJoinNotifyMessage = "&e[PistonMute] &c%player% &emay be an alt of muted player &c%alt%";
-
-  @Comment({
-      "",
-      "Mute Notification Settings",
-      "Notify players about their mute status."
-  })
-  public boolean notifyOnJoin = true;
-
-  @Comment({
-      "Message shown to muted players when they join the server.",
-      "Supports color codes with &."
-  })
-  public String muteNotifyMessage = "&c&lYou are currently muted and cannot chat.";
-
-  @Comment({
-      "Show mute reason to the player (if one was provided)."
-  })
-  public boolean showMuteReason = true;
-
-  @Comment({
-      "Message format for showing mute reason.",
-      "Placeholder: %reason%"
-  })
-  public String muteReasonFormat = "&cReason: &7%reason%";
-
-  @Comment({
-      "",
-      "Warning System Settings",
-      "Enable the warning system for players."
-  })
-  public boolean warningsEnabled = true;
-
-  @Comment({
-      "Time in days after which warnings expire.",
-      "Set to 0 for warnings that never expire."
-  })
-  public int warningExpiryDays = 30;
-
-  @Comment("Maximum warnings before auto-escalation kicks in.")
-  public int maxWarningsBeforeAction = 3;
-
-  @Comment({
-      "Action to take when a player reaches max warnings.",
-      "Options: none, mute, tempmute",
-      "If tempmute, uses the duration specified below."
-  })
-  public String warningMaxAction = "tempmute";
-
-  @Comment("Duration for tempmute when max warnings reached (e.g., 1h, 1d, 1w).")
-  public String warningMaxActionDuration = "1h";
+  @Comment({"", "Warning system settings"})
+  public WarningConfig warnings = new WarningConfig();
 
   @Comment({
       "",
@@ -164,6 +45,15 @@ public class PistonMuteConfig {
       "Duration format: Xs (seconds), Xm (minutes), Xh (hours), Xd (days), Xw (weeks)"
   })
   public Map<String, Map<Integer, String>> escalation = createDefaultEscalation();
+
+  @Comment({"", "Punishment history display settings"})
+  public HistoryConfig history = new HistoryConfig();
+
+  @Comment({"", "Mute info message settings"})
+  public MuteInfoConfig muteInfo = new MuteInfoConfig();
+
+  @Comment({"", "Mute list message settings"})
+  public MuteListConfig muteList = new MuteListConfig();
 
   private static Map<String, Map<Integer, String>> createDefaultEscalation() {
     Map<String, Map<Integer, String>> templates = new LinkedHashMap<>();
@@ -203,65 +93,203 @@ public class PistonMuteConfig {
     return templates;
   }
 
-  @Comment({
-      "",
-      "Warning Messages",
-      "Customize warning-related messages."
-  })
-  public String warnedMessage = "&c&lYou have been warned! &eReason: &7%reason%";
+  @Configuration
+  public static class StaffConfig {
+    @Comment("Enable staff immunity/hierarchy system")
+    public boolean hierarchyEnabled = true;
 
-  @Comment("Message shown when a player receives a warning.")
-  public String warnedByMessage = "&7Warned by: &e%issuer%";
+    @Comment({
+        "Hierarchy mode: 'immune' or 'weight'",
+        "immune: Players with pistonmute.immune permission cannot be muted",
+        "weight: Players with higher pistonmute.weight.<number> can mute those with lower weights"
+    })
+    public String hierarchyMode = "immune";
+  }
 
-  @Comment("Message format for listing warnings.")
-  public String warningListFormat = "&7[%id%] &e%reason% &7- by %issuer% (%time_ago%)";
+  @Configuration
+  public static class LoggingConfig {
+    @Comment("Enable logging of all punishment commands to punishments.log")
+    public boolean enabled = true;
 
-  @Comment("Message shown when a warning is about to expire.")
-  public String warningExpiryNote = "&7(Expires in %time%)";
+    @Comment("Format for log entries. Placeholders: %timestamp%, %staff%, %command%, %target%, %details%")
+    public String format = "[%timestamp%] [%staff%] [%command%] [%target%] %details%";
+  }
 
-  @Comment({
-      "",
-      "Punishment History Settings",
-      "Configure the punishment history display."
-  })
-  public int historyPageSize = 10;
+  @Configuration
+  public static class NotesConfig {
+    @Comment("Enable the staff notes system for players")
+    public boolean enabled = true;
+  }
 
-  @Comment("Format for punishment history entries.")
-  public String historyEntryFormat = "&7[%type%] &e%reason% &7- %duration% by %issuer% (%date%)";
+  @Configuration
+  public static class CommandBlockingConfig {
+    @Comment("Block muted players from using chat-related commands")
+    public boolean enabled = true;
 
-  @Comment("Header format for punishment history.")
-  public String historyHeader = "&6--- Punishment History for %player% (Page %page%/%total%) ---";
+    @Comment({
+        "List of commands that muted players cannot use.",
+        "Commands should be listed without the leading slash.",
+        "Aliases are automatically handled (e.g., 'msg' also blocks 'tell', 'w', etc.)"
+    })
+    public List<String> blockedCommands = List.of(
+        "me",
+        "say",
+        "msg",
+        "tell",
+        "w",
+        "whisper",
+        "reply",
+        "r",
+        "mail",
+        "m",
+        "pm",
+        "dm",
+        "message"
+    );
 
-  @Comment("Footer format for punishment history.")
-  public String historyFooter = "&7Use /history %player% <page> to view more.";
+    @Comment({
+        "Message shown to muted players when they try to use a blocked command.",
+        "Supports color codes with &."
+    })
+    public String message = "&cYou cannot use this command while muted!";
+  }
 
-  @Comment({
-      "",
-      "Mute Info Messages",
-      "Messages for mute information display."
-  })
-  public String muteInfoHeader = "&6--- Mute Info for %player% ---";
+  @Configuration
+  public static class AltDetectionConfig {
+    @Comment("Track player IPs to detect and manage alt accounts")
+    public boolean enabled = true;
 
-  @Comment("Format for mute info details.")
-  public String muteInfoReason = "&7Reason: &e%reason%";
+    @Comment({
+        "Automatically mute all known alt accounts when muting a player.",
+        "This uses IP tracking to identify alt accounts."
+    })
+    public boolean autoMuteAlts = false;
 
-  public String muteInfoIssuer = "&7Muted by: &e%issuer%";
+    @Comment({
+        "Notify staff when a muted player's alt joins the server.",
+        "Players with pistonmute.notify permission will be notified."
+    })
+    public boolean notifyStaffOnJoin = true;
 
-  public String muteInfoDuration = "&7Duration: &e%duration%";
+    @Comment({
+        "Message shown to staff when a muted player's alt joins.",
+        "Placeholders: %player%, %alt%, %ip%"
+    })
+    public String joinNotifyMessage = "&e[PistonMute] &c%player% &emay be an alt of muted player &c%alt%";
+  }
 
-  public String muteInfoExpires = "&7Expires: &e%expires%";
+  @Configuration
+  public static class MuteNotificationConfig {
+    @Comment("Notify players about their mute status when they join")
+    public boolean notifyOnJoin = true;
 
-  public String muteInfoPermanent = "&cPermanent";
+    @Comment({
+        "Message shown to muted players when they join the server.",
+        "Supports color codes with &."
+    })
+    public String joinMessage = "&c&lYou are currently muted and cannot chat.";
 
-  public String muteInfoTemplate = "&7Template: &e%template%";
+    @Comment("Show mute reason to the player (if one was provided)")
+    public boolean showReason = true;
 
-  @Comment({
-      "",
-      "Mute List Messages"
-  })
-  public String muteListHeader = "&6--- Muted Players (Page %page%/%total%) ---";
+    @Comment({
+        "Message format for showing mute reason.",
+        "Placeholder: %reason%"
+    })
+    public String reasonFormat = "&cReason: &7%reason%";
+  }
 
-  public String muteListEntryFormat = "&e%player% &7- %duration% &8(%reason%)";
+  @Configuration
+  public static class WarningConfig {
+    @Comment("Enable the warning system for players")
+    public boolean enabled = true;
 
-  public String muteListFooter = "&7Use /mutelist <page> to view more.";
+    @Comment({
+        "Time in days after which warnings expire.",
+        "Set to 0 for warnings that never expire."
+    })
+    public int expiryDays = 30;
+
+    @Comment("Maximum warnings before auto-escalation kicks in")
+    public int maxBeforeAction = 3;
+
+    @Comment({
+        "Action to take when a player reaches max warnings.",
+        "Options: none, mute, tempmute",
+        "If tempmute, uses the duration specified below."
+    })
+    public String maxAction = "tempmute";
+
+    @Comment("Duration for tempmute when max warnings reached (e.g., 1h, 1d, 1w)")
+    public String maxActionDuration = "1h";
+
+    @Comment({"", "Warning-related messages"})
+    public WarningMessagesConfig messages = new WarningMessagesConfig();
+  }
+
+  @Configuration
+  public static class WarningMessagesConfig {
+    @Comment("Message shown to player when warned")
+    public String warnedMessage = "&c&lYou have been warned! &eReason: &7%reason%";
+
+    @Comment("Message showing who issued the warning")
+    public String warnedByMessage = "&7Warned by: &e%issuer%";
+
+    @Comment("Message format for listing warnings")
+    public String listFormat = "&7[%id%] &e%reason% &7- by %issuer% (%time_ago%)";
+
+    @Comment("Message shown when a warning is about to expire")
+    public String expiryNote = "&7(Expires in %time%)";
+  }
+
+  @Configuration
+  public static class HistoryConfig {
+    @Comment("Number of entries per page")
+    public int pageSize = 10;
+
+    @Comment("Format for punishment history entries")
+    public String entryFormat = "&7[%type%] &e%reason% &7- %duration% by %issuer% (%date%)";
+
+    @Comment("Header format for punishment history")
+    public String header = "&6--- Punishment History for %player% (Page %page%/%total%) ---";
+
+    @Comment("Footer format for punishment history")
+    public String footer = "&7Use /history %player% <page> to view more.";
+  }
+
+  @Configuration
+  public static class MuteInfoConfig {
+    @Comment("Header format for mute info display")
+    public String header = "&6--- Mute Info for %player% ---";
+
+    @Comment("Format for mute reason")
+    public String reason = "&7Reason: &e%reason%";
+
+    @Comment("Format for mute issuer")
+    public String issuer = "&7Muted by: &e%issuer%";
+
+    @Comment("Format for mute duration")
+    public String duration = "&7Duration: &e%duration%";
+
+    @Comment("Format for mute expiry")
+    public String expires = "&7Expires: &e%expires%";
+
+    @Comment("Text for permanent mutes")
+    public String permanent = "&cPermanent";
+
+    @Comment("Format for escalation template")
+    public String template = "&7Template: &e%template%";
+  }
+
+  @Configuration
+  public static class MuteListConfig {
+    @Comment("Header format for mute list")
+    public String header = "&6--- Muted Players (Page %page%/%total%) ---";
+
+    @Comment("Format for mute list entries")
+    public String entryFormat = "&e%player% &7- %duration% &8(%reason%)";
+
+    @Comment("Footer format for mute list")
+    public String footer = "&7Use /mutelist <page> to view more.";
+  }
 }

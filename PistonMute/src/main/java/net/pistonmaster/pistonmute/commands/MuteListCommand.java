@@ -54,7 +54,7 @@ public final class MuteListCommand implements CommandExecutor, TabExecutor {
     int endIndex = Math.min(startIndex + PAGE_SIZE, mutedPlayers.size());
 
     // Send header
-    String header = plugin.getPluginConfig().muteListHeader
+    String header = plugin.getPluginConfig().muteList.header
         .replace("%page%", String.valueOf(page))
         .replace("%total%", String.valueOf(totalPages))
         .replace("&", "\u00A7");
@@ -93,7 +93,7 @@ public final class MuteListCommand implements CommandExecutor, TabExecutor {
           }
         }
 
-        String entry = plugin.getPluginConfig().muteListEntryFormat
+        String entry = plugin.getPluginConfig().muteList.entryFormat
             .replace("%player%", playerName)
             .replace("%duration%", duration)
             .replace("%reason%", reason)
@@ -104,7 +104,7 @@ public final class MuteListCommand implements CommandExecutor, TabExecutor {
 
     // Send footer
     if (totalPages > 1) {
-      String footer = plugin.getPluginConfig().muteListFooter
+      String footer = plugin.getPluginConfig().muteList.footer
           .replace("&", "\u00A7");
       sender.sendMessage(footer);
     }

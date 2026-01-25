@@ -55,21 +55,21 @@ public final class PistonChatListener implements Listener {
    * Show the mute reason to the player if configured to do so.
    */
   private void showMuteReason(Player player) {
-    if (!plugin.getPluginConfig().showMuteReason) {
+    if (!plugin.getPluginConfig().muteNotification.showReason) {
       return;
     }
 
     String reason = StorageTool.getMuteReason(player.getUniqueId());
     if (reason != null && !reason.isEmpty()) {
-      String muteNotify = plugin.getPluginConfig().muteNotifyMessage
+      String muteNotify = plugin.getPluginConfig().muteNotification.joinMessage
           .replace("&", "\u00A7");
-      String reasonFormat = plugin.getPluginConfig().muteReasonFormat
+      String reasonFormat = plugin.getPluginConfig().muteNotification.reasonFormat
           .replace("%reason%", reason)
           .replace("&", "\u00A7");
       player.sendMessage(muteNotify);
       player.sendMessage(reasonFormat);
     } else {
-      String muteNotify = plugin.getPluginConfig().muteNotifyMessage
+      String muteNotify = plugin.getPluginConfig().muteNotification.joinMessage
           .replace("&", "\u00A7");
       player.sendMessage(muteNotify);
     }

@@ -47,11 +47,11 @@ public final class StaffUtils {
     PistonMute pluginInstance = plugin();
 
     // If hierarchy is disabled, anyone can target anyone
-    if (!pluginInstance.getPluginConfig().staffHierarchyEnabled) {
+    if (!pluginInstance.getPluginConfig().staff.hierarchyEnabled) {
       return true;
     }
 
-    String mode = pluginInstance.getPluginConfig().hierarchyMode.toLowerCase();
+    String mode = pluginInstance.getPluginConfig().staff.hierarchyMode.toLowerCase();
 
     return switch (mode) {
       case "immune" -> !target.hasPermission(IMMUNE_PERMISSION);
@@ -132,7 +132,7 @@ public final class StaffUtils {
    */
   public static String getCannotTargetReason(Player target) {
     PistonMute pluginInstance = plugin();
-    String mode = pluginInstance.getPluginConfig().hierarchyMode.toLowerCase();
+    String mode = pluginInstance.getPluginConfig().staff.hierarchyMode.toLowerCase();
 
     return switch (mode) {
       case "immune" -> target.getName() + " is immune to punishment!";

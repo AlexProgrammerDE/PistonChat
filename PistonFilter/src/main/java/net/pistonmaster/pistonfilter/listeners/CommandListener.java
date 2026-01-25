@@ -32,7 +32,7 @@ public class CommandListener implements Listener {
   public void onCommandPreprocess(PlayerCommandPreprocessEvent event) {
     PistonFilterConfig config = plugin.getPluginConfig();
 
-    if (!config.filterCommands) {
+    if (!config.commands.enabled) {
       return;
     }
 
@@ -66,7 +66,7 @@ public class CommandListener implements Listener {
     }
 
     // Check if this command should be filtered
-    List<String> filteredCommands = config.filteredCommands;
+    List<String> filteredCommands = config.commands.filtered;
     boolean shouldFilter = false;
     for (String filteredCommand : filteredCommands) {
       if (command.equalsIgnoreCase(filteredCommand)) {
@@ -87,7 +87,7 @@ public class CommandListener implements Listener {
     String messageContent = parts[1];
 
     // For commands with a target player, skip the first argument
-    if (config.commandsWithTarget.stream().anyMatch(cmd -> cmd.equalsIgnoreCase(command))) {
+    if (config.commands.withTarget.stream().anyMatch(cmd -> cmd.equalsIgnoreCase(command))) {
       String[] messageParts = messageContent.split("\\s+", 2);
       if (messageParts.length < 2) {
         return; // No message after the target player
@@ -118,32 +118,32 @@ public class CommandListener implements Listener {
     MessageInfo messageInfo = MessageInfo.of(Instant.now(), content);
 
     // Check banned text
-    String bannedText = FilterLogic.findBannedText(messageInfo.getStrippedMessage(), config.bannedText, config.bannedTextPartialRatio);
+    String bannedText = FilterLogic.findBannedText(messageInfo.getStrippedMessage(), config.content.bannedPatterns, config.content.bannedTextMatchRatio);
     if (bannedText != null) {
       return "Contains banned text: " + bannedText;
     }
 
     // Check word length
     for (String word : messageInfo.getWords()) {
-      if (FilterLogic.isWordTooLong(word, config.maxWordLength)) {
+      if (FilterLogic.isWordTooLong(word, config.content.maxWordLength)) {
         return "Contains a word that is too long: " + word;
       }
-      if (FilterLogic.hasInvalidSeparators(word, config.maxSeparatedNumbers)) {
+      if (FilterLogic.hasInvalidSeparators(word, config.content.maxSeparatedNumbers)) {
         return "Has a word with invalid separators: " + word;
       }
     }
 
     // Check words with numbers
     int wordsWithNumbers = FilterLogic.countWordsWithNumbers(messageInfo.getWords());
-    if (wordsWithNumbers > config.maxWordsWithNumbers) {
+    if (wordsWithNumbers > config.content.maxWordsWithNumbers) {
       return "Used " + wordsWithNumbers + " words with numbers";
     }
 
     // Check Unicode filtering
-    if (config.filterUnicode) {
-      List<FilterLogic.UnicodeRange> allowedRanges = FilterLogic.parseUnicodeRanges(config.allowedUnicodeRanges);
+    if (config.unicode.enabled) {
+      List<FilterLogic.UnicodeRange> allowedRanges = FilterLogic.parseUnicodeRanges(config.unicode.allowedRanges);
       FilterLogic.UnicodeFilterResult unicodeResult = FilterLogic.checkUnicodeCharacters(
-          content, config.blockNonAscii, config.blockMathAlphanumeric, config.blockHackedClientFonts, allowedRanges);
+          content, config.unicode.blockNonAscii, config.unicode.blockMathAlphanumeric, config.unicode.blockHackedClientFonts, allowedRanges);
       if (unicodeResult.isBlocked()) {
         return unicodeResult.getReason();
       }

@@ -64,7 +64,7 @@ public final class PunishmentLogger {
    */
   public static void log(String staffName, String command, String target, String details) {
     PistonMute pluginInstance = plugin();
-    if (!pluginInstance.getPluginConfig().commandLoggingEnabled) {
+    if (!pluginInstance.getPluginConfig().logging.enabled) {
       return;
     }
 
@@ -74,7 +74,7 @@ public final class PunishmentLogger {
       }
 
       String timestamp = LocalDateTime.now().format(TIMESTAMP_FORMAT);
-      String format = pluginInstance.getPluginConfig().logFormat;
+      String format = pluginInstance.getPluginConfig().logging.format;
 
       String logEntry = format
           .replace("%timestamp%", timestamp)

@@ -26,7 +26,7 @@ public final class UnwarnCommand implements CommandExecutor, TabExecutor {
 
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-    if (!plugin.getPluginConfig().warningsEnabled) {
+    if (!plugin.getPluginConfig().warnings.enabled) {
       sender.sendMessage(ChatColor.RED + "Warning system is disabled.");
       return true;
     }

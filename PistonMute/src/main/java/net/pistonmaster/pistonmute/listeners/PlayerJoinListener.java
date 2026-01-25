@@ -29,7 +29,7 @@ public final class PlayerJoinListener implements Listener {
     PistonMuteConfig config = plugin.getPluginConfig();
 
     // Track player IP for alt detection
-    if (config.enableAltDetection) {
+    if (config.altDetection.enabled) {
       StorageTool.trackPlayerIP(player);
 
       // Check if this player might be an alt of a muted player
@@ -37,7 +37,7 @@ public final class PlayerJoinListener implements Listener {
     }
 
     // Notify player if they are muted
-    if (config.notifyOnJoin && StorageTool.isMuted(player)) {
+    if (config.muteNotification.notifyOnJoin && StorageTool.isMuted(player)) {
       notifyMutedPlayer(player);
     }
   }
@@ -59,13 +59,13 @@ public final class PlayerJoinListener implements Listener {
     }
 
     // Auto-mute this player if enabled
-    if (config.autoMuteAlts) {
+    if (config.altDetection.autoMuteAlts) {
       StorageTool.hardMutePlayer(player.getUniqueId(), "Auto-muted: alt of muted player");
       notifyMutedPlayer(player);
     }
 
     // Notify staff about the alt
-    if (config.notifyStaffOnAltJoin) {
+    if (config.altDetection.notifyStaffOnJoin) {
       // Get one of the muted alt names for the notification
       UUID mutedAltUuid = mutedAlts.iterator().next();
       String mutedAltName = StorageTool.getStoredPlayerName(mutedAltUuid);
@@ -78,7 +78,7 @@ public final class PlayerJoinListener implements Listener {
         ip = "unknown";
       }
 
-      String message = config.altJoinNotifyMessage
+      String message = config.altDetection.joinNotifyMessage
           .replace("%player%", player.getName())
           .replace("%alt%", mutedAltName)
           .replace("%ip%", ip);
@@ -100,14 +100,14 @@ public final class PlayerJoinListener implements Listener {
     PistonMuteConfig config = plugin.getPluginConfig();
 
     // Send main mute notification
-    String message = ChatColor.translateAlternateColorCodes('&', config.muteNotifyMessage);
+    String message = ChatColor.translateAlternateColorCodes('&', config.muteNotification.joinMessage);
     player.sendMessage(message);
 
     // Show reason if enabled and available
-    if (config.showMuteReason) {
+    if (config.muteNotification.showReason) {
       String reason = StorageTool.getMuteReason(player.getUniqueId());
       if (reason != null && !reason.isEmpty()) {
-        String reasonMessage = config.muteReasonFormat.replace("%reason%", reason);
+        String reasonMessage = config.muteNotification.reasonFormat.replace("%reason%", reason);
         reasonMessage = ChatColor.translateAlternateColorCodes('&', reasonMessage);
         player.sendMessage(reasonMessage);
       }

@@ -26,7 +26,7 @@ public final class WarnCommand implements CommandExecutor, TabExecutor {
 
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-    if (!plugin.getPluginConfig().warningsEnabled) {
+    if (!plugin.getPluginConfig().warnings.enabled) {
       sender.sendMessage(ChatColor.RED + "Warning system is disabled.");
       return true;
     }
@@ -59,7 +59,7 @@ public final class WarnCommand implements CommandExecutor, TabExecutor {
 
     // Calculate expiry time
     Instant expiresAt = null;
-    int expiryDays = plugin.getPluginConfig().warningExpiryDays;
+    int expiryDays = plugin.getPluginConfig().warnings.expiryDays;
     if (expiryDays > 0) {
       expiresAt = Instant.now().plus(expiryDays, ChronoUnit.DAYS);
     }
@@ -90,10 +90,10 @@ public final class WarnCommand implements CommandExecutor, TabExecutor {
     );
 
     // Notify the target
-    String warnedMessage = plugin.getPluginConfig().warnedMessage
+    String warnedMessage = plugin.getPluginConfig().warnings.messages.warnedMessage
         .replace("%reason%", reason)
         .replace("&", "\u00A7");
-    String warnedByMessage = plugin.getPluginConfig().warnedByMessage
+    String warnedByMessage = plugin.getPluginConfig().warnings.messages.warnedByMessage
         .replace("%issuer%", issuerName)
         .replace("&", "\u00A7");
 
@@ -112,7 +112,7 @@ public final class WarnCommand implements CommandExecutor, TabExecutor {
     sender.spigot().sendMessage(new ComponentBuilder("----------------").color(ChatColor.DARK_BLUE).create());
 
     // Check if max warnings reached
-    int maxWarnings = plugin.getPluginConfig().maxWarningsBeforeAction;
+    int maxWarnings = plugin.getPluginConfig().warnings.maxBeforeAction;
     if (maxWarnings > 0 && activeWarnings >= maxWarnings) {
       handleMaxWarningsReached(sender, target, activeWarnings);
     }
@@ -121,7 +121,7 @@ public final class WarnCommand implements CommandExecutor, TabExecutor {
   }
 
   private void handleMaxWarningsReached(CommandSender sender, Player target, int warningCount) {
-    String action = plugin.getPluginConfig().warningMaxAction.toLowerCase();
+    String action = plugin.getPluginConfig().warnings.maxAction.toLowerCase();
 
     sender.sendMessage(ChatColor.YELLOW + target.getName() + " has reached " + warningCount + " warnings!");
 
@@ -131,7 +131,7 @@ public final class WarnCommand implements CommandExecutor, TabExecutor {
         Bukkit.dispatchCommand(sender, "mute " + target.getName());
         break;
       case "tempmute":
-        String duration = plugin.getPluginConfig().warningMaxActionDuration;
+        String duration = plugin.getPluginConfig().warnings.maxActionDuration;
         Bukkit.dispatchCommand(sender, "mute " + target.getName() + " " + duration);
         break;
       default:

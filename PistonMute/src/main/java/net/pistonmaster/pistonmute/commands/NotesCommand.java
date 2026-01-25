@@ -28,7 +28,7 @@ public final class NotesCommand implements CommandExecutor, TabExecutor {
 
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-    if (!plugin.getPluginConfig().notesEnabled) {
+    if (!plugin.getPluginConfig().notes.enabled) {
       sender.spigot().sendMessage(new ComponentBuilder("Notes system is disabled!").color(ChatColor.RED).create());
       return true;
     }

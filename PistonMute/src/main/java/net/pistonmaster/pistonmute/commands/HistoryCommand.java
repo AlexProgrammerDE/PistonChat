@@ -59,7 +59,7 @@ public final class HistoryCommand implements CommandExecutor, TabExecutor {
       }
     }
 
-    int pageSize = plugin.getPluginConfig().historyPageSize;
+    int pageSize = plugin.getPluginConfig().history.pageSize;
     int totalPages = PunishmentHistoryStorage.getTotalPages(target.getUniqueId(), pageSize);
     int totalRecords = PunishmentHistoryStorage.getTotalRecords(target.getUniqueId());
 
@@ -76,7 +76,7 @@ public final class HistoryCommand implements CommandExecutor, TabExecutor {
     List<PunishmentRecord> records = PunishmentHistoryStorage.getHistoryPaginated(target.getUniqueId(), page, pageSize);
 
     // Send header
-    String header = plugin.getPluginConfig().historyHeader
+    String header = plugin.getPluginConfig().history.header
         .replace("%player%", playerName)
         .replace("%page%", String.valueOf(page))
         .replace("%total%", String.valueOf(totalPages))
@@ -96,7 +96,7 @@ public final class HistoryCommand implements CommandExecutor, TabExecutor {
         String date = record.getIssuedAt() != null ? DATE_FORMATTER.format(record.getIssuedAt()) : "Unknown";
         String type = record.getType().getDisplayName();
 
-        String entry = plugin.getPluginConfig().historyEntryFormat
+        String entry = plugin.getPluginConfig().history.entryFormat
             .replace("%type%", type)
             .replace("%reason%", reason)
             .replace("%duration%", duration)
@@ -114,7 +114,7 @@ public final class HistoryCommand implements CommandExecutor, TabExecutor {
 
     // Send footer
     if (totalPages > 1) {
-      String footer = plugin.getPluginConfig().historyFooter
+      String footer = plugin.getPluginConfig().history.footer
           .replace("%player%", playerName)
           .replace("&", "\u00A7");
       sender.sendMessage(footer);

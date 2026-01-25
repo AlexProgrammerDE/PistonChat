@@ -381,7 +381,7 @@ public final class MuteCommand implements CommandExecutor, TabExecutor {
                                 UUID issuerUuid, String issuerName) {
     PistonMuteConfig config = plugin.getPluginConfig();
 
-    if (!config.enableAltDetection || !config.autoMuteAlts) {
+    if (!config.altDetection.enabled || !config.altDetection.autoMuteAlts) {
       return;
     }
 
@@ -446,7 +446,7 @@ public final class MuteCommand implements CommandExecutor, TabExecutor {
                                        UUID issuerUuid, String issuerName) {
     PistonMuteConfig config = plugin.getPluginConfig();
 
-    if (!config.enableAltDetection || !config.autoMuteAlts) {
+    if (!config.altDetection.enabled || !config.altDetection.autoMuteAlts) {
       return;
     }
 

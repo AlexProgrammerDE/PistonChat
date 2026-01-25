@@ -27,7 +27,7 @@ public final class WarningsCommand implements CommandExecutor, TabExecutor {
 
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-    if (!plugin.getPluginConfig().warningsEnabled) {
+    if (!plugin.getPluginConfig().warnings.enabled) {
       sender.sendMessage(ChatColor.RED + "Warning system is disabled.");
       return true;
     }
@@ -65,7 +65,7 @@ public final class WarningsCommand implements CommandExecutor, TabExecutor {
         String timeAgo = formatTimeAgo(warning.getIssuedAt());
         String status = warning.isActive() ? ChatColor.GREEN + "[Active]" : ChatColor.GRAY + "[Expired]";
 
-        String format = plugin.getPluginConfig().warningListFormat
+        String format = plugin.getPluginConfig().warnings.messages.listFormat
             .replace("%id%", warning.getId())
             .replace("%reason%", warning.getReason())
             .replace("%issuer%", warning.getIssuerName())
@@ -77,7 +77,7 @@ public final class WarningsCommand implements CommandExecutor, TabExecutor {
         // Show expiry info for active warnings
         if (warning.isActive() && warning.getExpiresAt() != null) {
           String expiresIn = formatTimeRemaining(warning.getExpiresAt());
-          String expiryNote = plugin.getPluginConfig().warningExpiryNote
+          String expiryNote = plugin.getPluginConfig().warnings.messages.expiryNote
               .replace("%time%", expiresIn)
               .replace("&", "\u00A7");
           sender.sendMessage("  " + expiryNote);

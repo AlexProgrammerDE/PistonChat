@@ -36,7 +36,7 @@ public class AnvilListener implements Listener {
   public void onPrepareAnvil(PrepareAnvilEvent event) {
     PistonFilterConfig config = plugin.getPluginConfig();
 
-    if (!config.filterAnvil) {
+    if (!config.anvil.enabled) {
       return;
     }
 
@@ -70,7 +70,7 @@ public class AnvilListener implements Listener {
         plugin.getLogger().info(ChatColor.RED + "[AnvilFilter] <" + playerNames + "> Rename: " + displayName + " (" + filterResult + ")");
       }
 
-      if (config.cancelAnvilOnFilter) {
+      if (config.anvil.cancelOnFilter) {
         // Clear the result to prevent the rename
         event.setResult(null);
       }
@@ -81,7 +81,7 @@ public class AnvilListener implements Listener {
   public void onInventoryClick(InventoryClickEvent event) {
     PistonFilterConfig config = plugin.getPluginConfig();
 
-    if (!config.filterAnvil) {
+    if (!config.anvil.enabled) {
       return;
     }
 
@@ -120,7 +120,7 @@ public class AnvilListener implements Listener {
         plugin.getLogger().info(ChatColor.RED + "[AnvilFilter] <" + player.getName() + "> Attempted rename: " + displayName + " (" + filterResult + ")");
       }
 
-      if (config.cancelAnvilOnFilter) {
+      if (config.anvil.cancelOnFilter) {
         event.setCancelled(true);
         player.sendMessage(ChatColor.RED + "That item name contains filtered content.");
       }
@@ -138,26 +138,26 @@ public class AnvilListener implements Listener {
     MessageInfo messageInfo = MessageInfo.of(Instant.now(), content);
 
     // Check banned text
-    String bannedText = FilterLogic.findBannedText(messageInfo.getStrippedMessage(), config.bannedText, config.bannedTextPartialRatio);
+    String bannedText = FilterLogic.findBannedText(messageInfo.getStrippedMessage(), config.content.bannedPatterns, config.content.bannedTextMatchRatio);
     if (bannedText != null) {
       return "Contains banned text: " + bannedText;
     }
 
     // Check word length
     for (String word : messageInfo.getWords()) {
-      if (FilterLogic.isWordTooLong(word, config.maxWordLength)) {
+      if (FilterLogic.isWordTooLong(word, config.content.maxWordLength)) {
         return "Contains a word that is too long: " + word;
       }
-      if (FilterLogic.hasInvalidSeparators(word, config.maxSeparatedNumbers)) {
+      if (FilterLogic.hasInvalidSeparators(word, config.content.maxSeparatedNumbers)) {
         return "Has a word with invalid separators: " + word;
       }
     }
 
     // Check Unicode filtering
-    if (config.filterUnicode) {
-      List<FilterLogic.UnicodeRange> allowedRanges = FilterLogic.parseUnicodeRanges(config.allowedUnicodeRanges);
+    if (config.unicode.enabled) {
+      List<FilterLogic.UnicodeRange> allowedRanges = FilterLogic.parseUnicodeRanges(config.unicode.allowedRanges);
       FilterLogic.UnicodeFilterResult unicodeResult = FilterLogic.checkUnicodeCharacters(
-          content, config.blockNonAscii, config.blockMathAlphanumeric, config.blockHackedClientFonts, allowedRanges);
+          content, config.unicode.blockNonAscii, config.unicode.blockMathAlphanumeric, config.unicode.blockHackedClientFonts, allowedRanges);
       if (unicodeResult.isBlocked()) {
         return unicodeResult.getReason();
       }
