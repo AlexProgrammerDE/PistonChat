@@ -17,7 +17,6 @@ import net.pistonmaster.pistonchat.PistonChat;
 import net.pistonmaster.pistonchat.api.PistonWhisperEvent;
 import net.pistonmaster.pistonchat.config.PistonChatConfig;
 import net.pistonmaster.pistonchat.utils.MessageKeyResolver;
-import net.pistonmaster.pistonchat.utils.MiniPlaceholdersHook;
 import net.pistonmaster.pistonchat.utils.PlayerUtils;
 import net.pistonmaster.pistonchat.utils.StringUtils;
 import org.bukkit.ChatColor;
@@ -229,7 +228,7 @@ public class CommonTool {
 
   private TagResolver miniPlaceholdersTagResolver() {
     if (plugin.getServer().getPluginManager().isPluginEnabled("MiniPlaceholders")) {
-      return MiniPlaceholdersHook.relationalGlobalPlaceholders();
+      return MiniPlaceholders.relationalGlobalPlaceholders();
     } else {
       return TagResolver.empty();
     }
