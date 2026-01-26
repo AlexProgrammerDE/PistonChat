@@ -23,4 +23,12 @@ public class MiniPlaceholdersHook {
       return target;
     }
   }
+
+  public static TagResolver audienceGlobalPlaceholders(PistonChat plugin) {
+    if (plugin.getServer().getPluginManager().isPluginEnabled("MiniPlaceholders")) {
+      return MiniPlaceholders.audienceGlobalPlaceholders();
+    } else {
+      return TagResolver.empty();
+    }
+  }
 }

@@ -2,6 +2,7 @@ package net.pistonmaster.pistonchat.tools;
 
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.pointer.Pointered;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -109,9 +110,13 @@ public class CommonTool {
     receiverAudience.sendMessage(MiniMessage.miniMessage().deserialize(senderString, MiniPlaceholdersHook.getRelationalAudience(plugin, senderAudience, receiverAudience), tagResolver));
   }
 
-  public Component getLanguageMessage(String messageKey, boolean prefix, TagResolver... tagResolvers) {
+  public Component getLanguageMessage(Audience audience, String messageKey, boolean prefix, TagResolver... tagResolvers) {
     String messageString = getMessageByKey(messageKey);
-    Component messageComponent = MiniMessage.miniMessage().deserialize(messageString, tagResolvers);
+    TagResolver combinedResolver = TagResolver.resolver(
+        MiniPlaceholdersHook.audienceGlobalPlaceholders(plugin),
+        TagResolver.resolver(tagResolvers)
+    );
+    Component messageComponent = MiniMessage.miniMessage().deserialize(messageString, audience, combinedResolver);
 
     if (!prefix) {
       return messageComponent;
@@ -119,11 +124,12 @@ public class CommonTool {
 
     String formatString = plugin.getPluginConfig().messages.format;
 
-    TagResolver tagResolver = TagResolver.resolver(
+    TagResolver formatResolver = TagResolver.resolver(
+        MiniPlaceholdersHook.audienceGlobalPlaceholders(plugin),
         Placeholder.component("message", messageComponent)
     );
 
-    return MiniMessage.miniMessage().deserialize(formatString, tagResolver);
+    return MiniMessage.miniMessage().deserialize(formatString, audience, formatResolver);
   }
 
   private String getMessageByKey(String key) {
@@ -131,11 +137,13 @@ public class CommonTool {
   }
 
   public void sendLanguageMessage(CommandSender sender, String messageKey, TagResolver... tagResolvers) {
-    senderAudience(sender).sendMessage(getLanguageMessage(messageKey, true, tagResolvers));
+    Audience audience = senderAudience(sender);
+    audience.sendMessage(getLanguageMessage(audience, messageKey, true, tagResolvers));
   }
 
   public void sendLanguageMessageNoPrefix(CommandSender sender, String messageKey, TagResolver... tagResolvers) {
-    senderAudience(sender).sendMessage(getLanguageMessage(messageKey, false, tagResolvers));
+    Audience audience = senderAudience(sender);
+    audience.sendMessage(getLanguageMessage(audience, messageKey, false, tagResolvers));
   }
 
   public Optional<TextColor> getChatColorFor(String message, Player player) {
@@ -163,9 +171,10 @@ public class CommonTool {
     Audience chatterAudience = senderAudience(chatter);
     Audience receiverAudience = senderAudience(receiver);
     TagResolver miniPlaceholderResolver = MiniPlaceholdersHook.relationalGlobalPlaceholders(plugin);
+    Pointered relationalAudience = MiniPlaceholdersHook.getRelationalAudience(plugin, chatterAudience, receiverAudience);
     Component formatComponent = overrideFormat != null
       ? overrideFormat
-      : getFormat(chatter, miniPlaceholderResolver);
+      : getFormat(chatter, relationalAudience, miniPlaceholderResolver);
 
     if (receiver.hasPermission("pistonchat.playernamereply")) {
       String hoverText = plugin.getPluginConfig().hoverText;
@@ -193,7 +202,7 @@ public class CommonTool {
     )));
   }
 
-  public Component getFormat(Player chatter, TagResolver miniPlaceholderResolver) {
+  public Component getFormat(Player chatter, Pointered pointered, TagResolver miniPlaceholderResolver) {
     PistonChatConfig config = plugin.getPluginConfig();
     String formatString = "<player_name>";
     for (Map.Entry<String, String> entry : config.chatFormats.entrySet()) {
@@ -203,7 +212,7 @@ public class CommonTool {
       }
     }
 
-    return MiniMessage.miniMessage().deserialize(formatString, TagResolver.resolver(
+    return MiniMessage.miniMessage().deserialize(formatString, pointered, TagResolver.resolver(
         miniPlaceholderResolver,
         getDisplayNameResolver(chatter)
     ));
@@ -225,7 +234,7 @@ public class CommonTool {
     }
   }
 
-  private Audience senderAudience(CommandSender sender) {
+  public Audience senderAudience(CommandSender sender) {
     if (sender instanceof Audience audience) {
       return audience;
     } else {

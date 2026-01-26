@@ -35,7 +35,7 @@ public class MainCommand implements CommandExecutor, TabExecutor {
           sender.sendMessage(command.getPermissionMessage());
         }
 
-        String headerText = LegacyComponentSerializer.legacySection().serialize(plugin.getCommonTool().getLanguageMessage("help-header", false));
+        String headerText = LegacyComponentSerializer.legacySection().serialize(plugin.getCommonTool().getLanguageMessage(plugin.getCommonTool().senderAudience(sender), "help-header", false));
         ComponentBuilder builder = new ComponentBuilder(headerText).color(ChatColor.GOLD);
 
         for (Map.Entry<String, Map<String, Object>> entry : plugin.getDescription().getCommands().entrySet()) {
