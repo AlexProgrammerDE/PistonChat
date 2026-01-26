@@ -1,7 +1,5 @@
 package net.pistonmaster.pistonchat.tools;
 
-import io.github.miniplaceholders.api.MiniPlaceholders;
-import io.github.miniplaceholders.api.types.RelationalAudience;
 import lombok.RequiredArgsConstructor;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
@@ -14,6 +12,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.pistonmaster.pistonchat.PistonChat;
+import net.pistonmaster.pistonchat.hooks.MiniPlaceholdersHook;
 import net.pistonmaster.pistonchat.api.PistonWhisperEvent;
 import net.pistonmaster.pistonchat.config.PistonChatConfig;
 import net.pistonmaster.pistonchat.utils.MessageKeyResolver;
@@ -89,12 +88,12 @@ public class CommonTool {
     Audience receiverAudience = senderAudience(receiver);
     String senderString = plugin.getPluginConfig().whisper.to;
     TagResolver tagResolver = TagResolver.resolver(
-        miniPlaceholdersTagResolver(),
+        MiniPlaceholdersHook.relationalGlobalPlaceholders(plugin),
         Placeholder.unparsed("message", message),
         getDisplayNameResolver(receiver)
     );
 
-    senderAudience.sendMessage(MiniMessage.miniMessage().deserialize(senderString, new RelationalAudience<>(senderAudience, receiverAudience), tagResolver));
+    senderAudience.sendMessage(MiniMessage.miniMessage().deserialize(senderString, MiniPlaceholdersHook.getRelationalAudience(plugin, senderAudience, receiverAudience), tagResolver));
   }
 
   private void sendReceiver(CommandSender sender, String message, CommandSender receiver) {
@@ -102,12 +101,12 @@ public class CommonTool {
     Audience receiverAudience = senderAudience(receiver);
     String senderString = plugin.getPluginConfig().whisper.from;
     TagResolver tagResolver = TagResolver.resolver(
-        miniPlaceholdersTagResolver(),
+        MiniPlaceholdersHook.relationalGlobalPlaceholders(plugin),
         Placeholder.unparsed("message", message),
         getDisplayNameResolver(sender)
     );
 
-    receiverAudience.sendMessage(MiniMessage.miniMessage().deserialize(senderString, new RelationalAudience<>(senderAudience, receiverAudience), tagResolver));
+    receiverAudience.sendMessage(MiniMessage.miniMessage().deserialize(senderString, MiniPlaceholdersHook.getRelationalAudience(plugin, senderAudience, receiverAudience), tagResolver));
   }
 
   public Component getLanguageMessage(String messageKey, boolean prefix, TagResolver... tagResolvers) {
@@ -163,7 +162,7 @@ public class CommonTool {
   public void sendChatMessage(Player chatter, String message, Player receiver, @Nullable Component overrideFormat) {
     Audience chatterAudience = senderAudience(chatter);
     Audience receiverAudience = senderAudience(receiver);
-    TagResolver miniPlaceholderResolver = miniPlaceholdersTagResolver();
+    TagResolver miniPlaceholderResolver = MiniPlaceholdersHook.relationalGlobalPlaceholders(plugin);
     Component formatComponent = overrideFormat != null
       ? overrideFormat
       : getFormat(chatter, miniPlaceholderResolver);
@@ -173,7 +172,7 @@ public class CommonTool {
 
       formatComponent = formatComponent
           .clickEvent(ClickEvent.suggestCommand("/w %s ".formatted(chatter.getName())))
-          .hoverEvent(HoverEvent.showText(MiniMessage.miniMessage().deserialize(hoverText, new RelationalAudience<>(chatterAudience, receiverAudience), TagResolver.resolver(
+          .hoverEvent(HoverEvent.showText(MiniMessage.miniMessage().deserialize(hoverText, MiniPlaceholdersHook.getRelationalAudience(plugin, chatterAudience, receiverAudience), TagResolver.resolver(
               miniPlaceholderResolver,
               getStrippedNameResolver(chatter)
           ))));
@@ -187,7 +186,7 @@ public class CommonTool {
 
     String messageFormat = plugin.getPluginConfig().messageFormat;
 
-    receiverAudience.sendMessage(MiniMessage.miniMessage().deserialize(messageFormat, TagResolver.resolver(
+    receiverAudience.sendMessage(MiniMessage.miniMessage().deserialize(messageFormat, MiniPlaceholdersHook.getRelationalAudience(plugin, chatterAudience, receiverAudience), TagResolver.resolver(
         miniPlaceholderResolver,
         Placeholder.component("message", messageComponent),
         Placeholder.component("format", formatComponent)
@@ -223,14 +222,6 @@ public class CommonTool {
       return Placeholder.parsed("player_name", config.consoleName);
     } else {
       return Placeholder.unparsed("player_name", sender.getName());
-    }
-  }
-
-  private TagResolver miniPlaceholdersTagResolver() {
-    if (plugin.getServer().getPluginManager().isPluginEnabled("MiniPlaceholders")) {
-      return MiniPlaceholders.relationalGlobalPlaceholders();
-    } else {
-      return TagResolver.empty();
     }
   }
 
