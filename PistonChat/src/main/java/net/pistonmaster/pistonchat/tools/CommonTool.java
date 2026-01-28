@@ -111,7 +111,13 @@ public class CommonTool {
   }
 
   public Component getLanguageMessage(Audience audience, String messageKey, boolean prefix, TagResolver... tagResolvers) {
-    String messageString = getMessageByKey(messageKey);
+    // Extract Player from audience if possible for locale support
+    Player player = null;
+    if (audience instanceof Player p) {
+      player = p;
+    }
+
+    String messageString = getMessageByKey(messageKey, player);
     TagResolver combinedResolver = TagResolver.resolver(
         MiniPlaceholdersHook.audienceGlobalPlaceholders(plugin),
         TagResolver.resolver(tagResolvers)
@@ -132,7 +138,14 @@ public class CommonTool {
     return MiniMessage.miniMessage().deserialize(formatString, audience, formatResolver);
   }
 
-  private String getMessageByKey(String key) {
+  private String getMessageByKey(String key, @Nullable Player player) {
+    // Try locale-specific message first if per-player locale is enabled
+    if (player != null && plugin.getPluginConfig().perIssuerLocale) {
+      String localizedMessage = plugin.getLocaleManager().getLocalizedMessage(player, key);
+      if (localizedMessage != null) {
+        return localizedMessage;
+      }
+    }
     return MessageKeyResolver.getMessageByKey(plugin.getPluginConfig().messages, key);
   }
 

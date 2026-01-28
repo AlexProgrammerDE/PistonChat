@@ -148,6 +148,10 @@ public class PistonFilterConfig {
         ".gg",
         ".io"
     );
+
+    @Comment({"List of regex patterns for advanced matching (e.g., '\\\\d{1,3}\\\\.\\\\d{1,3}\\\\.\\\\d{1,3}\\\\.\\\\d{1,3}' for IP addresses)",
+        "Note: Use double backslashes in YAML for regex escapes"})
+    public List<String> bannedRegexPatterns = List.of();
   }
 
   @Configuration

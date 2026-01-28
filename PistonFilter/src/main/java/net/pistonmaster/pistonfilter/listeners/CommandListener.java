@@ -123,6 +123,12 @@ public class CommandListener implements Listener {
       return "Contains banned text: " + bannedText;
     }
 
+    // Check banned regex patterns
+    String bannedRegex = FilterLogic.findBannedRegex(messageInfo.getStrippedMessage(), config.content.bannedRegexPatterns);
+    if (bannedRegex != null) {
+      return "Matches banned pattern: " + bannedRegex;
+    }
+
     // Check word length
     for (String word : messageInfo.getWords()) {
       if (FilterLogic.isWordTooLong(word, config.content.maxWordLength)) {

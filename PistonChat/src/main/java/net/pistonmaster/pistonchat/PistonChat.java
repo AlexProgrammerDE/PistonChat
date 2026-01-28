@@ -23,6 +23,7 @@ import net.pistonmaster.pistonchat.storage.PCStorage;
 import net.pistonmaster.pistonchat.storage.file.FileStorage;
 import net.pistonmaster.pistonchat.storage.mysql.MySQLStorage;
 import net.pistonmaster.pistonchat.tools.*;
+import net.pistonmaster.pistonchat.utils.LocaleManager;
 import net.pistonmaster.pistonutils.update.GitHubUpdateChecker;
 import net.pistonmaster.pistonutils.update.SemanticVersion;
 import org.bstats.bukkit.Metrics;
@@ -50,6 +51,7 @@ public final class PistonChat extends JavaPlugin {
   private PistonChatConfig pluginConfig;
   private PCStorage storage;
   private BukkitAudiences adventure;
+  private LocaleManager localeManager;
 
   @Override
   public void onEnable() {
@@ -69,6 +71,12 @@ public final class PistonChat extends JavaPlugin {
 
     log.info(ChatColor.DARK_GREEN + "Loading config");
     loadConfig();
+
+    log.info(ChatColor.DARK_GREEN + "Loading locale translations");
+    localeManager = new LocaleManager(log, new java.io.File(getDataFolder(), "lang"), this::getPluginConfig);
+    if (pluginConfig.perIssuerLocale && localeManager.hasLocales()) {
+      log.info("Loaded " + localeManager.getLocaleCount() + " locale(s) for per-player translations");
+    }
 
     log.info(ChatColor.DARK_GREEN + "Loading storage");
     if ("mysql".equalsIgnoreCase(pluginConfig.storage)) {

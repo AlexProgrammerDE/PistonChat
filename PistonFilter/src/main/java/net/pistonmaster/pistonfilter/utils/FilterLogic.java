@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * Utility class containing testable filtering logic extracted from ChatListener.
@@ -262,8 +264,37 @@ public final class FilterLogic {
    */
   public static String findBannedText(String strippedMessage, List<String> bannedTextList, int bannedPartialRatio) {
     for (String str : bannedTextList) {
-      if (FuzzySearch.partialRatio(strippedMessage, StringHelper.revertLeet(str)) > bannedPartialRatio) {
+      String normalizedPattern = StringHelper.revertLeet(str);
+      // Avoid false positives: message must be at least as long as the pattern
+      // to be considered a match. This prevents "o" from matching ".org", etc.
+      if (strippedMessage.length() >= normalizedPattern.length()
+          && FuzzySearch.partialRatio(strippedMessage, normalizedPattern) > bannedPartialRatio) {
         return str;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Check if a message matches any banned regex pattern.
+   *
+   * @param message           the message to check
+   * @param regexPatterns     the list of regex patterns to match against
+   * @return the regex pattern that matched, or null if no match
+   */
+  public static String findBannedRegex(String message, List<String> regexPatterns) {
+    if (regexPatterns == null || regexPatterns.isEmpty()) {
+      return null;
+    }
+
+    for (String regexStr : regexPatterns) {
+      try {
+        Pattern pattern = Pattern.compile(regexStr, Pattern.CASE_INSENSITIVE);
+        if (pattern.matcher(message).find()) {
+          return regexStr;
+        }
+      } catch (PatternSyntaxException e) {
+        // Invalid regex pattern - skip it
       }
     }
     return null;
@@ -407,7 +438,7 @@ public final class FilterLogic {
           return RepeatCheckResult.blocked(
               "Word similarity to previous message (%d%%) (%s)".formatted(similarity, pair.getOriginalMessage()));
         }
-        return RepeatCheckResult.blocked("Message within no-repeat time window.");
+        // Message is within time window but not similar - continue checking other messages
       }
       i++;
     }

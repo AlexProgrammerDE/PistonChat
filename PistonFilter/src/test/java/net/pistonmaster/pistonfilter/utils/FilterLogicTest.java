@@ -265,6 +265,99 @@ class FilterLogicTest {
       String result = FilterLogic.findBannedText("ftp://server", bannedList, 95);
       assertEquals("://", result);
     }
+
+    @Test
+    @DisplayName("Does not false positive on single letter 'o' for .org - GitHub Issue #240")
+    void doesNotFalsePositiveOnSingleLetterO() {
+      // Single letter "o" should NOT trigger ".org" detection
+      String result = FilterLogic.findBannedText("o", bannedList, 95);
+      assertNull(result, "Single letter 'o' should not be detected as banned text");
+    }
+
+    @Test
+    @DisplayName("Does not false positive on short innocent messages - GitHub Issue #240")
+    void doesNotFalsePositiveOnShortMessages() {
+      // Short messages should not trigger false positives
+      assertNull(FilterLogic.findBannedText("hi", bannedList, 95));
+      assertNull(FilterLogic.findBannedText("ok", bannedList, 95));
+      assertNull(FilterLogic.findBannedText("no", bannedList, 95));
+      assertNull(FilterLogic.findBannedText("go", bannedList, 95));
+    }
+
+    @Test
+    @DisplayName("Still detects actual banned domains")
+    void stillDetectsActualBannedDomains() {
+      // Make sure real domains are still detected
+      assertNotNull(FilterLogic.findBannedText("example.org", bannedList, 95));
+      assertNotNull(FilterLogic.findBannedText("test.com", bannedList, 95));
+      assertNotNull(FilterLogic.findBannedText("visit http://site", bannedList, 95));
+    }
+  }
+
+  @Nested
+  @DisplayName("findBannedRegex tests - GitHub Issue #177")
+  class FindBannedRegexTests {
+
+    @Test
+    @DisplayName("Returns null for empty pattern list")
+    void emptyPatternList() {
+      assertNull(FilterLogic.findBannedRegex("hello world", List.of()));
+    }
+
+    @Test
+    @DisplayName("Returns null for null pattern list")
+    void nullPatternList() {
+      assertNull(FilterLogic.findBannedRegex("hello world", null));
+    }
+
+    @Test
+    @DisplayName("Detects IP addresses with regex")
+    void detectsIpAddresses() {
+      List<String> patterns = List.of("\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}");
+      assertNotNull(FilterLogic.findBannedRegex("connect to 192.168.1.1", patterns));
+      assertNotNull(FilterLogic.findBannedRegex("server at 10.0.0.1:25565", patterns));
+      assertNull(FilterLogic.findBannedRegex("hello world", patterns));
+    }
+
+    @Test
+    @DisplayName("Detects URLs with regex")
+    void detectsUrls() {
+      List<String> patterns = List.of("https?://[\\w.-]+");
+      assertNotNull(FilterLogic.findBannedRegex("visit http://example.com", patterns));
+      assertNotNull(FilterLogic.findBannedRegex("check https://test.org/page", patterns));
+      assertNull(FilterLogic.findBannedRegex("hello world", patterns));
+    }
+
+    @Test
+    @DisplayName("Case insensitive matching")
+    void caseInsensitive() {
+      List<String> patterns = List.of("discord");
+      assertNotNull(FilterLogic.findBannedRegex("join DISCORD server", patterns));
+      assertNotNull(FilterLogic.findBannedRegex("DiScOrD link", patterns));
+    }
+
+    @Test
+    @DisplayName("Skips invalid regex patterns")
+    void skipsInvalidRegex() {
+      List<String> patterns = List.of("[invalid(regex", "valid");
+      // Should not throw, and should match valid pattern
+      assertEquals("valid", FilterLogic.findBannedRegex("this is valid text", patterns));
+    }
+
+    @Test
+    @DisplayName("Returns first matching pattern")
+    void returnsFirstMatch() {
+      List<String> patterns = List.of("hello", "world");
+      assertEquals("hello", FilterLogic.findBannedRegex("hello world", patterns));
+    }
+
+    @Test
+    @DisplayName("Matches partial strings")
+    void matchesPartialStrings() {
+      List<String> patterns = List.of("bad");
+      assertNotNull(FilterLogic.findBannedRegex("this is badword", patterns));
+      assertNotNull(FilterLogic.findBannedRegex("notsobad", patterns));
+    }
   }
 
   @Nested
@@ -448,6 +541,70 @@ class FilterLogicTest {
 
       // Should be allowed since all messages are outside time window
       assertFalse(result.isBlocked());
+    }
+
+    @Test
+    @DisplayName("Allows different messages within time window - GitHub Issue #239")
+    void allowsDifferentMessagesWithinTimeWindow() {
+      Deque<MessageInfo> history = new ArrayDeque<>();
+      Instant now = Instant.now();
+
+      // Add a previous message within time window
+      history.add(createTestMessage("hello everyone", now.minusSeconds(30)));
+
+      // Send a completely different message
+      MessageInfo message = createTestMessage("test message", now);
+
+      FilterLogic.RepeatCheckResult result = FilterLogic.checkForRepeats(
+          message, history, 60, 90, 5, 3, -1, false);
+
+      // Should be ALLOWED - the messages are different
+      assertFalse(result.isBlocked(),
+          "Different messages within time window should be allowed, but got: " + result.getReason());
+    }
+
+    @Test
+    @DisplayName("Allows multiple different messages in sequence - GitHub Issue #239")
+    void allowsMultipleDifferentMessagesInSequence() {
+      Deque<MessageInfo> history = new ArrayDeque<>();
+      Instant now = Instant.now();
+
+      // Simulate a conversation with different messages
+      history.add(createTestMessage("first message here", now.minusSeconds(40)));
+      history.add(createTestMessage("second different message", now.minusSeconds(30)));
+      history.add(createTestMessage("third unique message", now.minusSeconds(20)));
+
+      // Send another different message
+      MessageInfo message = createTestMessage("fourth completely new message", now);
+
+      FilterLogic.RepeatCheckResult result = FilterLogic.checkForRepeats(
+          message, history, 60, 90, 5, 3, -1, false);
+
+      // Should be ALLOWED - all messages are different
+      assertFalse(result.isBlocked(),
+          "Unique messages should be allowed even within time window, but got: " + result.getReason());
+    }
+
+    @Test
+    @DisplayName("Blocks only when messages are actually similar - GitHub Issue #239")
+    void blocksOnlyWhenMessagesSimilar() {
+      Deque<MessageInfo> history = new ArrayDeque<>();
+      Instant now = Instant.now();
+
+      history.add(createTestMessage("hello world test", now.minusSeconds(30)));
+
+      // Same message should be blocked
+      MessageInfo sameMessage = createTestMessage("hello world test", now);
+      FilterLogic.RepeatCheckResult result1 = FilterLogic.checkForRepeats(
+          sameMessage, history, 60, 90, 5, 3, -1, false);
+      assertTrue(result1.isBlocked(), "Identical message should be blocked");
+
+      // Different message should be allowed
+      MessageInfo differentMessage = createTestMessage("completely different content", now);
+      FilterLogic.RepeatCheckResult result2 = FilterLogic.checkForRepeats(
+          differentMessage, history, 60, 90, 5, 3, -1, false);
+      assertFalse(result2.isBlocked(),
+          "Different message should be allowed, but got: " + result2.getReason());
     }
 
   }

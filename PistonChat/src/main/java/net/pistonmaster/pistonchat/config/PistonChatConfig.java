@@ -50,6 +50,14 @@ public class PistonChatConfig {
   @Comment("Number of players shown per page in /ignorelist")
   public int ignoreListSize = 9;
 
+  @Comment({
+      "Enable per-player locale support.",
+      "When enabled, the plugin will use the player's client locale if a translation file exists.",
+      "Translation files should be placed in plugins/PistonChat/lang/<locale>.yml (e.g., lang/de_DE.yml)",
+      "If disabled or no translation exists, the messages below will be used."
+  })
+  public boolean perIssuerLocale = false;
+
   @Comment("Configurable plugin messages using MiniMessage syntax")
   public MessagesConfig messages = new MessagesConfig();
 

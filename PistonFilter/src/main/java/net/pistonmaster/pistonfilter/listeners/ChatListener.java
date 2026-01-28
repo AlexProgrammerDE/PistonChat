@@ -172,6 +172,12 @@ public class ChatListener implements Listener {
       return;
     }
 
+    String bannedRegex = FilterLogic.findBannedRegex(messageToCheck, config.content.bannedRegexPatterns);
+    if (bannedRegex != null) {
+      cancelMessage(sender, message, cancelEvent, sendEmpty, "Matches banned pattern: %s".formatted(bannedRegex), config);
+      return;
+    }
+
     int maxWordLength = config.content.maxWordLength;
     int maxSeparatedNumbers = config.content.maxSeparatedNumbers;
     int maxWordsWithNumbers = config.content.maxWordsWithNumbers;
