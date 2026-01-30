@@ -2,6 +2,10 @@ plugins {
     base
 }
 
+tasks.named<UpdateDaemonJvm>("updateDaemonJvm") {
+    languageVersion = JavaLanguageVersion.of(25)
+}
+
 allprojects {
     version = property("maven_version")!!
     group = "net.pistonmaster"
@@ -26,11 +30,5 @@ allprojects {
                 includeGroup("com.tcoded")
             }
         }
-    }
-}
-
-tasks.register("outputVersion") {
-    doLast {
-        println(project.version)
     }
 }
