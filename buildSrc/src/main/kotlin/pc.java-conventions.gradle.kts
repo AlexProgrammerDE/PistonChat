@@ -2,6 +2,7 @@ import com.github.spotbugs.snom.SpotBugsTask
 import org.gradle.api.tasks.SourceSetContainer
 
 plugins {
+    id("pc.formatting-conventions")
     `java-library`
     `maven-publish`
     id("net.ltgt.errorprone")
