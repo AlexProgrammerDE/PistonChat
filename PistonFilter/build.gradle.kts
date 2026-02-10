@@ -19,7 +19,7 @@ dependencies {
     testImplementation("me.xdrop:fuzzywuzzy:1.4.0")
     implementation("org.bstats:bstats-bukkit:3.1.0")
     implementation("org.apache.commons:commons-collections4:4.5.0")
-    implementation("de.exlll:configlib-paper:4.8.0")
+    implementation("de.exlll:configlib-paper:4.8.1")
 }
 
 tasks {
