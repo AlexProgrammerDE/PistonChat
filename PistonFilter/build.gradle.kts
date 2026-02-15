@@ -12,8 +12,8 @@ dependencies {
 
     implementation("net.pistonmaster:PistonUtils:1.4.0")
     implementation("me.xdrop:fuzzywuzzy:1.4.0")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:6.0.2")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:6.0.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:6.0.3")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:6.0.3")
     testImplementation("org.mockito:mockito-core:5.21.0")
     testImplementation("org.mockito:mockito-junit-jupiter:5.21.0")
     testImplementation("me.xdrop:fuzzywuzzy:1.4.0")
