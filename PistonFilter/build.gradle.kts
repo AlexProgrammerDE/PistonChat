@@ -17,7 +17,7 @@ dependencies {
     testImplementation("org.mockito:mockito-core:5.21.0")
     testImplementation("org.mockito:mockito-junit-jupiter:5.21.0")
     testImplementation("me.xdrop:fuzzywuzzy:1.4.0")
-    implementation("org.bstats:bstats-bukkit:3.2.0")
+    implementation("org.bstats:bstats-bukkit:3.2.1")
     implementation("org.apache.commons:commons-collections4:4.5.0")
     implementation("de.exlll:configlib-paper:4.8.1")
 }
