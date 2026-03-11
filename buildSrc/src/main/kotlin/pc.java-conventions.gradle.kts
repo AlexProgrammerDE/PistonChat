@@ -29,8 +29,8 @@ dependencies {
     compileOnly("net.luckperms:api:5.5")
     compileOnly("com.github.spotbugs:spotbugs-annotations:4.9.8")
 
-    compileOnly("org.projectlombok:lombok:1.18.42")
-    annotationProcessor("org.projectlombok:lombok:1.18.42")
+    compileOnly("org.projectlombok:lombok:1.18.44")
+    annotationProcessor("org.projectlombok:lombok:1.18.44")
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.junit.jupiter:junit-jupiter:6.0.3")
