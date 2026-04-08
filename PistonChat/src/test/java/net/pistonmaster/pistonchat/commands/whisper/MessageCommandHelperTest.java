@@ -66,8 +66,8 @@ class MessageCommandHelperTest {
 
     MessageCommandHelper.sendWhisper(mockPlugin, mockSender, mockReceiver, "hello");
 
-    // Sender should get "source-ignored" message
-    verify(mockCommonTool).sendLanguageMessage(mockSender, "source-ignored");
+    // Sender should get "sourceIgnored" message
+    verify(mockCommonTool).sendLanguageMessage(mockSender, "sourceIgnored");
     verify(mockCommonTool, never()).sendWhisperTo(any(), any(), any());
     verify(mockCommonTool, never()).sendSender(any(), any(), any());
   }
@@ -80,8 +80,8 @@ class MessageCommandHelperTest {
 
     MessageCommandHelper.sendWhisper(mockPlugin, mockSender, mockReceiver, "hello");
 
-    // Sender should get "target-ignored" message
-    verify(mockCommonTool).sendLanguageMessage(mockSender, "target-ignored");
+    // Sender should get "targetIgnored" message
+    verify(mockCommonTool).sendLanguageMessage(mockSender, "targetIgnored");
     verify(mockCommonTool, never()).sendWhisperTo(any(), any(), any());
   }
 

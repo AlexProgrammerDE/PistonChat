@@ -11,13 +11,13 @@ public class MessageCommandHelper {
       if (config.onlyHidePms) {
         plugin.getCommonTool().sendSender(sender, message, receiver);
       } else {
-        plugin.getCommonTool().sendLanguageMessage(sender, "source-ignored");
+        plugin.getCommonTool().sendLanguageMessage(sender, "sourceIgnored");
       }
       return;
     }
 
     if (!config.allowPmIgnored && plugin.getIgnoreTool().isIgnored(receiver, sender)) {
-      plugin.getCommonTool().sendLanguageMessage(sender, "target-ignored");
+      plugin.getCommonTool().sendLanguageMessage(sender, "targetIgnored");
       return;
     }
 

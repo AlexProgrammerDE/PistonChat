@@ -20,7 +20,25 @@ class MessageKeyResolverTest {
   @Test
   void getHelpHeader() {
     messages.helpHeader = "Test Help Header";
-    assertEquals("Test Help Header", MessageKeyResolver.getMessageByKey(messages, "help-header"));
+    assertEquals("Test Help Header", MessageKeyResolver.getMessageByKey(messages, "helpHeader"));
+  }
+
+  @Test
+  void getWhisperFrom() {
+    messages.whisperFrom = "From: <message>";
+    assertEquals("From: <message>", MessageKeyResolver.getMessageByKey(messages, "whisperFrom"));
+  }
+
+  @Test
+  void getWhisperTo() {
+    messages.whisperTo = "To: <message>";
+    assertEquals("To: <message>", MessageKeyResolver.getMessageByKey(messages, "whisperTo"));
+  }
+
+  @Test
+  void getHoverText() {
+    messages.hoverText = "Hover: <player_name>";
+    assertEquals("Hover: <player_name>", MessageKeyResolver.getMessageByKey(messages, "hoverText"));
   }
 
   @Test
@@ -80,31 +98,31 @@ class MessageKeyResolverTest {
   @Test
   void getSourceIgnored() {
     messages.sourceIgnored = "You are ignored by this person";
-    assertEquals("You are ignored by this person", MessageKeyResolver.getMessageByKey(messages, "source-ignored"));
+    assertEquals("You are ignored by this person", MessageKeyResolver.getMessageByKey(messages, "sourceIgnored"));
   }
 
   @Test
   void getTargetIgnored() {
     messages.targetIgnored = "You ignore this person";
-    assertEquals("You ignore this person", MessageKeyResolver.getMessageByKey(messages, "target-ignored"));
+    assertEquals("You ignore this person", MessageKeyResolver.getMessageByKey(messages, "targetIgnored"));
   }
 
   @Test
   void getPageNotExists() {
     messages.pageNotExists = "Page does not exist";
-    assertEquals("Page does not exist", MessageKeyResolver.getMessageByKey(messages, "page-not-exists"));
+    assertEquals("Page does not exist", MessageKeyResolver.getMessageByKey(messages, "pageNotExists"));
   }
 
   @Test
   void getNotANumber() {
     messages.notANumber = "Not a valid number";
-    assertEquals("Not a valid number", MessageKeyResolver.getMessageByKey(messages, "not-a-number"));
+    assertEquals("Not a valid number", MessageKeyResolver.getMessageByKey(messages, "notANumber"));
   }
 
   @Test
   void getWhisperingDisabled() {
     messages.whisperingDisabled = "Whispering is disabled";
-    assertEquals("Whispering is disabled", MessageKeyResolver.getMessageByKey(messages, "whispering-disabled"));
+    assertEquals("Whispering is disabled", MessageKeyResolver.getMessageByKey(messages, "whisperingDisabled"));
   }
 
   @Test
@@ -156,10 +174,10 @@ class MessageKeyResolverTest {
 
   @ParameterizedTest
   @ValueSource(strings = {
-      "help-header", "playeronly", "notonline", "nooneignored",
+      "helpHeader", "whisperFrom", "whisperTo", "hoverText", "playeronly", "notonline", "nooneignored",
       "chaton", "chatoff", "pmson", "pmsoff", "pmself", "chatisoff",
-      "source-ignored", "target-ignored", "page-not-exists", "not-a-number",
-      "whispering-disabled", "ignore", "unignore", "ignorehard",
+      "sourceIgnored", "targetIgnored", "pageNotExists", "notANumber",
+      "whisperingDisabled", "ignore", "unignore", "ignorehard",
       "unignorehard", "ignorelistcleared"
   })
   void allKeysReturnNonNull(String key) {
@@ -173,7 +191,7 @@ class MessageKeyResolverTest {
 
     // These should match the defaults defined in PistonChatConfig.MessagesConfig
     assertEquals("---[<dark_green>PistonChat</dark_green>]---",
-        MessageKeyResolver.getMessageByKey(defaultMessages, "help-header"));
+        MessageKeyResolver.getMessageByKey(defaultMessages, "helpHeader"));
     assertEquals("You need to be a player to do this.",
         MessageKeyResolver.getMessageByKey(defaultMessages, "playeronly"));
     assertEquals("This player is not online.",
