@@ -20,7 +20,10 @@ public final class MessageKeyResolver {
    */
   public static String getMessageByKey(PistonChatConfig.MessagesConfig messages, String key) {
     return switch (key) {
-      case "help-header" -> messages.helpHeader;
+      case "helpHeader" -> messages.helpHeader;
+      case "whisperFrom" -> messages.whisperFrom;
+      case "whisperTo" -> messages.whisperTo;
+      case "hoverText" -> messages.hoverText;
       case "playeronly" -> messages.playeronly;
       case "notonline" -> messages.notonline;
       case "nooneignored" -> messages.nooneignored;
@@ -30,11 +33,11 @@ public final class MessageKeyResolver {
       case "pmsoff" -> messages.pmsoff;
       case "pmself" -> messages.pmself;
       case "chatisoff" -> messages.chatisoff;
-      case "source-ignored" -> messages.sourceIgnored;
-      case "target-ignored" -> messages.targetIgnored;
-      case "page-not-exists" -> messages.pageNotExists;
-      case "not-a-number" -> messages.notANumber;
-      case "whispering-disabled" -> messages.whisperingDisabled;
+      case "sourceIgnored" -> messages.sourceIgnored;
+      case "targetIgnored" -> messages.targetIgnored;
+      case "pageNotExists" -> messages.pageNotExists;
+      case "notANumber" -> messages.notANumber;
+      case "whisperingDisabled" -> messages.whisperingDisabled;
       case "ignore" -> messages.ignore;
       case "unignore" -> messages.unignore;
       case "ignorehard" -> messages.ignorehard;

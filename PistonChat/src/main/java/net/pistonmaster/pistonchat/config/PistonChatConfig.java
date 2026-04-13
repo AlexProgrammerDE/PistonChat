@@ -8,12 +8,6 @@ import java.util.Map;
 
 @Configuration
 public class PistonChatConfig {
-  @Comment("Whisper message formats using MiniMessage syntax")
-  public WhisperConfig whisper = new WhisperConfig();
-
-  @Comment("Hover text shown when hovering over a player's name in chat")
-  public String hoverText = "<gold>Message <dark_aqua><player_name>";
-
   @Comment("Storage type: 'file' or 'mysql'")
   public String storage = "file";
 
@@ -71,14 +65,6 @@ public class PistonChatConfig {
   ));
 
   @Configuration
-  public static class WhisperConfig {
-    @Comment("Format shown to the receiver of a whisper")
-    public String from = "<light_purple><player_name> whispers: <message>";
-    @Comment("Format shown to the sender of a whisper")
-    public String to = "<light_purple>You whisper to <player_name>: <message>";
-  }
-
-  @Configuration
   public static class MySQLConfig {
     @Comment("MySQL server hostname")
     public String host = "localhost";
@@ -97,6 +83,10 @@ public class PistonChatConfig {
     @Comment("The prefix can also be set to just \"&6\"")
     public String format = "[<dark_green>PistonChat</dark_green>] <gold><message>";
     public String helpHeader = "---[<dark_green>PistonChat</dark_green>]---";
+    public String whisperFrom = "<light_purple><player_name> whispers: <message>";
+    public String whisperTo = "<light_purple>You whisper to <player_name>: <message>";
+    @Comment("Hover text shown when hovering over a player's name in chat")
+    public String hoverText = "<gold>Message <dark_aqua><player_name>";
     public String playeronly = "You need to be a player to do this.";
     public String notonline = "This player is not online.";
     public String nooneignored = "No players ignored.";

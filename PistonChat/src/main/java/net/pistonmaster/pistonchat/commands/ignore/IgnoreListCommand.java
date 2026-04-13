@@ -68,13 +68,13 @@ public class IgnoreListCommand implements CommandExecutor, TabExecutor {
         if (page < plugin.getIgnoreTool().getIgnoredPlayers(player).size()) {
           showList(page, player);
         } else {
-          plugin.getCommonTool().sendLanguageMessage(player, "page-not-exists");
+          plugin.getCommonTool().sendLanguageMessage(player, "pageNotExists");
         }
       });
 
       return true;
     } catch (NumberFormatException e) {
-      plugin.getCommonTool().sendLanguageMessage(player, "not-a-number");
+      plugin.getCommonTool().sendLanguageMessage(player, "notANumber");
       return false;
     }
   }

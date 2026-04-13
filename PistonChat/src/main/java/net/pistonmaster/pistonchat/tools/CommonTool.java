@@ -57,7 +57,7 @@ public class CommonTool {
         if (config.onlyHidePms) {
           sendSender(sender, message, receiver);
         } else {
-          sendLanguageMessage(sender, "whispering-disabled");
+          sendLanguageMessage(sender, "whisperingDisabled");
         }
         return;
       }
@@ -87,7 +87,8 @@ public class CommonTool {
   public void sendSender(CommandSender sender, String message, CommandSender receiver) {
     Audience senderAudience = senderAudience(sender);
     Audience receiverAudience = senderAudience(receiver);
-    String senderString = plugin.getPluginConfig().whisper.to;
+    Player player = sender instanceof Player p ? p : null;
+    String senderString = getMessageByKey("whisperTo", player);
     TagResolver tagResolver = TagResolver.resolver(
         MiniPlaceholdersHook.relationalGlobalPlaceholders(plugin),
         Placeholder.unparsed("message", message),
@@ -100,14 +101,15 @@ public class CommonTool {
   private void sendReceiver(CommandSender sender, String message, CommandSender receiver) {
     Audience senderAudience = senderAudience(sender);
     Audience receiverAudience = senderAudience(receiver);
-    String senderString = plugin.getPluginConfig().whisper.from;
+    Player player = receiver instanceof Player p ? p : null;
+    String receiverString = getMessageByKey("whisperFrom", player);
     TagResolver tagResolver = TagResolver.resolver(
         MiniPlaceholdersHook.relationalGlobalPlaceholders(plugin),
         Placeholder.unparsed("message", message),
         getDisplayNameResolver(sender)
     );
 
-    receiverAudience.sendMessage(MiniMessage.miniMessage().deserialize(senderString, MiniPlaceholdersHook.getRelationalAudience(plugin, senderAudience, receiverAudience), tagResolver));
+    receiverAudience.sendMessage(MiniMessage.miniMessage().deserialize(receiverString, MiniPlaceholdersHook.getRelationalAudience(plugin, senderAudience, receiverAudience), tagResolver));
   }
 
   public Component getLanguageMessage(Audience audience, String messageKey, boolean prefix, TagResolver... tagResolvers) {
@@ -190,7 +192,7 @@ public class CommonTool {
       : getFormat(chatter, relationalAudience, miniPlaceholderResolver);
 
     if (receiver.hasPermission("pistonchat.playernamereply")) {
-      String hoverText = plugin.getPluginConfig().hoverText;
+      String hoverText = getMessageByKey("hoverText", receiver);
 
       formatComponent = formatComponent
           .clickEvent(ClickEvent.suggestCommand("/w %s ".formatted(chatter.getName())))
