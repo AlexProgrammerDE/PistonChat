@@ -20,17 +20,17 @@ rewrite {
 dependencies {
     compileOnlyApi("org.apiguardian:apiguardian-api:1.1.2")
 
-    errorprone("com.google.errorprone:error_prone_core:2.48.0")
+    errorprone("com.google.errorprone:error_prone_core:2.49.0")
     spotbugs("com.github.spotbugs:spotbugs:4.9.8")
-    rewrite("org.openrewrite.recipe:rewrite-static-analysis:2.31.0")
-    rewrite("org.openrewrite.recipe:rewrite-migrate-java:3.31.0")
-    rewrite("org.openrewrite.recipe:rewrite-rewrite:0.22.0")
+    rewrite("org.openrewrite.recipe:rewrite-static-analysis:2.34.0")
+    rewrite("org.openrewrite.recipe:rewrite-migrate-java:3.34.0")
+    rewrite("org.openrewrite.recipe:rewrite-rewrite:0.24.2")
 
     compileOnly("net.luckperms:api:5.5")
     compileOnly("com.github.spotbugs:spotbugs-annotations:4.9.8")
 
-    compileOnly("org.projectlombok:lombok:1.18.44")
-    annotationProcessor("org.projectlombok:lombok:1.18.44")
+    compileOnly("org.projectlombok:lombok:1.18.46")
+    annotationProcessor("org.projectlombok:lombok:1.18.46")
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.junit.jupiter:junit-jupiter:6.0.3")
