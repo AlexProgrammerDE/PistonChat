@@ -7,7 +7,7 @@ description = "Advanced chat plugin for survival/anarchy servers."
 
 dependencies {
     compileOnly("com.google.code.findbugs:jsr305:3.0.2")
-    compileOnly("io.github.miniplaceholders:miniplaceholders-api:3.1.0")
+    compileOnly("io.github.miniplaceholders:miniplaceholders-api:3.2.0")
     compileOnly("jakarta.annotation:jakarta.annotation-api:3.0.0")
     compileOnly("org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT")
 
@@ -18,7 +18,7 @@ dependencies {
     implementation("net.kyori:adventure-text-minimessage:4.26.1")
     implementation("org.bstats:bstats-bukkit:3.2.1")
     implementation("org.mariadb.jdbc:mariadb-java-client:3.5.10")
-    implementation("com.github.ben-manes.caffeine:caffeine:3.3.0")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.3.1")
     implementation("de.exlll:configlib-paper:4.8.1")
 
     // Test dependencies for Bukkit API

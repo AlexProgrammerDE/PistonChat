@@ -21,13 +21,13 @@ dependencies {
     compileOnlyApi("org.apiguardian:apiguardian-api:1.1.2")
 
     errorprone("com.google.errorprone:error_prone_core:2.50.0")
-    spotbugs("com.github.spotbugs:spotbugs:4.10.4")
+    spotbugs("com.github.spotbugs:spotbugs:4.10.5")
     rewrite("org.openrewrite.recipe:rewrite-static-analysis:2.41.1")
     rewrite("org.openrewrite.recipe:rewrite-migrate-java:3.42.1")
     rewrite("org.openrewrite.recipe:rewrite-rewrite:0.30.0")
 
     compileOnly("net.luckperms:api:5.5")
-    compileOnly("com.github.spotbugs:spotbugs-annotations:4.10.4")
+    compileOnly("com.github.spotbugs:spotbugs-annotations:4.10.5")
 
     compileOnly("org.projectlombok:lombok:1.18.48")
     annotationProcessor("org.projectlombok:lombok:1.18.48")
