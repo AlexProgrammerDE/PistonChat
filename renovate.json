@@ -1,8 +1,18 @@
 {
-  "extends": ["config:base", "group:allNonMajor", ":semanticCommits"],
+  "extends": [
+    "config:base",
+    "group:allNonMajor",
+    ":semanticCommits",
+    "workarounds:javaLTSVersions"
+  ],
   "packageRules": [
     {
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "pin",
+        "digest"
+      ],
       "automerge": true,
       "automergeType": "branch"
     },
@@ -11,6 +21,49 @@
         "**"
       ],
       "allowedVersions": "!/\\-SNAPSHOT$/"
+    },
+    {
+      "description": "OpenRewrite 7.40.0 and 7.41.0 require the unpublished rewrite-bom 8.91.0.",
+      "matchPackageNames": [
+        "org.openrewrite:plugin"
+      ],
+      "allowedVersions": "!/^7\\.(40|41)\\.0$/"
+    },
+    {
+      "matchDatasources": [
+        "java-version"
+      ],
+      "matchPackageNames": [
+        "java-jdk"
+      ],
+      "groupName": "Java LTS",
+      "groupSlug": "java-lts",
+      "automerge": false
+    },
+    {
+      "description": "The Bukkit audience bridge requires Adventure 4. MiniPlaceholders 3.2 and Adventure 5 remove APIs that this bridge calls.",
+      "matchPackageNames": [
+        "net.kyori:adventure-text-minimessage",
+        "io.github.miniplaceholders:miniplaceholders-api"
+      ],
+      "allowedVersions": "!/^(5|3\\.2)\\./"
+    }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/\\.gradle\\.kts$/",
+        "/(^|/)gradle-daemon-jvm\\.properties$/"
+      ],
+      "matchStrings": [
+        "JavaLanguageVersion\\.of\\((?<currentValue>\\d+)\\)",
+        "UpgradeToJava(?<currentValue>\\d+)",
+        "toolchainVersion=(?<currentValue>\\d+)"
+      ],
+      "depNameTemplate": "java-jdk",
+      "datasourceTemplate": "java-version",
+      "versioningTemplate": "java"
     }
   ]
 }
