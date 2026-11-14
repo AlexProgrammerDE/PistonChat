@@ -39,6 +39,14 @@
       "groupName": "Java LTS",
       "groupSlug": "java-lts",
       "automerge": false
+    },
+    {
+      "description": "The Bukkit audience bridge requires Adventure 4. MiniPlaceholders 3.2 and Adventure 5 remove APIs that this bridge calls.",
+      "matchPackageNames": [
+        "net.kyori:adventure-text-minimessage",
+        "io.github.miniplaceholders:miniplaceholders-api"
+      ],
+      "allowedVersions": "!/^(5|3\\.2)\\./"
     }
   ],
   "customManagers": [
